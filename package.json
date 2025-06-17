@@ -2,6 +2,19 @@
   "name": "brunch-editor",
   "version": "0.1.0",
   "private": true,
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "dependencies": {
     "@codexteam/icons": "^0.3.2",
     "@editorjs/dom": "^1.0.1",

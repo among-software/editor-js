@@ -29,4 +29,21 @@ export default defineConfig({
       utils: path.resolve(__dirname, "./src/utils"),
     },
   },
+  build: {
+    lib: {
+      entry: path.resolve(__dirname, "index.ts"), // 🔹 진입점 지정
+      name: "BrunchEditor",
+      fileName: "index",
+      formats: ["es", "cjs"],
+    },
+    rollupOptions: {
+      external: ["react", "react-dom"], // 🔹 의존성 제외
+      output: {
+        globals: {
+          react: "React",
+          "react-dom": "ReactDOM",
+        },
+      },
+    },
+  },
 });
