@@ -10,6 +10,7 @@ import {
   UnifiedImage,
   Video,
 } from "@/components/Editor/EditorTools/BlockTools/index";
+import FontSizePicker from "@/components/Editor/EditorTools/InlineTools/FontSizePicker";
 
 import {
   FontPicker,
@@ -35,7 +36,8 @@ export const EDITOR_JS_TOOLS = {
       "strikethrough",
       "font",
       "color",
-      "backgroundColor",
+      "fontSize",
+      // "backgroundColor",
     ],
   },
   header: {
@@ -65,6 +67,7 @@ export const EDITOR_JS_TOOLS = {
   /* Inline Tool */
   font: FontPicker,
   underline: Underline,
+  fontSize: FontSizePicker,
   strikethrough: Strikethrough,
   color: {
     class: TextColor,
@@ -83,21 +86,21 @@ export const EDITOR_JS_TOOLS = {
       ],
     },
   },
-  backgroundColor: {
-    class: TextBackgroundColor,
-    config: {
-      colorCollections: [
-        "#ffffff",
-        "#000000",
-        "#16b06d",
-        "#00c6be",
-        "#2e84b6",
-        "#959595",
-        "#f4c016",
-        "#f6655b",
-        "#ec4c69",
-        "#5c5cb2",
-      ],
-    },
-  },
+  // backgroundColor: {
+  //   class: TextBackgroundColor,
+  //   config: {
+  //     colorCollections: [
+  //       "#ffffff",
+  //       "#000000",
+  //       "#16b06d",
+  //       "#00c6be",
+  //       "#2e84b6",
+  //       "#959595",
+  //       "#f4c016",
+  //       "#f6655b",
+  //       "#ec4c69",
+  //       "#5c5cb2",
+  //     ],
+  //   },
+  // },
 };

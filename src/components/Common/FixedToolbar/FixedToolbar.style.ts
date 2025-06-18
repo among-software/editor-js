@@ -8,8 +8,8 @@ interface ToolbarProps {
 export const FixedToolbarContainer = styled.div<ToolbarProps>`
   display: flex;
   flex-direction: row;
-  justify-content: center;
-  gap: 42px;
+  justify-content: space-between;
+  min-width: 768px;
   position: absolute;
   top: ${(props) => props.$top}px;
   /* right: ${(props) => props.$right}%; */

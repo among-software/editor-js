@@ -82,4 +82,40 @@ export const GlobalStyle = createGlobalStyle`
     color: #00c6be;
   }
 
+  .font-size-dropdown {
+    max-width: 120px;
+    min-width: 60px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  .ce-block__content span[style*="font-size"] {
+    display: inline-block;
+    word-break: break-word;
+    line-height: 1.3;
+    max-width: 100%;
+  }
+
+  .font-size-dropdown {
+  max-width: 120px;
+  min-width: 60px;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.ce-block__content {
+  max-width: min(100%, 1344px) !important;
+  min-width: 768px !important;
+  margin: 0 auto !important;
+}
+
+.ce-block__content span[style*="font-size"] {
+  display: inline-block;
+  word-break: break-word;
+  line-height: 1.3;
+  max-width: 100%;
+}
+.ce-toolbar__actions--opened {
+  right: -100px;
+}
 `;

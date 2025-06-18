@@ -1,9 +1,9 @@
 import EditorSection from "@/components/Editor/EditorSection/EditorSection";
-import TitleSection from "@/components/Title/TitleSection/TitleSection";
+// import TitleSection from "@/components/Title/TitleSection/TitleSection";
 
 function App() {
   return (
-    <div className='App'>
+    <div className="App">
       {/* <TitleSection /> */}
       <EditorSection />
     </div>
