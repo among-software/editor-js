@@ -50,14 +50,6 @@ export default function EditorSection({
     };
   }, []);
 
-  const onClickSave = () => {
-    // Editor.js의 save 메서드를 호출하여 에디터 데이터와 제목 데이터를 통합
-    editor
-      ?.save()
-      .then((outputData) => console.log("Article data: ", { ...outputData }))
-      .catch((error) => console.log("Saving failed: ", error));
-  };
-
   return (
     <S.EditorSectionContainer ref={editorSectionRef} $width={width}>
       <EditorContent onChange={onChange} />
