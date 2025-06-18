@@ -26,14 +26,14 @@
       "types/*": ["src/types/*"],
       "utils/*": ["src/utils/*"]
     },
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
 
-    // ✅ 아래 두 줄 추가
+    // ✅ 라이브러리 빌드 관련 설정
     "outDir": "dist",
     "declaration": true,
+    "declarationDir": "dist/types",
     "emitDeclarationOnly": false,
     "noEmit": false
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
 }
