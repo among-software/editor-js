@@ -1,17 +1,17 @@
 import EditorJS from "@editorjs/editorjs";
 
 export type ModalType = "place" | "emoji" | "line" | null;
-export type AlignType = "left" | "center";
+export type AlignValue = "left" | "center" | "right" | "justify";
 
 export interface EditorStore {
   editor: EditorJS | null;
   activeModal: ModalType;
-  align: AlignType;
+  align: AlignValue;
   currentBlockIndex: number;
 
   setEditor: (editor: EditorJS) => void;
   toggleModal: (modalType: Exclude<ModalType, null>) => void;
   closeModal: () => void;
-  toggleAlign: () => void;
+  setAlign: (align: AlignValue) => void;
   setCurrentBlockIndex: (index: number) => void;
 }

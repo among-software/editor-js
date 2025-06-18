@@ -1,49 +1,52 @@
+// ✅ AlignIcon.tsx
 import * as S from "./AlignIcon.style";
 import useEditorStore from "store/useEditorStore";
 
+const alignValues = ["left", "center", "right", "justify"] as const;
+type AlignValue = (typeof alignValues)[number];
+
 /**
  * 텍스트 정렬을 위한 아이콘 컴포넌트
- * 클릭 시 왼쪽 정렬과 가운데 정렬을 토글
+ * 클릭 시 현재 선택된 블록의 정렬 상태를 순환 변경함
  */
 export default function AlignIcon() {
-  const { editor, align, toggleAlign } = useEditorStore();
+  const { editor, setAlign } = useEditorStore();
 
-  /**
-   * 텍스트 정렬 상태를 토글하고 에디터의 블록들을 업데이트하는 함수
-   * 1. 전역 정렬 상태를 토글
-   * 2. 에디터의 현재 데이터를 저장
-   * 3. 정렬 가능한 블록들(paragraph, file, place, emoji, delimiter)의 정렬 상태를 업데이트
-   * 4. 변경된 데이터로 에디터를 다시 렌더링
-   */
-  const handleToggleAlign = async () => {
-    toggleAlign();
-    if (editor) {
-      try {
-        const savedData = await editor.save();
-
-        const updatedBlocks = savedData.blocks.map((block) => {
-          if (
-            ["paragraph", "file", "place", "emoji", "delimiter"].includes(
-              block.type
-            )
-          ) {
-            return {
-              ...block,
-              data: {
-                ...block.data,
-                align: align === "left" ? "center" : "left", // Toggle alignment
-              },
-            };
-          }
-          return block;
-        });
-
-        await editor.render({ blocks: updatedBlocks });
-      } catch (error) {
-        console.error("Error while updating alignment:", error);
-      }
-    }
+  const getNextAlign = (current: AlignValue): AlignValue => {
+    const index = alignValues.indexOf(current);
+    const nextIndex = (index + 1) % alignValues.length;
+    return alignValues[nextIndex];
   };
 
-  return <S.AlignIcon $align={align} onClick={handleToggleAlign} />;
+  const handleToggleAlign = async () => {
+    if (!editor) return;
+
+    const blockIndex = editor.blocks.getCurrentBlockIndex();
+    const savedData = await editor.save();
+    const block = savedData.blocks[blockIndex];
+
+    const blockElement = document.querySelector(
+      `.ce-block[data-id="${block.id}"] .ce-paragraph`
+    ) as HTMLElement;
+
+    const currentAlign = (blockElement?.style.textAlign ||
+      "left") as AlignValue;
+    const nextAlign = getNextAlign(currentAlign);
+
+    if (blockElement) {
+      blockElement.style.textAlign = nextAlign;
+    }
+
+    // ✅ selection 복원
+    editor.caret.setToBlock(blockIndex, "end");
+
+    setAlign(nextAlign);
+  };
+
+  return (
+    <S.AlignIcon
+      $align={useEditorStore.getState().align}
+      onClick={handleToggleAlign}
+    />
+  );
 }
