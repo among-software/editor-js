@@ -22,24 +22,30 @@ const EditorContent = memo(({ onChange }: EditorContentProps) => {
   const { setEditor } = useEditorStore();
   const editorInstanceRef = useRef<EditorJS | null>(null);
 
+  // EditorContent.tsx
   useEffect(() => {
     if (!editorInstanceRef.current) {
-      const editor = new EditorJS({
+      const editorInstance = new EditorJS({
         holder: "editorjs",
         autofocus: true,
         tools: EDITOR_JS_TOOLS,
-        async onChange(api, event) {
-          const content = await editor.save();
-          onChange?.(content);
-        },
         onReady: () => {
-          new Undo({ editor });
-          new DragDrop(editor);
-          setEditor(editor);
+          new Undo({ editor: editorInstance });
+          new DragDrop(editorInstance);
+          setEditor(editorInstance);
+
+          // 변경 사항을 수신하도록 설정
+          editorInstance.isReady.then(() => {
+            editorInstance.on("change", async () => {
+              const data = await editorInstance.save();
+              console.log("editor changed:", data);
+              onChange(data); // prop으로 내려 받은 콜백 호출
+            });
+          });
         },
       });
 
-      editorInstanceRef.current = editor;
+      editorInstanceRef.current = editorInstance;
     }
   }, []);
 
