@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import * as S from "./EditorSection.style";
 import EditorToolbar from "../../../components/Editor/EditorToolbar/EditorToolbar";
 import EditorContent from "../../../components/Editor/EditorContent/EditorContent";
+import useEditorStore from "../../../store/useEditorStore";
 /**
  * 에디터의 메인 섹션을 담당하는 컴포넌트
  * 에디터 컨텐츠와 툴바를 포함하며, 스크롤에 따른 툴바 위치 조정을 관리
@@ -10,6 +11,7 @@ import EditorContent from "../../../components/Editor/EditorContent/EditorConten
 export default function EditorSection({ onUpload, width, onChange, }) {
     const editorSectionRef = useRef(null);
     const [toolbarTop, setToolbarTop] = useState(0);
+    const { editor } = useEditorStore();
     useEffect(() => {
         /**
          * 스크롤 이벤트 핸들러
@@ -31,5 +33,12 @@ export default function EditorSection({ onUpload, width, onChange, }) {
             window.removeEventListener("scroll", handleScroll);
         };
     }, []);
+    const onClickSave = () => {
+        // Editor.js의 save 메서드를 호출하여 에디터 데이터와 제목 데이터를 통합
+        editor
+            ?.save()
+            .then((outputData) => console.log("Article data: ", { ...outputData }))
+            .catch((error) => console.log("Saving failed: ", error));
+    };
     return (_jsxs(S.EditorSectionContainer, { ref: editorSectionRef, "$width": width, children: [_jsx(EditorContent, { onChange: onChange }), _jsx(EditorToolbar, { toolbarTop: toolbarTop, onUpload: onUpload })] }));
 }

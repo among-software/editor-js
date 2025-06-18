@@ -3,6 +3,7 @@ import * as S from "./EditorSection.style";
 import EditorToolbar from "../../../components/Editor/EditorToolbar/EditorToolbar";
 import EditorContent from "../../../components/Editor/EditorContent/EditorContent";
 import { UploadHandler } from "../../../types/upload";
+import useEditorStore from "../../../store/useEditorStore";
 
 interface EditorSectionProps {
   onUpload?: UploadHandler;
@@ -21,6 +22,7 @@ export default function EditorSection({
 }: EditorSectionProps) {
   const editorSectionRef = useRef<HTMLDivElement>(null);
   const [toolbarTop, setToolbarTop] = useState(0);
+  const { editor } = useEditorStore();
 
   useEffect(() => {
     /**
@@ -47,6 +49,14 @@ export default function EditorSection({
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  const onClickSave = () => {
+    // Editor.js의 save 메서드를 호출하여 에디터 데이터와 제목 데이터를 통합
+    editor
+      ?.save()
+      .then((outputData) => console.log("Article data: ", { ...outputData }))
+      .catch((error) => console.log("Saving failed: ", error));
+  };
 
   return (
     <S.EditorSectionContainer ref={editorSectionRef} $width={width}>

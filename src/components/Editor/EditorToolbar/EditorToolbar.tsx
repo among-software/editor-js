@@ -19,6 +19,7 @@ import {
 import FixedToolbar from "../../../components/Common/FixedToolbar/FixedToolbar";
 import useEditorStore from "../../../store/useEditorStore";
 import { UploadHandler } from "../../../types/upload";
+import * as S from "./styles";
 
 interface Props {
   toolbarTop: number;
@@ -70,6 +71,14 @@ export default function EditorToolbar({ toolbarTop, onUpload }: Props) {
     }
   };
 
+  const onClickSave = () => {
+    // Editor.js의 save 메서드를 호출하여 에디터 데이터와 제목 데이터를 통합
+    editor
+      ?.save()
+      .then((outputData) => console.log("Article data: ", { ...outputData }))
+      .catch((error) => console.log("Saving failed: ", error));
+  };
+
   return (
     <>
       {activeModal && (
@@ -105,6 +114,9 @@ export default function EditorToolbar({ toolbarTop, onUpload }: Props) {
         <EmojiIcon handleBlockIndex={handleBlockIndex} />
         <LineIcon handleBlockIndex={handleBlockIndex} />
         <AlignIcon />
+        <S.TitleSaveWrapper id="save-btn" onClick={onClickSave}>
+          저장
+        </S.TitleSaveWrapper>
       </FixedToolbar>
     </>
   );

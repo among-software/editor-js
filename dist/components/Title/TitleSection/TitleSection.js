@@ -1,7 +1,5 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import * as S from "./TitleSection.style";
-import TitleInputWrapper from "../../../components/Title/TitleInput/TitleInputWrapper/TitleInputWrapper";
-import TitleCoverColorSwiper from "../../../components/Title/TitleTools/TitleCoverColor/TitleCoverColorSwiper/TitleCoverColorSwiper";
 import useTitleStore from "../../../store/useTitleStore";
 import useEditorStore from "../../../store/useEditorStore";
 /**
@@ -35,5 +33,5 @@ export default function TitleSection() {
             .then((outputData) => console.log("Article data: ", { ...outputData, titleData }))
             .catch((error) => console.log("Saving failed: ", error));
     };
-    return (_jsxs(S.TitleSectionWrapper, { "$bgImage": titleCoverImage, "$expanded": isExpanded, "$bgColor": titleCoverColor, children: [_jsxs(S.TitleTopWrapper, { children: [_jsx(S.TitleMenuWrapper, { children: " " }), _jsx(S.TitleSaveWrapper, { id: "save-btn", onClick: onClickSave, children: "\uC800\uC7A5" })] }), _jsxs(S.TitleBottomWrapper, { children: [_jsx(TitleInputWrapper, {}), titleCoverColor && _jsx(TitleCoverColorSwiper, {})] })] }));
+    return (_jsx(S.TitleSectionWrapper, { "$bgImage": titleCoverImage, "$expanded": isExpanded, "$bgColor": titleCoverColor, children: _jsxs(S.TitleTopWrapper, { children: [_jsx(S.TitleMenuWrapper, { children: " " }), _jsx(S.TitleSaveWrapper, { id: "save-btn", onClick: onClickSave, children: "\uC800\uC7A5" })] }) }));
 }

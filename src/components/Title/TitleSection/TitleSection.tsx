@@ -67,10 +67,10 @@ export default function TitleSection() {
       {/* <TitleToolbar /> */}
 
       {/* 제목 입력 및 커버 이미지/컬러 선택 영역 */}
-      <S.TitleBottomWrapper>
+      {/* <S.TitleBottomWrapper>
         <TitleInputWrapper />
         {titleCoverColor && <TitleCoverColorSwiper />}
-      </S.TitleBottomWrapper>
+      </S.TitleBottomWrapper> */}
     </S.TitleSectionWrapper>
   );
 }

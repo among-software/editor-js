@@ -2774,6 +2774,7 @@ const COMMON_THEME = {
     primary: "#00c6be",
     black_primary: "#333333",
     white_primary: "#FFF",
+    gray_primary: "#ccc",
     light_gray: "#eee",
     medium_gray: "#909090",
     dark_gray: "#666",
@@ -26648,6 +26649,17 @@ function FixedToolbar({ position, children }) {
     return (jsxRuntimeExports.jsx(FixedToolbarContainer, { "$top": position.top, "$right": position.right, children: children }));
 }
 
+const TitleSaveWrapper = dt$1.button `
+  border-radius: 15px;
+  width: 66px;
+  height: 30px;
+  border: 1px solid ${COMMON_THEME.gray_primary};
+  font-size: 12px;
+  color: ${COMMON_THEME.dark_gray};
+  background-color: ${COMMON_THEME.white_primary};
+  z-index: 100;
+`;
+
 /**
  * 에디터의 툴바 컴포넌트
  * 블록을 추가할 수 있는 도구들을 제공
@@ -26684,7 +26696,14 @@ function EditorToolbar({ toolbarTop, onUpload }) {
             editor.blocks.insert(type, data, undefined, currentBlockIndex + 1);
         }
     };
-    return (jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [activeModal && (jsxRuntimeExports.jsxs(EditorToolModal, { top: toolbarTop, children: [activeModal === "place" && jsxRuntimeExports.jsx(PlaceModal, { addBlock: addBlock }), activeModal === "emoji" && jsxRuntimeExports.jsx(EmojiModal, { addBlock: addBlock }), activeModal === "line" && jsxRuntimeExports.jsx(LineModal, { addBlock: addBlock })] })), jsxRuntimeExports.jsxs(FixedToolbar, { position: { top: toolbarTop, right: 0 }, children: [jsxRuntimeExports.jsx(ImageIcon, { handleBlockIndex: handleBlockIndex, addBlock: addBlock, onUpload: onUpload }), jsxRuntimeExports.jsx(GroupImageIcon, { handleBlockIndex: handleBlockIndex, addBlock: addBlock, onUpload: onUpload }), jsxRuntimeExports.jsx(VideoIcon, { handleBlockIndex: handleBlockIndex, addBlock: addBlock, onUpload: onUpload }), jsxRuntimeExports.jsx(FileIcon, { handleBlockIndex: handleBlockIndex, addBlock: addBlock, onUpload: onUpload }), jsxRuntimeExports.jsx(EmojiIcon, { handleBlockIndex: handleBlockIndex }), jsxRuntimeExports.jsx(LineIcon, { handleBlockIndex: handleBlockIndex }), jsxRuntimeExports.jsx(AlignIcon, {})] })] }));
+    const onClickSave = () => {
+        // Editor.js의 save 메서드를 호출하여 에디터 데이터와 제목 데이터를 통합
+        editor
+            ?.save()
+            .then((outputData) => console.log("Article data: ", { ...outputData }))
+            .catch((error) => console.log("Saving failed: ", error));
+    };
+    return (jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [activeModal && (jsxRuntimeExports.jsxs(EditorToolModal, { top: toolbarTop, children: [activeModal === "place" && jsxRuntimeExports.jsx(PlaceModal, { addBlock: addBlock }), activeModal === "emoji" && jsxRuntimeExports.jsx(EmojiModal, { addBlock: addBlock }), activeModal === "line" && jsxRuntimeExports.jsx(LineModal, { addBlock: addBlock })] })), jsxRuntimeExports.jsxs(FixedToolbar, { position: { top: toolbarTop, right: 0 }, children: [jsxRuntimeExports.jsx(ImageIcon, { handleBlockIndex: handleBlockIndex, addBlock: addBlock, onUpload: onUpload }), jsxRuntimeExports.jsx(GroupImageIcon, { handleBlockIndex: handleBlockIndex, addBlock: addBlock, onUpload: onUpload }), jsxRuntimeExports.jsx(VideoIcon, { handleBlockIndex: handleBlockIndex, addBlock: addBlock, onUpload: onUpload }), jsxRuntimeExports.jsx(FileIcon, { handleBlockIndex: handleBlockIndex, addBlock: addBlock, onUpload: onUpload }), jsxRuntimeExports.jsx(EmojiIcon, { handleBlockIndex: handleBlockIndex }), jsxRuntimeExports.jsx(LineIcon, { handleBlockIndex: handleBlockIndex }), jsxRuntimeExports.jsx(AlignIcon, {}), jsxRuntimeExports.jsx(TitleSaveWrapper, { id: "save-btn", onClick: onClickSave, children: "\uC800\uC7A5" })] })] }));
 }
 
 const EditorContentContainer = dt$1.div `
@@ -41175,6 +41194,7 @@ const EditorContent = memo(({ onChange }) => {
 function EditorSection({ onUpload, width, onChange, }) {
     const editorSectionRef = useRef(null);
     const [toolbarTop, setToolbarTop] = useState(0);
+    const { editor } = useEditorStore();
     useEffect(() => {
         /**
          * 스크롤 이벤트 핸들러
