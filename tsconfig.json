@@ -9,11 +9,10 @@
     "strict": false,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
+    "module": "ESNext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
@@ -28,6 +27,13 @@
       "utils/*": ["src/utils/*"]
     },
     "noUnusedLocals": true,
-    "noUnusedParameters": true
-  }
+    "noUnusedParameters": true,
+
+    // ✅ 아래 두 줄 추가
+    "outDir": "dist",
+    "declaration": true,
+    "emitDeclarationOnly": false,
+    "noEmit": false
+  },
+  "include": ["src"]
 }
