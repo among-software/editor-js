@@ -169,12 +169,12 @@ export default class UnifiedImage implements BlockTool {
     });
   }
 
-  private createImageWrapper(
+  createImageWrapper = (
     imageData: any,
     index: number,
     totalAspectRatio: number,
     totalImages: number
-  ): HTMLDivElement {
+  ): HTMLDivElement => {
     const imageWrapper = document.createElement("div");
     const image = document.createElement("img");
 
@@ -186,7 +186,6 @@ export default class UnifiedImage implements BlockTool {
     image.alt = imageData.name;
     image.draggable = true;
 
-    // 👉 이벤트 등록
     this.addImageEventListeners(imageWrapper, imageData, index);
 
     const widthPercentage =
@@ -201,41 +200,42 @@ export default class UnifiedImage implements BlockTool {
 
     imageWrapper.appendChild(image);
 
-    // 👉 리사이저 핸들 추가
-    const resizer = document.createElement("div");
-    resizer.classList.add("image-resizer-handle");
-    imageWrapper.appendChild(resizer);
+    // ✅ 리사이저 핸들: 단일 이미지일 때만 추가
+    if (totalImages === 1) {
+      const resizer = document.createElement("div");
+      resizer.classList.add("image-resizer-handle");
+      imageWrapper.appendChild(resizer);
 
-    // 👉 리사이저 핸들 드래그 동작
-    let startX = 0;
-    let startWidth = 0;
+      let startX = 0;
+      let startWidth = 0;
 
-    const onMouseMove = (e: MouseEvent) => {
-      const delta = e.clientX - startX;
-      const newWidth = startWidth + delta;
-      if (newWidth > 50) {
-        imageWrapper.style.width = `${newWidth}px`;
-        imageData.width = newWidth;
-        imageData.ratio = newWidth / imageData.height;
-      }
-    };
+      const onMouseMove = (e: MouseEvent) => {
+        const delta = e.clientX - startX;
+        const newWidth = startWidth + delta;
+        if (newWidth > 50) {
+          imageWrapper.style.width = `${newWidth}px`;
+          imageData.width = newWidth;
+          imageData.ratio = newWidth / imageData.height;
+        }
+      };
 
-    const onMouseUp = () => {
-      document.removeEventListener("mousemove", onMouseMove);
-      document.removeEventListener("mouseup", onMouseUp);
-    };
+      const onMouseUp = () => {
+        document.removeEventListener("mousemove", onMouseMove);
+        document.removeEventListener("mouseup", onMouseUp);
+      };
 
-    resizer.addEventListener("mousedown", (e) => {
-      e.preventDefault();
-      startX = e.clientX;
-      startWidth = imageWrapper.getBoundingClientRect().width;
+      resizer.addEventListener("mousedown", (e) => {
+        e.preventDefault();
+        startX = e.clientX;
+        startWidth = imageWrapper.getBoundingClientRect().width;
 
-      document.addEventListener("mousemove", onMouseMove);
-      document.addEventListener("mouseup", onMouseUp);
-    });
+        document.addEventListener("mousemove", onMouseMove);
+        document.addEventListener("mouseup", onMouseUp);
+      });
+    }
 
     return imageWrapper;
-  }
+  };
 
   private addImageEventListeners(
     imageWrapper: HTMLDivElement,
