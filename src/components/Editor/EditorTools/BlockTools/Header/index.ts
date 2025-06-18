@@ -33,7 +33,7 @@ interface Level {
 
 interface ConstructorArgs {
   data: HeaderData | {};
-  config: HeaderConfig;
+  config?: HeaderConfig;
   api: API;
   readOnly: boolean;
 }
@@ -45,7 +45,7 @@ export default class Header {
   private _data: HeaderData;
   private _element: HTMLHeadingElement;
 
-  constructor({ data, config, api, readOnly }: ConstructorArgs) {
+  constructor({ data, config = {}, api, readOnly }: ConstructorArgs) {
     this.api = api;
     this.readOnly = readOnly;
     this._settings = config;
