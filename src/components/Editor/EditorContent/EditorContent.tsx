@@ -24,24 +24,24 @@ const EditorContent = memo(({ onChange }: EditorContentProps) => {
 
   useEffect(() => {
     if (!editorInstanceRef.current) {
-      const editorInstance = new EditorJS({
+      const editor = new EditorJS({
         holder: "editorjs",
         autofocus: true,
         tools: EDITOR_JS_TOOLS,
-        onReady: () => {
-          new Undo({ editor: editorInstance });
-          new DragDrop(editorInstance);
-          setEditor(editorInstance);
+        async onChange(api, event) {
+          const content = await editor.save();
+          onChange?.(content);
         },
-        onChange: async (api, event) => {
-          const savedData = await editorInstance.save();
-          onChange?.(savedData); // ← 여기서 전달
+        onReady: () => {
+          new Undo({ editor });
+          new DragDrop(editor);
+          setEditor(editor);
         },
       });
 
-      editorInstanceRef.current = editorInstance;
+      editorInstanceRef.current = editor;
     }
-  }, [onChange]);
+  }, []);
 
   return (
     <S.EditorContentContainer id="editorjs" style={{ cursor: "pointer" }} />
