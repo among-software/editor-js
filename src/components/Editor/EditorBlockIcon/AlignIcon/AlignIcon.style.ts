@@ -1,5 +1,7 @@
 // ✅ AlignIcon.style.ts
 import styled from "styled-components";
+import justifyIcon from "@/assets/icons/justify.svg";
+import justifyHoverIcon from "@/assets/icons/justify-hover.svg";
 
 export const AlignIcon = styled.div<{
   $align: "left" | "center" | "right" | "justify";
@@ -24,7 +26,7 @@ export const AlignIcon = styled.div<{
 
   background-image: ${({ $align }) => {
     if ($align === "justify") {
-      return "url('/assets/icons/justify.svg')";
+      return `url(${justifyIcon})`;
     }
     return "url('https://t1.daumcdn.net/brunch/static/img/help/pc/editor/btn_side.v2.png')";
   }};
@@ -34,7 +36,7 @@ export const AlignIcon = styled.div<{
   &:hover {
     background-image: ${({ $align }) => {
       if ($align === "justify") {
-        return "url('/assets/icons/justify-hover.svg')";
+        return `url(${justifyHoverIcon})`;
       }
       return undefined;
     }};

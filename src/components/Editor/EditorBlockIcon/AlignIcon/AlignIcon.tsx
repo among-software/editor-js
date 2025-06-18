@@ -5,12 +5,8 @@ import useEditorStore from "store/useEditorStore";
 const alignValues = ["left", "center", "right", "justify"] as const;
 type AlignValue = (typeof alignValues)[number];
 
-/**
- * 텍스트 정렬을 위한 아이콘 컴포넌트
- * 클릭 시 현재 선택된 블록의 정렬 상태를 순환 변경함
- */
 export default function AlignIcon() {
-  const { editor, setAlign } = useEditorStore();
+  const { editor, align, setAlign } = useEditorStore();
 
   const getNextAlign = (current: AlignValue): AlignValue => {
     const index = alignValues.indexOf(current);
@@ -37,16 +33,9 @@ export default function AlignIcon() {
       blockElement.style.textAlign = nextAlign;
     }
 
-    // ✅ selection 복원
     editor.caret.setToBlock(blockIndex, "end");
-
     setAlign(nextAlign);
   };
 
-  return (
-    <S.AlignIcon
-      $align={useEditorStore.getState().align}
-      onClick={handleToggleAlign}
-    />
-  );
+  return <S.AlignIcon $align={align} onClick={handleToggleAlign} />;
 }
