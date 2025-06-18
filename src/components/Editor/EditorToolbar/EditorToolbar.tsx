@@ -114,9 +114,9 @@ export default function EditorToolbar({ toolbarTop, onUpload }: Props) {
         <EmojiIcon handleBlockIndex={handleBlockIndex} />
         <LineIcon handleBlockIndex={handleBlockIndex} />
         <AlignIcon />
-        <S.TitleSaveWrapper id="save-btn" onClick={onClickSave}>
+        {/* <S.TitleSaveWrapper id="save-btn" onClick={onClickSave}>
           저장
-        </S.TitleSaveWrapper>
+        </S.TitleSaveWrapper> */}
       </FixedToolbar>
     </>
   );
