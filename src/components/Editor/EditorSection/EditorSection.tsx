@@ -14,7 +14,7 @@ interface EditorSectionProps {
  */
 export default function EditorSection({ onUpload }: EditorSectionProps) {
   const editorSectionRef = useRef<HTMLDivElement>(null);
-  const [toolbarTop, setToolbarTop] = useState(487);
+  const [toolbarTop, setToolbarTop] = useState(0);
 
   useEffect(() => {
     /**

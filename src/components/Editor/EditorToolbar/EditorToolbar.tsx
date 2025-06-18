@@ -80,7 +80,7 @@ export default function EditorToolbar({ toolbarTop, onUpload }: Props) {
         </EditorToolModal>
       )}
 
-      <FixedToolbar position={{ top: toolbarTop, right: 15 }}>
+      <FixedToolbar position={{ top: toolbarTop, right: 0 }}>
         <ImageIcon
           handleBlockIndex={handleBlockIndex}
           addBlock={addBlock}
@@ -101,7 +101,7 @@ export default function EditorToolbar({ toolbarTop, onUpload }: Props) {
           addBlock={addBlock}
           onUpload={onUpload}
         />
-        <PlaceIcon handleBlockIndex={handleBlockIndex} />
+        {/* <PlaceIcon handleBlockIndex={handleBlockIndex} /> */}
         <EmojiIcon handleBlockIndex={handleBlockIndex} />
         <LineIcon handleBlockIndex={handleBlockIndex} />
         <AlignIcon />
