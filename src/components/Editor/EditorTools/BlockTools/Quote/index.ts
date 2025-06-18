@@ -42,7 +42,7 @@ export default class Quote implements BlockTool {
   private _block: BlockAPI;
   private _data: QuoteData;
   private _CSS: QuoteCSS;
-  private _quoteElement: HTMLElement; // 인용구 블록을 참조할 수 있도록 인스턴스 변수 추가
+  private _quoteElement!: HTMLElement; // 인용구 블록을 참조할 수 있도록 인스턴스 변수 추가
 
   constructor({ data, config, api, readOnly, block }: QuoteParams) {
     const { DEFAULT_TYPE } = Quote;
@@ -216,7 +216,7 @@ export default class Quote implements BlockTool {
 
   renderSettings(): HTMLElement | MenuConfig {
     return this.settings.map((item) => ({
-      icon: null, // 아이콘이 필요 없으므로 null로 설정
+      icon: undefined, // 아이콘이 필요 없으므로 null로 설정
       label: this.api.i18n.t(item.label),
       onActivate: () => this._toggleTune(item.name),
       isActive: this._data.type === item.name,

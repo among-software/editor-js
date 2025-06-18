@@ -31,7 +31,7 @@ export interface ParagraphData {
 interface ParagraphParams {
   data: ParagraphData;
 
-  config: ParagraphConfig;
+  config?: ParagraphConfig;
 
   api: API;
 
@@ -63,7 +63,7 @@ export default class Paragraph {
 
   private _preserveBlank: boolean;
 
-  constructor({ data, config, api, readOnly }: ParagraphParams) {
+  constructor({ data, config = {}, api, readOnly }: ParagraphParams) {
     this.api = api;
     this.readOnly = readOnly;
 

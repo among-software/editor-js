@@ -180,9 +180,11 @@ export default class List {
       newTag.appendChild(this._elements.wrapper.firstChild!);
     }
 
-    this._elements.wrapper.replaceWith(newTag);
-    this._elements.wrapper = newTag;
-    this._data.style = style;
+    if (this._elements.wrapper) {
+      this._elements.wrapper.replaceWith(newTag);
+      this._elements.wrapper = newTag;
+      this._data.style = style;
+    }
   }
 
   get CSS() {
@@ -243,7 +245,7 @@ export default class List {
     }
 
     for (const attrName in attributes) {
-      el[attrName] = attributes[attrName];
+      el.setAttribute(attrName, attributes[attrName]);
     }
 
     return el;

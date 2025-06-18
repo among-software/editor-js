@@ -20,7 +20,7 @@ export default class ColorPicker implements InlineTool {
   private iconClasses: { base: string; active: string };
   private colors: string[] = [];
   private range: Range | null = null;
-  private currentColor: string | "transparent";
+  private currentColor: string | "transparent" = "transparent";
 
   public constructor(options: InlineToolConstructorOptions) {
     this.api = options.api;

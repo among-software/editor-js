@@ -312,7 +312,11 @@ export default class UnifiedImage implements BlockTool {
         break;
     }
 
-    targetItem.dataset.dropType = dropType;
+    if (dropType !== null) {
+      targetItem.dataset.dropType = dropType;
+    } else {
+      delete targetItem.dataset.dropType;
+    }
   }
 
   private getDropType(
@@ -491,24 +495,31 @@ export default class UnifiedImage implements BlockTool {
     blockIndex: number,
     dropPosition: number
   ): Promise<void> {
-    const sourceImages = [...UnifiedImage.sourceInstance.data.images];
+    const sourceImages = [...(UnifiedImage.sourceInstance?.data.images ?? [])];
     const targetImages = [...this.data.images];
 
     if (targetImages.length < 3) {
       sourceImages.splice(UnifiedImage.sourceIndex!, 1);
-      UnifiedImage.sourceInstance.data.images = sourceImages;
+      UnifiedImage.sourceInstance?.data &&
+        (UnifiedImage.sourceInstance.data.images = sourceImages);
 
       targetImages.splice(dropPosition, 0, UnifiedImage.draggedImage);
       this.data.images = targetImages;
 
-      await this.api.blocks.update(sourceBlock.id, {
-        ...UnifiedImage.sourceInstance.data,
-      });
+      if (UnifiedImage.sourceInstance) {
+        await this.api.blocks.update(sourceBlock.id, {
+          ...UnifiedImage.sourceInstance.data,
+        });
+      }
       const currentBlock = this.api.blocks.getBlockByIndex(
         this.api.blocks.getCurrentBlockIndex()
       );
-      await this.api.blocks.update(currentBlock.id, this.data);
 
+      if (currentBlock) {
+        await this.api.blocks.update(currentBlock.id, this.data);
+      } else {
+        console.warn("⚠️ currentBlock is undefined; update skipped.");
+      }
       if (sourceImages.length === 0) {
         this.api.blocks.delete(blockIndex);
       }
@@ -605,12 +616,16 @@ export default class UnifiedImage implements BlockTool {
       images.splice(dropIndex, 0, UnifiedImage.draggedImage);
       this.data.images = images;
 
-      const sourceImages = [...UnifiedImage.sourceInstance.data.images];
+      const sourceImages = [
+        ...(UnifiedImage.sourceInstance?.data.images ?? []),
+      ];
+
       sourceImages.splice(UnifiedImage.sourceIndex!, 1);
-      UnifiedImage.sourceInstance.data.images = sourceImages;
+      UnifiedImage.sourceInstance?.data &&
+        (UnifiedImage.sourceInstance.data.images = sourceImages);
 
       this.updateBlocks();
-      UnifiedImage.sourceInstance.updateView();
+      UnifiedImage.sourceInstance?.updateView();
       this.updateView();
     }
   }
@@ -630,12 +645,17 @@ export default class UnifiedImage implements BlockTool {
     const sourceBlock = this.api.blocks.getBlockByIndex(
       this.api.blocks.getCurrentBlockIndex() - 1
     );
-    this.api.blocks.update(sourceBlock.id, UnifiedImage.sourceInstance.data);
+
+    if (sourceBlock && UnifiedImage.sourceInstance) {
+      this.api.blocks.update(sourceBlock.id, UnifiedImage.sourceInstance.data);
+    }
 
     const currentBlock = this.api.blocks.getBlockByIndex(
       this.api.blocks.getCurrentBlockIndex()
     );
-    this.api.blocks.update(currentBlock.id, this.data);
+    if (currentBlock) {
+      this.api.blocks.update(currentBlock.id, this.data);
+    }
   }
 
   updateView(): void {

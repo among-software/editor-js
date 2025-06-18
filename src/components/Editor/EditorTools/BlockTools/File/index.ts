@@ -10,7 +10,7 @@ import {
 } from "@editorjs/editorjs";
 
 export default class File implements BlockTool {
-  tunes: { align: "left" | "center" | "right" };
+  tunes: { align: "left" | "center" | "right" | "justify" } = { align: "left" };
   static get isReadOnlySupported(): boolean {
     return true;
   }
@@ -53,6 +53,8 @@ export default class File implements BlockTool {
       ...data,
       align: align,
     };
+
+    this.tunes.align = align || "left";
 
     this._element = this.drawView();
   }
