@@ -5,9 +5,10 @@ import DragDrop from "editorjs-drag-drop";
 import Undo from "editorjs-undo";
 import { EDITOR_JS_TOOLS } from "../../../constants/editorTools";
 import useEditorStore from "../../../store/useEditorStore";
+import { convertEditorDataToHtml } from "../../../utils/editorToHtml"; // ✅ 추가
 
 interface EditorContentProps {
-  onChange?: (data: any) => void;
+  onChange?: (data: { raw: any; html: string }) => void; // ✅ 수정
 }
 
 /**
@@ -34,8 +35,9 @@ const EditorContent = memo(({ onChange }: EditorContentProps) => {
           console.log("📝 EditorJS: change detected");
           try {
             const data = await editorInstance.save();
+            const html = convertEditorDataToHtml(data); // ✅ HTML 변환
             console.log("✅ Saved editor data:", data);
-            onChange?.(data);
+            onChange?.({ raw: data, html }); // ✅ HTML과 원본 JSON 동시 전달
           } catch (error) {
             console.error("❌ Failed to save editor data:", error);
           }
