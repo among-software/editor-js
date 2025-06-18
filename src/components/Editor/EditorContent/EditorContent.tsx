@@ -37,6 +37,7 @@ const EditorContent = memo(({ onChange }: EditorContentProps) => {
             const data = await editorInstance.save();
             const html = convertEditorDataToHtml(data); // ✅ HTML 변환
             console.log("✅ Saved editor data:", data);
+            console.log("✅ Saved html data:", html);
             onChange?.({ raw: data, html }); // ✅ HTML과 원본 JSON 동시 전달
           } catch (error) {
             console.error("❌ Failed to save editor data:", error);

@@ -38304,7 +38304,7 @@ const Kp = Ta(({ onChange: t }) => {
           console.log("📝 EditorJS: change detected");
           try {
             const s = await i.save(), n = Vp(s);
-            console.log("✅ Saved editor data:", s), t == null || t({ raw: s, html: n });
+            console.log("✅ Saved editor data:", s), console.log("✅ Saved html data:", n), t == null || t({ raw: s, html: n });
           } catch (s) {
             console.error("❌ Failed to save editor data:", s);
           }
