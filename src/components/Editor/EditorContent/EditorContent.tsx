@@ -33,22 +33,15 @@ const EditorContent = memo(({ onChange }: EditorContentProps) => {
           new DragDrop(editorInstance);
           setEditor(editorInstance);
         },
-        onChange: async () => {
-          if (onChange) {
-            const content = await editorInstance.save();
-            onChange(content);
-          }
+        onChange: async (api, event) => {
+          const savedData = await editorInstance.save();
+          onChange?.(savedData); // ← 여기서 전달
         },
       });
 
       editorInstanceRef.current = editorInstance;
     }
-
-    return () => {
-      editorInstanceRef.current?.destroy?.();
-      editorInstanceRef.current = null;
-    };
-  }, []);
+  }, [onChange]);
 
   return (
     <S.EditorContentContainer id="editorjs" style={{ cursor: "pointer" }} />
