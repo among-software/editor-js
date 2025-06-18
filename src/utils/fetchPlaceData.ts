@@ -1,6 +1,7 @@
-import { KakaoAddressData, PlaceSearchResult } from "@/types/kakao.types";
+import { KakaoAddressData, PlaceSearchResult } from "../types/api/kakao.types";
 
-const REST_API_KEY = import.meta.env.VITE_KAKAO_REST_API_KEY;
+// const REST_API_KEY = import.meta.env.VITE_KAKAO_REST_API_KEY;
+const REST_API_KEY = "test";
 
 /**
  * 카카오 로컬 API를 사용하여 장소 검색 결과를 가져오는 유틸리티 함수

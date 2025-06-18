@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { COMMON_THEME } from "styles/Theme";
+import { COMMON_THEME } from "../../../../styles/Theme";
 
 export const FontColorTooltipWrapper = styled.div`
   display: flex;

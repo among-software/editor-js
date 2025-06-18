@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { COMMON_THEME } from "styles/Theme";
+import { COMMON_THEME } from "../../../../styles/Theme";
 
 export const PlaceModalWrapper = styled.div`
   width: 358px;

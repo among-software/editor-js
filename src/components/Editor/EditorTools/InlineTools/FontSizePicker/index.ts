@@ -2,7 +2,7 @@ export default class FontSizePicker {
   static isInline = true;
   static title = "FontSize";
   static sanitize = {
-    span: (el) => ({
+    span: (el: HTMLElement) => ({
       style: el.getAttribute("style") || "",
     }),
   };

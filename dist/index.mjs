@@ -24432,7 +24432,7 @@ const jl = G.div`
 `, Dl = G.p`
   font-size: 14px;
   color: ${Me.medium_gray};
-`, Rl = void 0, $l = async (t) => {
+`, Rl = "test", $l = async (t) => {
   if (!t)
     return [];
   try {
@@ -24525,7 +24525,7 @@ function ql({ top: t, children: e }) {
     () => {
       i();
     },
-    (n) => o && n.classList.contains("modal-active-icon")
+    (n) => !!(o && n.classList.contains("modal-active-icon"))
   );
   return /* @__PURE__ */ R.jsx(zl, { $top: t, ref: s, children: e });
 }

@@ -25,7 +25,9 @@ export default function EditorToolModal({ top, children }: Props) {
       closeModal();
     },
     (element) => {
-      return activeModal && element.classList.contains("modal-active-icon");
+      return Boolean(
+        activeModal && element.classList.contains("modal-active-icon")
+      );
     }
   );
 
