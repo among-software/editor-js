@@ -42,7 +42,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "build": "tsc && rollup -c && tsc-alias",
+    "roll-build": "tsc && rollup -c && tsc-alias",
     "serve": "vite preview"
   },
   "eslintConfig": {
