@@ -9,8 +9,8 @@ import {
   Quote,
   UnifiedImage,
   Video,
-} from "@/components/Editor/EditorTools/BlockTools/index";
-import FontSizePicker from "@/components/Editor/EditorTools/InlineTools/FontSizePicker";
+} from "../components/Editor/EditorTools/BlockTools/index";
+import FontSizePicker from "../components/Editor/EditorTools/InlineTools/FontSizePicker";
 
 import {
   FontPicker,
@@ -18,7 +18,7 @@ import {
   TextBackgroundColor,
   TextColor,
   Underline,
-} from "@/components/Editor/EditorTools/InlineTools/index";
+} from "../components/Editor/EditorTools/InlineTools/index";
 
 /**
  * Editor.js에서 사용되는 도구들의 설정 객체

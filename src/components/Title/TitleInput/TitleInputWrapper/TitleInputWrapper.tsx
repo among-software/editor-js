@@ -1,6 +1,6 @@
 import * as S from "./TitleInputWrapper.style";
-import TitleTextInput from "@/components/Title/TitleInput/TitleTextInput/TitleTextInput";
-import SubtitleTextInput from "@/components/Title/TitleInput/SubtitleTextInput/SubtitleTextInput";
+import TitleTextInput from "../../../../components/Title/TitleInput/TitleTextInput/TitleTextInput";
+import SubtitleTextInput from "../../../../components/Title/TitleInput/SubtitleTextInput/SubtitleTextInput";
 
 import useTitleStore from "@/store/useTitleStore";
 

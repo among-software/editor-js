@@ -15,7 +15,7 @@ import type {
   ToolConfig,
   ToolboxConfig,
 } from "@editorjs/editorjs";
-import useEditorStore from "@/store/useEditorStore";
+import useEditorStore from "../../../../../store/useEditorStore";
 
 export interface ParagraphConfig extends ToolConfig {
   placeholder?: string;
@@ -25,7 +25,7 @@ export interface ParagraphConfig extends ToolConfig {
 
 export interface ParagraphData {
   text: string;
-  align: "left" | "center";
+  align: "left" | "center" | "right" | "justify";
 }
 
 interface ParagraphParams {

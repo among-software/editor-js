@@ -1,7 +1,7 @@
 // ✅ AlignIcon.style.ts
 import styled from "styled-components";
-import justifyIcon from "@/assets/icons/justify.svg";
-import justifyHoverIcon from "@/assets/icons/justify-hover.svg";
+import justifyIcon from "../../../../assets/icons/justify.svg";
+import justifyHoverIcon from "../../../../assets/icons/justify-hover.svg";
 
 export const AlignIcon = styled.div<{
   $align: "left" | "center" | "right" | "justify";

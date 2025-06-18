@@ -3,8 +3,8 @@ import * as S from "./EditorContent.style";
 import EditorJS from "@editorjs/editorjs";
 import DragDrop from "editorjs-drag-drop";
 import Undo from "editorjs-undo";
-import { EDITOR_JS_TOOLS } from "@/constants/editorTools";
-import useEditorStore from "@/store/useEditorStore";
+import { EDITOR_JS_TOOLS } from "../../../constants/editorTools";
+import useEditorStore from "../../../store/useEditorStore";
 
 /**
  * Editor.js를 초기화하고 관리하는 컴포넌트

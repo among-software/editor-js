@@ -1,4 +1,4 @@
-import { Line } from "@/types/components/line.types";
+import { Line } from "../../../../types/components/line.types";
 
 export const LineData: Line[] = [
   {

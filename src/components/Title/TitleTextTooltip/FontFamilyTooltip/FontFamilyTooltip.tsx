@@ -1,6 +1,6 @@
 import { useState } from "react";
 import * as S from "./FontFamilyTooltip.style";
-import { FONT_OPTIONS, FontType } from "@/types/common/font.types";
+import { FONT_OPTIONS, FontType } from "../../../../types/common/font.types";
 
 interface FontFamilyTooltipProps {
   selectedFont: FontType;

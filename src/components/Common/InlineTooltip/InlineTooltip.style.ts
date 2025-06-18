@@ -1,5 +1,5 @@
 import styled, { keyframes } from "styled-components";
-import { COMMON_THEME } from "styles/Theme";
+import { COMMON_THEME } from "../../../styles/Theme";
 
 const slideDown = keyframes`
   0% {

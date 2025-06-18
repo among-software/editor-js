@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { EditorStore } from "@/types/store/editor.types";
+import { EditorStore } from "../types/store/editor.types";
 
 const useEditorStore = create<EditorStore>((set) => ({
   editor: null,

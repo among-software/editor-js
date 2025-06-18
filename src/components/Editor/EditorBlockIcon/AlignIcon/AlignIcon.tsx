@@ -1,6 +1,6 @@
 // ✅ AlignIcon.tsx
 import * as S from "./AlignIcon.style";
-import useEditorStore from "store/useEditorStore";
+import useEditorStore from "../../../../store/useEditorStore";
 
 const alignValues = ["left", "center", "right", "justify"] as const;
 type AlignValue = (typeof alignValues)[number];

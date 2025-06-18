@@ -1,6 +1,6 @@
 import { ChangeEvent, useRef } from "react";
 import * as S from "./GroupImageIcon.style";
-import { UploadHandler } from "@/types/upload";
+import { UploadHandler } from "../../../../types/upload";
 
 interface GroupImageIconProps {
   addBlock: (type: string, data: object) => void;
@@ -83,8 +83,8 @@ export default function GroupImageIcon({
     <S.GroupImageIconWrapper>
       <S.GroupImageIcon onClick={handleIconClick} />
       <input
-        type='file'
-        accept='image/*'
+        type="file"
+        accept="image/*"
         ref={fileInputRef}
         onChange={handleFileChange}
         multiple

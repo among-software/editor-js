@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import * as S from "./EditorSection.style";
-import EditorToolbar from "@/components/Editor/EditorToolbar/EditorToolbar";
-import EditorContent from "@/components/Editor/EditorContent/EditorContent";
-import { UploadHandler } from "@/types/upload";
+import EditorToolbar from "../../../components/Editor/EditorToolbar/EditorToolbar";
+import EditorContent from "../../../components/Editor/EditorContent/EditorContent";
+import { UploadHandler } from "../../../types/upload";
 
 interface EditorSectionProps {
   onUpload?: UploadHandler;

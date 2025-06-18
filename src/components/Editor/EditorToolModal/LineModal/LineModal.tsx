@@ -1,7 +1,7 @@
 import * as S from "./LineModal.style";
-import useEditorStore from "@/store/useEditorStore";
+import useEditorStore from "../../../../store/useEditorStore";
 import { LineData } from "./LineData";
-import { Line } from "@/types/components/line.types";
+import { Line } from "../../../../types/components/line.types";
 
 interface LineIconProps {
   addBlock: (type: string, data: object) => void;

@@ -1,6 +1,6 @@
 import { ChangeEvent, useRef } from "react";
 import * as S from "./FileIcon.style";
-import { UploadHandler } from "@/types/upload";
+import { UploadHandler } from "../../../../types/upload";
 
 interface FileIconProps {
   addBlock: (type: string, data: object) => void;
@@ -58,7 +58,7 @@ export default function FileIcon({
     <>
       <S.FileIcon onClick={handleIconClick} />
       <S.FileInput
-        type='file'
+        type="file"
         ref={fileInputRef}
         onChange={handleFileChange}
         style={{ display: "none" }}

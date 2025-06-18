@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import * as S from "./EmojiModal.style";
-import useEditorStore from "@/store/useEditorStore";
-import emojiData from "@/assets/data/emoji.json";
-import { Emoji } from "@/types/components/emoji.types";
+import useEditorStore from "../../../../store/useEditorStore";
+import emojiData from "../../../../assets/data/emoji.json";
+import { Emoji } from "../../../../types/components/emoji.types";
 
 interface EmojiIconProps {
   addBlock: (type: string, data: object) => void;

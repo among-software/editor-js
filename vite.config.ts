@@ -3,7 +3,7 @@ import react from "@vitejs/plugin-react";
 import path from "path";
 import { injectFontsToHead } from "./src/utils/fontPreload";
 import { createHtmlPlugin } from "vite-plugin-html";
-import tsconfigPaths from "vite-tsconfig-paths";
+import svgr from "vite-plugin-svgr";
 
 export default defineConfig({
   plugins: [
@@ -14,7 +14,7 @@ export default defineConfig({
         tags: injectFontsToHead,
       },
     }),
-    tsconfigPaths(),
+    svgr(),
   ],
   publicDir: "public",
   base: "/",

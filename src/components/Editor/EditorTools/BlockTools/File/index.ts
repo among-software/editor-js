@@ -1,4 +1,4 @@
-import useEditorStore from "store/useEditorStore";
+import useEditorStore from "../../../../../store/useEditorStore";
 import "./index.css";
 import {
   API,

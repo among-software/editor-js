@@ -1,10 +1,10 @@
 import * as S from "./TitleSection.style";
-import TitleToolbar from "@/components/Title/TitleToolbar/TitleToolbar";
-import TitleInputWrapper from "@/components/Title/TitleInput/TitleInputWrapper/TitleInputWrapper";
-import TitleCoverColorSwiper from "@/components/Title/TitleTools/TitleCoverColor/TitleCoverColorSwiper/TitleCoverColorSwiper";
+import TitleToolbar from "../../../components/Title/TitleToolbar/TitleToolbar";
+import TitleInputWrapper from "../../../components/Title/TitleInput/TitleInputWrapper/TitleInputWrapper";
+import TitleCoverColorSwiper from "../../../components/Title/TitleTools/TitleCoverColor/TitleCoverColorSwiper/TitleCoverColorSwiper";
 
-import useTitleStore from "@/store/useTitleStore";
-import useEditorStore from "@/store/useEditorStore";
+import useTitleStore from "../../../store/useTitleStore";
+import useEditorStore from "../../../store/useEditorStore";
 
 /**
  * 글의 제목 섹션을 담당하는 컴포넌트
@@ -58,7 +58,7 @@ export default function TitleSection() {
       {/* 상단 메뉴바 및 저장 버튼 */}
       <S.TitleTopWrapper>
         <S.TitleMenuWrapper> </S.TitleMenuWrapper>
-        <S.TitleSaveWrapper id='save-btn' onClick={onClickSave}>
+        <S.TitleSaveWrapper id="save-btn" onClick={onClickSave}>
           저장
         </S.TitleSaveWrapper>
       </S.TitleTopWrapper>

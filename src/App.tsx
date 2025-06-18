@@ -1,4 +1,4 @@
-import EditorSection from "@/components/Editor/EditorSection/EditorSection";
+import EditorSection from "./components/Editor/EditorSection/EditorSection";
 // import TitleSection from "@/components/Title/TitleSection/TitleSection";
 
 function App() {

@@ -7,18 +7,18 @@ import {
   LineIcon,
   PlaceIcon,
   VideoIcon,
-} from "@/components/Editor/EditorBlockIcon/index";
+} from "../../../components/Editor/EditorBlockIcon/index";
 
 import {
   EditorToolModal,
   PlaceModal,
   EmojiModal,
   LineModal,
-} from "@/components/Editor/EditorToolModal/index";
+} from "../../../components/Editor/EditorToolModal/index";
 
-import FixedToolbar from "@/components/Common/FixedToolbar/FixedToolbar";
-import useEditorStore from "@/store/useEditorStore";
-import { UploadHandler } from "@/types/upload";
+import FixedToolbar from "../../../components/Common/FixedToolbar/FixedToolbar";
+import useEditorStore from "../../../store/useEditorStore";
+import { UploadHandler } from "../../../types/upload";
 
 interface Props {
   toolbarTop: number;

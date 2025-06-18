@@ -1,4 +1,4 @@
-import { TitleStore } from "@/types/store/title.types";
+import { TitleStore } from "../types/store/title.types";
 import { create } from "zustand";
 
 /**

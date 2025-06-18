@@ -1,15 +1,15 @@
 import { MouseEvent, useRef, useState } from "react";
 import * as S from "./TitleTextInput.style";
-import ContentEditable from "@/components/Common/ContentEditable/ContentEditable";
-import InlineTooltip from "@/components/Common/InlineTooltip/InlineTooltip";
+import ContentEditable from "../../../../components/Common/ContentEditable/ContentEditable";
+import InlineTooltip from "../../../../components/Common/InlineTooltip/InlineTooltip";
 
-import FontFamilyTooltip from "@/components/Title/TitleTextTooltip/FontFamilyTooltip/FontFamilyTooltip";
-import FontColorTooltip from "@/components/Title/TitleTextTooltip/FontColorTooltip/FontColorTooltip";
+import FontFamilyTooltip from "../../../../components/Title/TitleTextTooltip/FontFamilyTooltip/FontFamilyTooltip";
+import FontColorTooltip from "../../../../components/Title/TitleTextTooltip/FontColorTooltip/FontColorTooltip";
 
-import { COMMON_THEME } from "@/styles/Theme";
-import { FontType } from "@/types/common/font.types";
+import { COMMON_THEME } from "../../../../styles/Theme";
+import { FontType } from "../../../../types/common/font.types";
 
-import useTitleStore from "@/store/useTitleStore";
+import useTitleStore from "../../../../store/useTitleStore";
 
 /**
  * 제목 텍스트 입력 컴포넌트
