@@ -1,4 +1,10 @@
 // src/index.ts
-export { default as EditorSection } from "./src/components/Editor/EditorSection/EditorSection";
+import EditorSection from "./src/components/Editor/EditorSection/EditorSection";
+import useEditorStore from "./src/store/useEditorStore";
+
 export type { UploadHandler, UploadFile } from "./src/types/upload";
-export { default as useEditorStore } from "./src/store/useEditorStore";
+
+export default {
+  EditorSection,
+  useEditorStore,
+};

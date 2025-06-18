@@ -29,6 +29,7 @@
 
     // ✅ 라이브러리 빌드 관련 설정
     "outDir": "dist",
+    "rootDir": "src",
     "declaration": true,
     "declarationDir": "dist/types",
     "emitDeclarationOnly": false,

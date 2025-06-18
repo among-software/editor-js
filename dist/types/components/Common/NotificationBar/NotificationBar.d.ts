@@ -1,0 +1,17 @@
+import { ReactNode } from "react";
+interface Props {
+    children: ReactNode;
+    isVisible: boolean;
+}
+/**
+ * 알림 메시지를 표시하는 공통 컴포넌트
+ *
+ * @example
+ * ```tsx
+ * <NotificationBar isVisible={showAlert}>
+ *   최대 글자수를 초과했습니다.
+ * </NotificationBar>
+ * ```
+ */
+export default function NotificationBar({ children, isVisible }: Props): import("react/jsx-runtime").JSX.Element;
+export {};

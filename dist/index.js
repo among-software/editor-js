@@ -41192,5 +41192,11 @@ function EditorSection({ onUpload, width, onChange, }) {
     return (jsxRuntimeExports.jsxs(EditorSectionContainer, { ref: editorSectionRef, "$width": width, children: [jsxRuntimeExports.jsx(EditorContent, { onChange: onChange }), jsxRuntimeExports.jsx(EditorToolbar, { toolbarTop: toolbarTop, onUpload: onUpload })] }));
 }
 
-export { EditorSection, useEditorStore };
+// src/index.ts
+var index = {
+    EditorSection,
+    useEditorStore,
+};
+
+export { index as default };
 //# sourceMappingURL=index.js.map
