@@ -6,6 +6,7 @@ const alignValues = ["left", "center", "right", "justify"] as const;
 type AlignValue = (typeof alignValues)[number];
 
 export default function AlignIcon() {
+  console.log("");
   const { editor, align, setAlign } = useEditorStore();
 
   const getNextAlign = (current: AlignValue): AlignValue => {

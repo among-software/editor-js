@@ -1810,6 +1810,7 @@ const gn = (t) => {
   setCurrentBlockIndex: (e) => t({ currentBlockIndex: e })
 })), Gi = ["left", "center", "right", "justify"];
 function Yc() {
+  console.log("");
   const { editor: t, align: e, setAlign: o } = Ce(), i = (n) => {
     const a = (Gi.indexOf(n) + 1) % Gi.length;
     return Gi[a];
