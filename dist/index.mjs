@@ -38290,50 +38290,53 @@ function Vp(t) {
   const e = Wp.parse(t);
   return Array.isArray(e) ? e.join("") : e;
 }
-const Kp = Ta(({ onChange: t }) => {
-  const { setEditor: e } = Ce(), o = to(null);
+const Kp = Ta(({ value: t, onChange: e }) => {
+  const { setEditor: o } = Ce(), i = to(null);
   return Zo(() => {
-    if (!o.current) {
-      const i = new ig({
+    if (!i.current) {
+      const s = new ig({
         holder: "editorjs",
         autofocus: !0,
         tools: Hp,
+        data: t || void 0,
+        // ✅ 초기값 적용
         onReady: () => {
-          console.log("✅ Editor is ready"), new rg({ editor: i }), new sg(i), e(i);
+          console.log("✅ Editor is ready"), new rg({ editor: s }), new sg(s), o(s);
         },
         onChange: async () => {
-          console.log("📝 EditorJS: change detected");
           try {
-            const s = await i.save(), n = Vp(s);
-            console.log("✅ Saved editor data:", s), console.log("✅ Saved html data:", n), t == null || t({ raw: s, html: n });
-          } catch (s) {
-            console.error("❌ Failed to save editor data:", s);
+            const n = await s.save(), r = Vp(n);
+            e == null || e({ raw: n, html: r });
+          } catch (n) {
+            console.error("❌ Failed to save editor data:", n);
           }
         }
       });
-      o.current = i;
+      i.current = s;
     }
-  }, [t]), /* @__PURE__ */ $.jsx(Yl, { id: "editorjs", style: { cursor: "pointer" } });
+  }, [t, e]), /* @__PURE__ */ $.jsx(Yl, { id: "editorjs", style: { cursor: "pointer" } });
 });
 function Yp({
-  onUpload: t,
-  width: e,
-  onChange: o
+  value: t,
+  onUpload: e,
+  width: o,
+  onChange: i
 }) {
-  const i = to(null), [s, n] = Go(0), { editor: r } = Ce();
+  const s = to(null), [n, r] = Go(0), { editor: a } = Ce();
   return Zo(() => {
-    const a = () => {
-      if (i.current) {
-        const c = i.current.getBoundingClientRect();
-        c.top > 0 && n(c.top + 40), c.top <= 0 && n(40);
+    const c = () => {
+      if (s.current) {
+        const l = s.current.getBoundingClientRect();
+        l.top > 0 && r(l.top + 40), l.top <= 0 && r(40);
       }
     };
-    return window.addEventListener("scroll", a), () => {
-      window.removeEventListener("scroll", a);
+    return window.addEventListener("scroll", c), () => {
+      window.removeEventListener("scroll", c);
     };
-  }, []), /* @__PURE__ */ $.jsxs($c, { ref: i, $width: e, children: [
-    /* @__PURE__ */ $.jsx(Kp, { onChange: o }),
-    /* @__PURE__ */ $.jsx(Kl, { toolbarTop: s, onUpload: t })
+  }, []), /* @__PURE__ */ $.jsxs($c, { ref: s, $width: o, children: [
+    /* @__PURE__ */ $.jsx(Kp, { value: t, onChange: i }),
+    " ",
+    /* @__PURE__ */ $.jsx(Kl, { toolbarTop: n, onUpload: e })
   ] });
 }
 const Xp = {

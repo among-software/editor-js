@@ -5,17 +5,14 @@ import DragDrop from "editorjs-drag-drop";
 import Undo from "editorjs-undo";
 import { EDITOR_JS_TOOLS } from "../../../constants/editorTools";
 import useEditorStore from "../../../store/useEditorStore";
-import { convertEditorDataToHtml } from "../../../utils/editorToHtml"; // ✅ 추가
+import { convertEditorDataToHtml } from "../../../utils/editorToHtml";
 
 interface EditorContentProps {
-  onChange?: (data: { raw: any; html: string }) => void; // ✅ 수정
+  value?: any; // ✅ 초기 데이터 추가
+  onChange?: (data: { raw: any; html: string }) => void;
 }
 
-/**
- * Editor.js를 초기화하고 관리하는 컴포넌트
- * 드래그&드롭, 실행취소 기능을 포함한 에디터 인스턴스를 생성
- */
-const EditorContent = memo(({ onChange }: EditorContentProps) => {
+const EditorContent = memo(({ value, onChange }: EditorContentProps) => {
   const { setEditor } = useEditorStore();
   const editorInstanceRef = useRef<EditorJS | null>(null);
 
@@ -25,6 +22,7 @@ const EditorContent = memo(({ onChange }: EditorContentProps) => {
         holder: "editorjs",
         autofocus: true,
         tools: EDITOR_JS_TOOLS,
+        data: value || undefined, // ✅ 초기값 적용
         onReady: () => {
           console.log("✅ Editor is ready");
           new Undo({ editor: editorInstance });
@@ -32,13 +30,10 @@ const EditorContent = memo(({ onChange }: EditorContentProps) => {
           setEditor(editorInstance);
         },
         onChange: async () => {
-          console.log("📝 EditorJS: change detected");
           try {
             const data = await editorInstance.save();
-            const html = convertEditorDataToHtml(data); // ✅ HTML 변환
-            console.log("✅ Saved editor data:", data);
-            console.log("✅ Saved html data:", html);
-            onChange?.({ raw: data, html }); // ✅ HTML과 원본 JSON 동시 전달
+            const html = convertEditorDataToHtml(data);
+            onChange?.({ raw: data, html });
           } catch (error) {
             console.error("❌ Failed to save editor data:", error);
           }
@@ -47,7 +42,7 @@ const EditorContent = memo(({ onChange }: EditorContentProps) => {
 
       editorInstanceRef.current = editorInstance;
     }
-  }, [onChange]);
+  }, [value, onChange]); // ✅ value도 의존성에 포함
 
   return (
     <S.EditorContentContainer id="editorjs" style={{ cursor: "pointer" }} />
