@@ -36347,7 +36347,14 @@ class Gt {
     return e.classList.add(this._CSS.wrapper, this._CSS.block), e.contentEditable = "false", e.dataset.placeholderActive = this.api.i18n.t(this._placeholder), this._data.text && (e.innerHTML = this._data.text), this.readOnly || (e.contentEditable = "true", e.addEventListener("keyup", this.onKeyUp)), this.applyAlignment(e), e;
   }
   applyAlignment(e) {
-    e.classList.remove("text-align-left", "text-align-center"), this._data.align === "center" && e.classList.add("text-align-center"), this._data.align === "left" && e.classList.add("text-align-left");
+    e.classList.remove(
+      "text-align-left",
+      "text-align-center",
+      "text-align-right",
+      "text-align-justify"
+    );
+    const o = this._data.align;
+    ["left", "center", "right", "justify"].includes(o) ? e.classList.add(`text-align-${o}`) : (e.classList.add("text-align-left"), this._data.align = "left");
   }
   render() {
     return this._element = this.drawView(), this._element;
@@ -36363,9 +36370,10 @@ class Gt {
     return !(e.text.trim() === "" && !this._preserveBlank);
   }
   save(e) {
+    const o = e.style.textAlign, i = o === "center" || o === "right" || o === "justify" ? o : "left";
     return {
       text: e.innerHTML,
-      align: this.getAlignment(e)
+      align: i
     };
   }
   onPaste(e) {
