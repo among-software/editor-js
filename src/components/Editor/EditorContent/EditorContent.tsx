@@ -21,7 +21,7 @@ const EditorContent = memo(({ value, onChange }: EditorContentProps) => {
       const editorInstance = new EditorJS({
         holder: "editorjs",
         autofocus: true,
-        tools: EDITOR_JS_TOOLS,
+        tools: EDITOR_JS_TOOLS as any,
         data: value || undefined, // ✅ 초기값 적용
         onReady: () => {
           console.log("✅ Editor is ready");
