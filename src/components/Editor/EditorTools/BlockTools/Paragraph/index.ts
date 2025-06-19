@@ -80,10 +80,11 @@ export default class Paragraph {
       ? config.placeholder
       : Paragraph.DEFAULT_PLACEHOLDER;
 
-    const { align } = useEditorStore.getState();
+    const { align: defaultAlign } = useEditorStore.getState();
+
     this._data = {
       ...data,
-      align: align,
+      align: data.align ?? defaultAlign, // ✅ 우선순위: 전달된 데이터 > 전역값
     };
     this._element = null;
     this._preserveBlank = config.preserveBlank ?? false;
@@ -127,7 +128,10 @@ export default class Paragraph {
   }
 
   applyAlignment(element: HTMLDivElement) {
-    // 모든 기존 정렬 클래스 제거
+    const align = this._data.align;
+    const allowedAlignments = ["left", "center", "right", "justify"];
+
+    // 클래스 정리
     element.classList.remove(
       "text-align-left",
       "text-align-center",
@@ -135,15 +139,13 @@ export default class Paragraph {
       "text-align-justify"
     );
 
-    // 현재 정렬 클래스 추가
-    const align = this._data.align;
-    const allowedAlignments = ["left", "center", "right", "justify"];
-
+    // 정렬 클래스 및 스타일 반영
     if (allowedAlignments.includes(align)) {
       element.classList.add(`text-align-${align}`);
+      element.style.textAlign = align; // ✅ 스타일도 직접 설정
     } else {
-      // 기본 fallback
       element.classList.add("text-align-left");
+      element.style.textAlign = "left"; // ✅ fallback
       this._data.align = "left";
     }
   }
