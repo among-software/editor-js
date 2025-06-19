@@ -127,14 +127,24 @@ export default class Paragraph {
   }
 
   applyAlignment(element: HTMLDivElement) {
-    element.classList.remove("text-align-left", "text-align-center");
+    // 모든 기존 정렬 클래스 제거
+    element.classList.remove(
+      "text-align-left",
+      "text-align-center",
+      "text-align-right",
+      "text-align-justify"
+    );
 
-    if (this._data.align === "center") {
-      element.classList.add("text-align-center");
-    }
+    // 현재 정렬 클래스 추가
+    const align = this._data.align;
+    const allowedAlignments = ["left", "center", "right", "justify"];
 
-    if (this._data.align === "left") {
+    if (allowedAlignments.includes(align)) {
+      element.classList.add(`text-align-${align}`);
+    } else {
+      // 기본 fallback
       element.classList.add("text-align-left");
+      this._data.align = "left";
     }
   }
 
@@ -166,10 +176,24 @@ export default class Paragraph {
     return true;
   }
 
+  getAlignment = (el: HTMLElement): ParagraphData["align"] => {
+    if (el.classList.contains("text-align-center")) return "center";
+    if (el.classList.contains("text-align-right")) return "right";
+    if (el.classList.contains("text-align-justify")) return "justify";
+    return "left";
+  };
+
   save(toolsContent: HTMLDivElement): ParagraphData {
+    const textAlign = toolsContent.style.textAlign;
+
+    const align: ParagraphData["align"] =
+      textAlign === "center" || textAlign === "right" || textAlign === "justify"
+        ? textAlign
+        : "left"; // fallback
+
     return {
       text: toolsContent.innerHTML,
-      align: this._data.align,
+      align,
     };
   }
 

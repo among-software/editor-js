@@ -36322,11 +36322,8 @@ function Sg(t) {
   return o.append(...Array.from(e.childNodes)), o;
 }
 class Gt {
-  static get DEFAULT_PLACEHOLDER() {
-    return "";
-  }
   constructor({ data: e, config: o = {}, api: i, readOnly: s }) {
-    this.api = i, this.readOnly = s, this._CSS = {
+    this.getAlignment = (r) => r.classList.contains("text-align-center") ? "center" : r.classList.contains("text-align-right") ? "right" : r.classList.contains("text-align-justify") ? "justify" : "left", this.api = i, this.readOnly = s, this._CSS = {
       block: this.api.styles.block,
       wrapper: "ce-paragraph"
     }, this.readOnly || (this.onKeyUp = this.onKeyUp.bind(this)), this._placeholder = o.placeholder ? o.placeholder : Gt.DEFAULT_PLACEHOLDER;
@@ -36335,6 +36332,9 @@ class Gt {
       ...e,
       align: n
     }, this._element = null, this._preserveBlank = o.preserveBlank ?? !1;
+  }
+  static get DEFAULT_PLACEHOLDER() {
+    return "";
   }
   onKeyUp(e) {
     if (e.code !== "Backspace" && e.code !== "Delete" || !this._element)
@@ -36365,7 +36365,7 @@ class Gt {
   save(e) {
     return {
       text: e.innerHTML,
-      align: this._data.align
+      align: this.getAlignment(e)
     };
   }
   onPaste(e) {
@@ -38306,7 +38306,7 @@ const Kp = Ta(({ value: t, onChange: e }) => {
         onChange: async () => {
           try {
             const n = await s.save(), r = Vp(n);
-            e == null || e({ raw: n, html: r });
+            console.log(n), e == null || e({ raw: n, html: r });
           } catch (n) {
             console.error("❌ Failed to save editor data:", n);
           }

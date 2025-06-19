@@ -33,6 +33,7 @@ const EditorContent = memo(({ value, onChange }: EditorContentProps) => {
           try {
             const data = await editorInstance.save();
             const html = convertEditorDataToHtml(data);
+            console.log(data);
             onChange?.({ raw: data, html });
           } catch (error) {
             console.error("❌ Failed to save editor data:", error);
