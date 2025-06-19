@@ -26,6 +26,8 @@ export default function EditorSection({
   const [toolbarTop, setToolbarTop] = useState(0);
   const { editor } = useEditorStore();
 
+  console.log("lib value:", value);
+
   useEffect(() => {
     const handleScroll = () => {
       if (editorSectionRef.current) {

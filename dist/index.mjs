@@ -38323,7 +38323,7 @@ function Yp({
   onChange: i
 }) {
   const s = to(null), [n, r] = Go(0), { editor: a } = Ce();
-  return Zo(() => {
+  return console.log("lib value:", t), Zo(() => {
     const c = () => {
       if (s.current) {
         const l = s.current.getBoundingClientRect();
