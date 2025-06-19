@@ -36330,7 +36330,8 @@ class Gt {
     const { align: n } = Ce.getState();
     this._data = {
       ...e,
-      align: n
+      align: e.align ?? n
+      // ✅ 우선순위: 전달된 데이터 > 전역값
     }, this._element = null, this._preserveBlank = o.preserveBlank ?? !1;
   }
   static get DEFAULT_PLACEHOLDER() {
@@ -36347,14 +36348,13 @@ class Gt {
     return e.classList.add(this._CSS.wrapper, this._CSS.block), e.contentEditable = "false", e.dataset.placeholderActive = this.api.i18n.t(this._placeholder), this._data.text && (e.innerHTML = this._data.text), this.readOnly || (e.contentEditable = "true", e.addEventListener("keyup", this.onKeyUp)), this.applyAlignment(e), e;
   }
   applyAlignment(e) {
+    const o = this._data.align, i = ["left", "center", "right", "justify"];
     e.classList.remove(
       "text-align-left",
       "text-align-center",
       "text-align-right",
       "text-align-justify"
-    );
-    const o = this._data.align;
-    ["left", "center", "right", "justify"].includes(o) ? e.classList.add(`text-align-${o}`) : (e.classList.add("text-align-left"), this._data.align = "left");
+    ), i.includes(o) ? (e.classList.add(`text-align-${o}`), e.style.textAlign = o) : (e.classList.add("text-align-left"), e.style.textAlign = "left", this._data.align = "left");
   }
   render() {
     return this._element = this.drawView(), this._element;
