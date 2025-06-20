@@ -24499,7 +24499,7 @@ function Hl({ addBlock: t }) {
   ] });
 }
 const zl = G.div`
-  position: fixed;
+  position: absolute;
   top: ${({ $top: t }) => `${t}px`};
   right: 20%;
   z-index: 100;
@@ -24564,7 +24564,7 @@ function Kl({ toolbarTop: t, onUpload: e }) {
     (d == null ? void 0 : d.name) === "paragraph" && d.isEmpty ? (o.blocks.delete(s), o.blocks.insert(c, l, void 0, s)) : o.blocks.insert(c, l, void 0, s + 1);
   };
   return /* @__PURE__ */ $.jsxs($.Fragment, { children: [
-    i && /* @__PURE__ */ $.jsxs(ql, { top: t, children: [
+    i && /* @__PURE__ */ $.jsxs(ql, { top: 40, children: [
       i === "place" && /* @__PURE__ */ $.jsx(Hl, { addBlock: a }),
       i === "emoji" && /* @__PURE__ */ $.jsx(fl, { addBlock: a }),
       i === "line" && /* @__PURE__ */ $.jsx(wl, { addBlock: a })
