@@ -82,7 +82,7 @@ export default function EditorToolbar({ toolbarTop, onUpload }: Props) {
   return (
     <>
       {activeModal && (
-        <EditorToolModal top={toolbarTop}>
+        <EditorToolModal top={40}>
           {activeModal === "place" && <PlaceModal addBlock={addBlock} />}
           {activeModal === "emoji" && <EmojiModal addBlock={addBlock} />}
           {activeModal === "line" && <LineModal addBlock={addBlock} />}

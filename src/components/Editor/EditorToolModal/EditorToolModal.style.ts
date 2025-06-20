@@ -4,7 +4,7 @@ import { COMMON_THEME } from "../../../styles/Theme";
 export const EditorToolModalContainer = styled.div<{
   $top: number;
 }>`
-  position: fixed;
+  position: absolute;
   top: ${({ $top }) => `${$top}px`};
   right: 20%;
   z-index: 100;
