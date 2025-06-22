@@ -37796,7 +37796,7 @@ const Bo = class Bo {
   }
   render() {
     const e = document.createElement("button");
-    return e.type = "button", e.classList.add("cdx-font-size-button"), e.innerText = "A→a", e.style = "padding: 4px; margin-right: 12px; border-radius: 4px; border: 1px solid black;", e;
+    return e.type = "button", e.classList.add("cdx-font-size-button"), e.innerText = "A→a", e.style.padding = "4px", e.style.marginRight = "12px", e.style.borderRadius = "4px", e.style.border = "1px solid black", e;
   }
   renderActions() {
     const e = document.createElement("ul");
@@ -37897,14 +37897,14 @@ Bo.isInline = !0, Bo.title = "글자 크기";
 let St = Bo;
 const To = class To {
   constructor({ api: e }) {
-    this.range = null, this.data = { letterSpacing: "normal" }, this.tag = "SPAN", this.spacingOptions = [
+    this.currentSpacing = "normal", this.range = null, this.data = { letterSpacing: "normal" }, this.tag = "SPAN", this.spacingOptions = [
       "normal",
       ...Array.from({ length: 16 }, (i, o) => `${o + 1}px`)
     ], this.api = e;
   }
   render() {
     const e = document.createElement("button");
-    return e.type = "button", e.classList.add("cdx-letter-spacing-button"), e.innerText = "자간", e.style = "padding: 2px 4px;margin-right: 12px; border-radius: 4px; border: 1px solid black", e;
+    return e.type = "button", e.classList.add("cdx-letter-spacing-button"), e.innerText = "자간", e.style.padding = "2px 4px", e.style.marginRight = "12px", e.style.borderRadius = "4px", e.style.border = "1px solid black", e;
   }
   renderActions() {
     const e = document.createElement("ul");
@@ -38005,7 +38005,7 @@ const Po = class Po {
   }
   render() {
     const e = document.createElement("button");
-    return e.type = "button", e.classList.add("cdx-line-height-button"), e.style = "padding: 2px 4px;margin-right: 12px; border-radius: 4px; border: 1px solid black", e.innerText = "행간", e;
+    return e.type = "button", e.classList.add("cdx-line-height-button"), e.style.padding = "2px 4px", e.style.marginRight = "12px", e.style.borderRadius = "4px", e.style.border = "1px solid black", e.innerText = "행간", e;
   }
   renderActions() {
     const e = document.createElement("ul");

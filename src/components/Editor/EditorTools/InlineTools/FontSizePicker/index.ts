@@ -1,7 +1,6 @@
 export default class FontSizePicker {
   static isInline = true;
   static title = "글자 크기";
-
   private api: any;
   private range: Range | null = null;
   private currentFontSize: string = "14px";
@@ -28,8 +27,10 @@ export default class FontSizePicker {
     button.type = "button";
     button.classList.add("cdx-font-size-button");
     button.innerText = "A→a";
-    button.style =
-      "padding: 4px; margin-right: 12px; border-radius: 4px; border: 1px solid black;";
+    button.style.padding = "4px";
+    button.style.marginRight = "12px";
+    button.style.borderRadius = "4px";
+    button.style.border = "1px solid black";
     return button;
   }
 

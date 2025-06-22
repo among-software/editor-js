@@ -3,6 +3,7 @@ export default class LetterSpacingPicker {
   static title = "자간 설정";
 
   private api: any;
+  private currentSpacing: string = "normal";
   private range: Range | null = null;
   private data: { letterSpacing: string } = { letterSpacing: "normal" };
   private tag = "SPAN";
@@ -21,8 +22,10 @@ export default class LetterSpacingPicker {
     button.type = "button";
     button.classList.add("cdx-letter-spacing-button");
     button.innerText = "자간";
-    button.style =
-      "padding: 2px 4px;margin-right: 12px; border-radius: 4px; border: 1px solid black";
+    button.style.padding = "2px 4px";
+    button.style.marginRight = "12px";
+    button.style.borderRadius = "4px";
+    button.style.border = "1px solid black";
     return button;
   }
 

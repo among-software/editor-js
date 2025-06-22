@@ -27,8 +27,10 @@ export default class LineHeightPicker {
     const button = document.createElement("button");
     button.type = "button";
     button.classList.add("cdx-line-height-button");
-    button.style =
-      "padding: 2px 4px;margin-right: 12px; border-radius: 4px; border: 1px solid black";
+    button.style.padding = "2px 4px";
+    button.style.marginRight = "12px";
+    button.style.borderRadius = "4px";
+    button.style.border = "1px solid black";
     button.innerText = "행간";
     return button;
   }
