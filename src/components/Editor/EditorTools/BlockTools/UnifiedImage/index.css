@@ -1,8 +1,7 @@
 /* 공통 Wrapper 스타일 */
 .ce-unified-image {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  position: relative;
+  text-align: center; /* JS에서 left/center/right 변경됨 */
   cursor: pointer;
 }
 
@@ -12,10 +11,7 @@
 
 .ce-unified-image-wrapper {
   width: 100%;
-  flex: 1;
-  display: flex;
   gap: 10px;
-  justify-content: center;
 }
 
 .unified-image-caption {
@@ -35,10 +31,13 @@
   align-items: center;
   cursor: pointer;
   transition: transform 0.2s ease;
+  display: inline-block;
+  width: 100%;
 }
 
 /* 단일 이미지: 전체 너비 사용 */
 .unified-image-item {
+  display: block;
   width: 100%;
   height: auto;
   object-fit: cover;
@@ -120,4 +119,53 @@
 
 .unified-image-wrapper {
   position: relative;
+}
+
+.unified-image-align-button {
+  width: 24px;
+  height: 24px;
+  border: none;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-size: 24px 24px;
+  background-position: center;
+  cursor: pointer;
+  margin-bottom: 8px;
+  align-self: flex-end; /* 오른쪽 정렬 (필요 시 수정 가능) */
+  transition: filter 0.2s;
+}
+
+.unified-image-align-button:hover {
+  filter: brightness(0.85);
+}
+
+.image-align-modal {
+  position: absolute;
+  top: -40px;
+  right: 10px;
+  display: flex;
+  gap: 8px;
+  background: white;
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 20;
+}
+
+/* 버튼 스타일 */
+.image-align-modal-button {
+  width: 24px;
+  height: 24px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.image-align-modal-button:hover {
+  opacity: 1;
 }

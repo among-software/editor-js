@@ -1,0 +1,163 @@
+export default class LineHeightPicker {
+  static isInline = true;
+  static title = "줄간격 설정";
+
+  private api: any;
+  private range: Range | null = null;
+  private currentLineHeight: string = "normal";
+  private data: { lineHeight: string } = { lineHeight: "normal" };
+  private tag = "SPAN";
+
+  private lineHeightOptions: string[] = [
+    "normal",
+    "1",
+    "1.2",
+    "1.5",
+    "1.75",
+    "2",
+    "2.5",
+    "3",
+  ];
+
+  constructor({ api }: { api: any }) {
+    this.api = api;
+  }
+
+  public render(): HTMLElement {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.classList.add("cdx-line-height-button");
+    button.style =
+      "padding: 2px 4px;margin-right: 12px; border-radius: 4px; border: 1px solid black";
+    button.innerText = "행간";
+    return button;
+  }
+
+  public renderActions(): HTMLElement {
+    const container = document.createElement("ul");
+    container.className = "line-height-dropdown";
+
+    this.lineHeightOptions.forEach((lineHeight) => {
+      const li = document.createElement("li");
+      li.className = "line-height-option";
+      li.dataset.lineHeight = lineHeight;
+
+      const label = document.createElement("span");
+      label.textContent = lineHeight === "normal" ? "기본" : lineHeight;
+      label.style.display = "inline-block";
+      label.style.width = "50px";
+      label.style.fontFamily = "inherit";
+
+      const preview = document.createElement("span");
+      preview.textContent = "가나다";
+      preview.style.lineHeight = lineHeight;
+      preview.style.marginLeft = "12px";
+      preview.style.fontFamily = "inherit";
+
+      li.style.display = "flex";
+      li.style.alignItems = "center";
+      li.style.padding = "6px 12px";
+      li.style.cursor = "pointer";
+      li.style.fontSize = "14px";
+      li.style.lineHeight = "1.5";
+      li.style.whiteSpace = "nowrap";
+
+      li.appendChild(label);
+      li.appendChild(preview);
+
+      li.addEventListener("mousedown", (e) => e.stopPropagation());
+      li.addEventListener("click", () => {
+        this.applyLineHeight(lineHeight);
+      });
+
+      container.appendChild(li);
+    });
+
+    return container;
+  }
+
+  public surround(range: Range): void {
+    this.range = range;
+  }
+
+  private applyLineHeight(lineHeight: string) {
+    this.data.lineHeight = lineHeight;
+
+    if (!this.range || this.range.collapsed) return;
+
+    const existing = this.findAncestorSpan(this.range.startContainer);
+
+    if (existing?.dataset?.lineHeight === lineHeight) return;
+
+    if (existing) {
+      existing.style.lineHeight = lineHeight;
+      existing.setAttribute("data-line-height", lineHeight);
+      return;
+    }
+
+    this.wrap(this.range, lineHeight);
+  }
+
+  private wrap(range: Range, lineHeight: string) {
+    const span = document.createElement(this.tag);
+    span.style.lineHeight = lineHeight;
+    span.setAttribute("data-line-height", lineHeight);
+    span.style.display = "inline-block";
+    span.style.wordBreak = "break-word";
+
+    const contents = range.extractContents();
+    this.flattenSpans(contents);
+
+    span.appendChild(contents);
+    range.insertNode(span);
+
+    this.api.selection.expandToTag(span);
+  }
+
+  private flattenSpans(node: Node) {
+    if (node instanceof DocumentFragment || node instanceof Element) {
+      const spans = node.querySelectorAll("span[data-line-height]");
+      spans.forEach((span) => {
+        if (span.parentNode) {
+          const textNode = document.createTextNode(span.textContent || "");
+          span.parentNode.replaceChild(textNode, span);
+        }
+      });
+    }
+  }
+
+  private findAncestorSpan(node: Node): HTMLElement | null {
+    let el = node.parentElement;
+    while (el) {
+      if (el.tagName === "SPAN" && el.hasAttribute("data-line-height")) {
+        return el;
+      }
+      el = el.parentElement;
+    }
+    return null;
+  }
+
+  public checkState(): boolean {
+    const tag = this.api.selection.findParentTag(this.tag, "cdx-line-height");
+    if (tag) {
+      const lineHeight = tag.getAttribute("data-line-height") || "normal";
+      this.currentLineHeight = lineHeight;
+    } else {
+      this.currentLineHeight = "normal";
+    }
+    return false;
+  }
+
+  public static get sanitize() {
+    return {
+      span: {
+        style: true,
+        "data-line-height": true,
+      },
+    };
+  }
+
+  public get toolboxIcon(): string {
+    return "행간";
+  }
+}

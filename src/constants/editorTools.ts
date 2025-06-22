@@ -11,6 +11,8 @@ import {
   Video,
 } from "../components/Editor/EditorTools/BlockTools/index";
 import FontSizePicker from "../components/Editor/EditorTools/InlineTools/FontSizePicker";
+import LetterSpacingPicker from "../components/Editor/EditorTools/InlineTools/LetterSpacingPicker";
+import LineHeightPicker from "../components/Editor/EditorTools/InlineTools/LineHeightPicker";
 
 import {
   FontPicker,
@@ -32,11 +34,14 @@ export const EDITOR_JS_TOOLS = {
     inlineToolbar: [
       "link",
       "bold",
+      "italic",
       "underline",
       "strikethrough",
       "font",
       "color",
       "fontSize",
+      "letterSpacing",
+      "lineHeight",
       // "backgroundColor",
     ],
   },
@@ -69,6 +74,8 @@ export const EDITOR_JS_TOOLS = {
   underline: Underline,
   fontSize: FontSizePicker,
   strikethrough: Strikethrough,
+  letterSpacing: LetterSpacingPicker,
+  lineHeight: LineHeightPicker,
   color: {
     class: TextColor,
     config: {

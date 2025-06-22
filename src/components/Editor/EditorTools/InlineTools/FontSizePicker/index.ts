@@ -1,116 +1,211 @@
 export default class FontSizePicker {
   static isInline = true;
-  static title = "FontSize";
-  static sanitize = {
-    span: (el: HTMLElement) => ({
-      style: el.getAttribute("style") || "",
-    }),
-  };
+  static title = "글자 크기";
 
-  private data: { size: string } = { size: "14px" };
-  private select: HTMLSelectElement;
+  private api: any;
+  private range: Range | null = null;
+  private currentFontSize: string = "14px";
+  private data: { fontSize: string } = { fontSize: "14px" };
+  private tag = "SPAN";
+  private sizeOptions: string[] = [
+    "12px",
+    "14px",
+    "16px",
+    "18px",
+    "20px",
+    "24px",
+    "32px",
+    "48px",
+    "64px",
+  ];
 
-  constructor({ data }: { data: { size: string } }) {
-    this.data = data || { size: "14px" };
-    this.select = document.createElement("select");
+  constructor({ api }: { api: any }) {
+    this.api = api;
+  }
 
-    const sizes = [
-      "12px",
-      "14px",
-      "16px",
-      "18px",
-      "20px",
-      "24px",
-      "32px",
-      "48px",
-      "64px",
-    ];
-    sizes.forEach((size) => {
-      const option = document.createElement("option");
-      option.value = size;
-      option.textContent = size.replace("px", "");
-      this.select.appendChild(option);
+  public render(): HTMLElement {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.classList.add("cdx-font-size-button");
+    button.innerText = "A→a";
+    button.style =
+      "padding: 4px; margin-right: 12px; border-radius: 4px; border: 1px solid black;";
+    return button;
+  }
+
+  public renderActions(): HTMLElement {
+    const container = document.createElement("ul");
+    container.className = "font-size-dropdown";
+
+    this.sizeOptions.forEach((fontSize) => {
+      const li = document.createElement("li");
+      li.className = "font-size-option";
+      li.dataset.fontSize = fontSize;
+
+      const label = document.createElement("span");
+      label.textContent = fontSize;
+      label.style.display = "inline-block";
+      label.style.width = "50px";
+      label.style.fontFamily = "inherit";
+
+      const preview = document.createElement("span");
+      preview.textContent = "가나다";
+      preview.style.fontSize = fontSize;
+      preview.style.marginLeft = "12px";
+      preview.style.fontFamily = "inherit";
+
+      li.style.display = "flex";
+      li.style.alignItems = "center";
+      li.style.padding = "6px 12px";
+      li.style.cursor = "pointer";
+      li.style.fontSize = "14px";
+      li.style.lineHeight = "1.5";
+      li.style.whiteSpace = "nowrap";
+
+      li.appendChild(label);
+      li.appendChild(preview);
+
+      li.addEventListener("mousedown", (e) => e.stopPropagation());
+      li.addEventListener("click", () => {
+        if (!this.range || this.range.collapsed) {
+          const blocks = this.api.blocks;
+          const lastIndex = blocks.getBlocksCount() - 1;
+          const lastBlock = blocks.getBlockByIndex(lastIndex);
+
+          if (lastBlock) {
+            const lastBlockHolder = lastBlock.holder;
+            const editable = lastBlockHolder.querySelector(
+              "[contenteditable=true]"
+            );
+
+            if (editable) {
+              const spans = editable.querySelectorAll("span[data-font-size]");
+              const targetSpan = spans[spans.length - 1];
+              const range = document.createRange();
+              const selection = window.getSelection();
+
+              if (targetSpan) {
+                range.selectNodeContents(targetSpan);
+                range.collapse(false);
+              } else {
+                const lastChild = editable.lastChild;
+                if (lastChild) {
+                  range.setStartAfter(lastChild);
+                  range.collapse(true);
+                } else {
+                  range.selectNodeContents(editable);
+                  range.collapse(false);
+                }
+              }
+
+              if (selection) {
+                selection.removeAllRanges();
+                selection.addRange(range);
+              }
+
+              this.range = range;
+            }
+          }
+        }
+        this.applyFontSize(fontSize);
+      });
+
+      container.appendChild(li);
     });
 
-    this.select.className = "font-size-dropdown";
-    this.select.value = this.data.size;
+    return container;
+  }
 
-    this.select.addEventListener("mousedown", (e) => {
-      e.stopPropagation();
-    });
+  public surround(range: Range): void {
+    this.range = range;
+  }
 
-    this.select.addEventListener("change", () => {
-      this.data.size = this.select.value;
+  private applyFontSize(fontSize: string) {
+    this.data.fontSize = fontSize;
 
-      const selection = window.getSelection();
-      if (!selection || selection.rangeCount === 0) return;
-      const range = selection.getRangeAt(0);
+    if (!this.range || this.range.collapsed) return;
 
-      const span = document.createElement("span");
-      span.style.fontSize = this.data.size;
-      span.style.display = "inline-block";
-      span.style.wordBreak = "break-word";
-      span.appendChild(range.extractContents());
-      range.deleteContents();
-      range.insertNode(span);
+    const existing = this.findAncestorSpan(this.range.startContainer);
 
+    if (existing?.dataset?.fontSize === fontSize) return;
+
+    if (existing) {
+      existing.style.fontSize = fontSize;
+      existing.setAttribute("data-font-size", fontSize);
+      return;
+    }
+
+    this.wrap(this.range, fontSize);
+  }
+
+  private wrap(range: Range, fontSize: string) {
+    const span = document.createElement(this.tag);
+    span.style.fontSize = fontSize;
+    span.setAttribute("data-font-size", fontSize);
+    span.style.display = "inline-block";
+    span.style.wordBreak = "break-word";
+
+    const contents = range.extractContents();
+    this.flattenSpans(contents);
+
+    span.appendChild(contents);
+    range.insertNode(span);
+
+    const selection = window.getSelection();
+    if (selection) {
       const newRange = document.createRange();
       newRange.selectNodeContents(span);
       newRange.collapse(false);
       selection.removeAllRanges();
       selection.addRange(newRange);
-    });
-  }
-
-  render() {
-    return this.select;
-  }
-
-  surround(range: Range) {
-    const span = document.createElement("span");
-    span.style.fontSize = this.data.size;
-    span.style.display = "inline-block";
-    span.style.wordBreak = "break-word";
-    span.appendChild(range.extractContents());
-    range.insertNode(span);
-  }
-
-  checkState(selection: Selection) {
-    if (!selection || selection.rangeCount === 0) return;
-
-    const range = selection.getRangeAt(0);
-    const container = range.startContainer;
-    const element =
-      container.nodeType === 3
-        ? container.parentElement
-        : (container as HTMLElement);
-
-    if (element && element.style && element.style.fontSize) {
-      this.select.value = element.style.fontSize;
-      this.data.size = element.style.fontSize;
+      this.range = newRange;
     }
   }
 
-  renderActions() {
+  private flattenSpans(node: Node) {
+    if (node instanceof DocumentFragment || node instanceof Element) {
+      const spans = node.querySelectorAll("span[data-font-size]");
+      spans.forEach((span) => {
+        if (span.parentNode) {
+          const textNode = document.createTextNode(span.textContent || "");
+          span.parentNode.replaceChild(textNode, span);
+        }
+      });
+    }
+  }
+
+  private findAncestorSpan(node: Node): HTMLElement | null {
+    let el = node.parentElement;
+    while (el) {
+      if (el.tagName === "SPAN" && el.hasAttribute("data-font-size")) {
+        return el;
+      }
+      el = el.parentElement;
+    }
     return null;
   }
 
-  save() {
-    return this.data;
+  public checkState(): boolean {
+    const tag = this.api.selection.findParentTag(this.tag, "cdx-font-size");
+    if (tag) {
+      const fontSize = tag.getAttribute("data-font-size") || "14px";
+      this.currentFontSize = fontSize;
+    } else {
+      this.currentFontSize = "14px";
+    }
+    return false;
+  }
+
+  public static get sanitize() {
+    return {
+      span: {
+        style: true,
+        "data-font-size": true,
+      },
+    };
+  }
+
+  public get toolboxIcon(): string {
+    return "A→a";
   }
 }
-
-/* CSS (추가 필요)
-.font-size-dropdown {
-  max-width: 120px;
-  min-width: 60px;
-  font-size: 13px;
-  white-space: nowrap;
-}
-
-.ce-block__content span[style*="font-size"] {
-  display: inline-block;
-  word-break: break-word;
-  line-height: 1.3;
-  max-width: 100%;
-}*/

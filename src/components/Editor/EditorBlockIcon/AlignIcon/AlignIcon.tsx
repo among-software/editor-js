@@ -17,10 +17,15 @@ export default function AlignIcon() {
   const handleToggleAlign = async () => {
     if (!editor) return;
 
-    const blockIndex = editor.blocks.getCurrentBlockIndex();
     const savedData = await editor.save();
-    const block = savedData.blocks[blockIndex];
+    let blockIndex = editor.blocks.getCurrentBlockIndex();
 
+    // 블록이 선택되지 않았을 경우 fallback: 마지막 블록으로
+    if (blockIndex === -1) {
+      blockIndex = savedData.blocks.length - 1;
+    }
+
+    const block = savedData.blocks[blockIndex];
     const blockElement = document.querySelector(
       `.ce-block[data-id="${block.id}"] .ce-paragraph`
     ) as HTMLElement;
@@ -33,7 +38,9 @@ export default function AlignIcon() {
       blockElement.style.textAlign = nextAlign;
     }
 
+    // 커서를 강제로 해당 블록으로 옮김
     editor.caret.setToBlock(blockIndex, "end");
+
     setAlign(nextAlign);
   };
 

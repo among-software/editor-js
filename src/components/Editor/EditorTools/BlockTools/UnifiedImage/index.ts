@@ -51,7 +51,12 @@ export default class UnifiedImage implements BlockTool {
 
   constructor({ data, api }: BlockToolConstructorOptions) {
     this.api = api;
-    this.data = data || { images: [], caption: "" };
+    this.data = {
+      images: [],
+      caption: "",
+      align: "center", // ✅ 기본 정렬값
+      ...data,
+    };
     this._CSS = this.initializeCSS();
     this._element = this.drawView();
     this.activateCaption = !!this.data.caption;
@@ -71,6 +76,39 @@ export default class UnifiedImage implements BlockTool {
   drawView(): HTMLDivElement {
     const wrapper = document.createElement("div");
     wrapper.classList.add(this._CSS.wrapper, this._CSS.block);
+    wrapper.style.position = "relative"; // 정렬 버튼 절대 위치 기준
+
+    const getIconUrl = (align: string, isHover = false) => {
+      const base =
+        "https://kr1-api-object-storage.nhncloudservice.com/v1/AUTH_96c6313b6d6a405b9511658326418a69/lotte-foundation/";
+      const suffix = isHover ? "-hover.svg" : ".svg";
+      return `${base}${align}${suffix}`;
+    };
+
+    const alignOptions = ["left", "center", "right"] as const;
+    const currentAlign = (this.data.align ||
+      "center") as (typeof alignOptions)[number];
+    wrapper.style.textAlign = currentAlign;
+
+    // ✅ 정렬 버튼 모달
+    const alignModal = document.createElement("div");
+    alignModal.className = "image-align-modal";
+    alignModal.style.display = "none"; // 기본은 숨김
+
+    alignOptions.forEach((option) => {
+      const btn = document.createElement("button");
+      btn.className = "image-align-modal-button";
+      btn.style.backgroundImage = `url('${getIconUrl(option)}')`;
+
+      btn.addEventListener("click", () => {
+        this.data.align = option;
+        this.updateView(); // 정렬 반영 후 리렌더링
+      });
+
+      alignModal.appendChild(btn);
+    });
+
+    wrapper.appendChild(alignModal);
 
     wrapper.addEventListener("dragover", this.onDragOverBlock.bind(this));
     wrapper.addEventListener("drop", this.onDropBlock.bind(this));
@@ -91,17 +129,21 @@ export default class UnifiedImage implements BlockTool {
 
     this.updateCaptionVisibility(caption);
 
+    // ✅ 클릭 시 모달 표시
     blockWrapper.addEventListener("click", () => {
       this.showCaption(caption);
       this._element.classList.add("active");
+      alignModal.style.display = "flex";
       document.addEventListener("keydown", this.handleKeyDown);
     });
 
+    // ✅ 외부 클릭 시 정렬 모달 및 상태 해제
     document.addEventListener(
       "click",
       (e: Event) => {
         if (!this._element.contains(e.target as Node)) {
           this._element.classList.remove("active");
+          alignModal.style.display = "none";
 
           caption.value === ""
             ? this.hideCaption(caption)
@@ -665,7 +707,9 @@ export default class UnifiedImage implements BlockTool {
   }
 
   save(): BlockToolData {
-    return this.data;
+    return {
+      ...this.data, // ✅ align 포함됨
+    };
   }
 
   onPaste(): void {

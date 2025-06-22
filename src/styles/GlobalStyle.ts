@@ -118,4 +118,13 @@ export const GlobalStyle = createGlobalStyle`
 .ce-toolbar__actions--opened {
   right: -100px;
 }
+.custom-dropdown {
+  font-size: 14px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  background: white;
+  border: 1px solid #ccc;
+  margin-right: 8px;
+  min-width: 100px;
+}
 `;
