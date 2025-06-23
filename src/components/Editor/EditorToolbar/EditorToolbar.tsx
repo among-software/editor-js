@@ -23,7 +23,7 @@ import * as S from "./styles";
 
 interface Props {
   toolbarTop: number;
-  width: string | undefined;
+  width: string;
   onUpload?: UploadHandler;
 }
 
