@@ -253,8 +253,22 @@ export default class UnifiedImage implements BlockTool {
 
       const onMouseMove = (e: MouseEvent) => {
         const delta = e.clientX - startX;
-        const newWidth = startWidth + delta;
-        if (newWidth > 50) {
+        let newWidth = startWidth + delta;
+
+        // 에디터 최대 너비 얻기
+        const editorContainer =
+          this.api?.ui?.nodes?.redactor ||
+          document.querySelector(".codex-editor");
+        const maxWidth =
+          editorContainer instanceof HTMLElement
+            ? editorContainer.offsetWidth
+            : 800;
+
+        if (newWidth >= maxWidth) {
+          imageWrapper.style.width = "100%";
+          imageData.width = maxWidth;
+          imageData.ratio = maxWidth / imageData.height;
+        } else if (newWidth > 50) {
           imageWrapper.style.width = `${newWidth}px`;
           imageData.width = newWidth;
           imageData.ratio = newWidth / imageData.height;
