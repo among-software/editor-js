@@ -24618,7 +24618,7 @@ const Zl = K.div`
   min-width: ${(t) => t.$width};
   position: absolute;
   top: ${(t) => t.$top}px;
-  min-height: 60px;
+  min-height: 40px;
   /* right: ${(t) => t.$right}%; */
   z-index: 1000;
   border-bottom: 1px solid black;

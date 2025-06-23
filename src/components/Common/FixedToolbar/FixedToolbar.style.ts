@@ -13,7 +13,7 @@ export const FixedToolbarContainer = styled.div<ToolbarProps>`
   min-width: ${(props) => props.$width};
   position: absolute;
   top: ${(props) => props.$top}px;
-  min-height: 60px;
+  min-height: 40px;
   /* right: ${(props) => props.$right}%; */
   z-index: 1000;
   border-bottom: 1px solid black;

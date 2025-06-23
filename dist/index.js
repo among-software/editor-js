@@ -399,7 +399,7 @@ See https://s-c.sh/2BAXzed for more info.`),window[oo]+=1);const Dc=K.div`
   min-width: ${t=>t.$width};
   position: absolute;
   top: ${t=>t.$top}px;
-  min-height: 60px;
+  min-height: 40px;
   /* right: ${t=>t.$right}%; */
   z-index: 1000;
   border-bottom: 1px solid black;
