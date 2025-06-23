@@ -1,6 +1,14 @@
 import styled from "styled-components";
 
-export const VideoIconWrapper = styled.div``;
+export const VideoIconWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 48px;
+  margin: 0 4px;
+  cursor: pointer;
+  user-select: none;
+`;
 
 export const VideoIcon = styled.div`
   width: 25px;

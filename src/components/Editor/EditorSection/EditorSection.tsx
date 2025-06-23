@@ -52,7 +52,11 @@ export default function EditorSection({
   return (
     <S.EditorSectionContainer ref={editorSectionRef} $width={width}>
       <EditorContent value={value} onChange={onChange} /> {/* ✅ value 전달 */}
-      <EditorToolbar toolbarTop={toolbarTop} onUpload={onUpload} />
+      <EditorToolbar
+        toolbarTop={toolbarTop}
+        onUpload={onUpload}
+        width={width}
+      />
     </S.EditorSectionContainer>
   );
 }

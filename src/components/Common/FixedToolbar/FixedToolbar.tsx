@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 import * as S from "./FixedToolbar.style";
 
 interface Props {
-  position: { top: number; right: number };
+  position: { top: number; right: number; width: string };
   children?: ReactNode;
 }
 
@@ -13,7 +13,11 @@ interface Props {
 
 export default function FixedToolbar({ position, children }: Props) {
   return (
-    <S.FixedToolbarContainer $top={position.top} $right={position.right}>
+    <S.FixedToolbarContainer
+      $top={position.top}
+      $right={position.right}
+      $width={position.width}
+    >
       {children}
     </S.FixedToolbarContainer>
   );

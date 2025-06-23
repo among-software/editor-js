@@ -1,5 +1,6 @@
 import * as S from "./LineIcon.style";
 import useEditorStore from "../../../../store/useEditorStore";
+import { IconLabel } from "../index.style";
 
 interface LineIconProps {
   handleBlockIndex: () => void;
@@ -17,5 +18,10 @@ export default function LineIcon({ handleBlockIndex }: LineIconProps) {
     toggleModal("line");
   };
 
-  return <S.LineIcon className="modal-active-icon" onClick={handleIconClick} />;
+  return (
+    <S.LineIconWrapper>
+      <S.LineIcon className="modal-active-icon" onClick={handleIconClick} />
+      <IconLabel>구분선</IconLabel>
+    </S.LineIconWrapper>
+  );
 }

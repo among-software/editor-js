@@ -23,6 +23,7 @@ import * as S from "./styles";
 
 interface Props {
   toolbarTop: number;
+  width: string;
   onUpload?: UploadHandler;
 }
 
@@ -30,7 +31,7 @@ interface Props {
  * 에디터의 툴바 컴포넌트
  * 블록을 추가할 수 있는 도구들을 제공
  */
-export default function EditorToolbar({ toolbarTop, onUpload }: Props) {
+export default function EditorToolbar({ toolbarTop, onUpload, width }: Props) {
   const { editor, activeModal, currentBlockIndex, setCurrentBlockIndex } =
     useEditorStore();
 
@@ -89,7 +90,7 @@ export default function EditorToolbar({ toolbarTop, onUpload }: Props) {
         </EditorToolModal>
       )}
 
-      <FixedToolbar position={{ top: toolbarTop, right: 0 }}>
+      <FixedToolbar position={{ top: toolbarTop, right: 0, width }}>
         <ImageIcon
           handleBlockIndex={handleBlockIndex}
           addBlock={addBlock}

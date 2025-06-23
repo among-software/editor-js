@@ -72,3 +72,13 @@ export const AlignIcon = styled.div<{
     }}; */
   }
 `;
+
+export const AlignIconWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 48px;
+  margin: 0 4px;
+  cursor: pointer;
+  user-select: none;
+`;

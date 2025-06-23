@@ -1,6 +1,7 @@
 import { ChangeEvent, useRef } from "react";
 import * as S from "./VideoIcon.style";
 import { UploadHandler } from "../../../../types/upload";
+import { IconLabel } from "../index.style";
 
 interface VideoIconProps {
   addBlock: (type: string, data: object) => void;
@@ -56,6 +57,7 @@ export default function VideoIcon({
   return (
     <S.VideoIconWrapper>
       <S.VideoIcon onClick={handleIconClick} />
+      <IconLabel>비디오</IconLabel>
       <S.VideoFileInput
         type="file"
         accept="video/*"

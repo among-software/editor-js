@@ -1,5 +1,6 @@
 import * as S from "./EmojiIcon.style";
 import useEditorStore from "../../../../store/useEditorStore";
+import { IconLabel } from "../index.style";
 
 interface EmojiIconProps {
   handleBlockIndex: () => void;
@@ -17,6 +18,9 @@ export default function EmojiIcon({ handleBlockIndex }: EmojiIconProps) {
     toggleModal("emoji");
   };
   return (
-    <S.EmojiIcon className="modal-active-icon" onClick={handleIconClick} />
+    <S.EmojiIconWrapper>
+      <S.EmojiIcon className="modal-active-icon" onClick={handleIconClick} />
+      <IconLabel>이모지</IconLabel>
+    </S.EmojiIconWrapper>
   );
 }

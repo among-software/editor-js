@@ -1,6 +1,7 @@
 // ✅ AlignIcon.tsx
 import * as S from "./AlignIcon.style";
 import useEditorStore from "../../../../store/useEditorStore";
+import { IconLabel } from "../index.style";
 
 const alignValues = ["left", "center", "right", "justify"] as const;
 type AlignValue = (typeof alignValues)[number];
@@ -44,5 +45,10 @@ export default function AlignIcon() {
     setAlign(nextAlign);
   };
 
-  return <S.AlignIcon $align={align} onClick={handleToggleAlign} />;
+  return (
+    <S.AlignIconWrapper>
+      <S.AlignIcon $align={align} onClick={handleToggleAlign} />
+      <IconLabel>정렬</IconLabel>
+    </S.AlignIconWrapper>
+  );
 }

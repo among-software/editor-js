@@ -21,7 +21,7 @@ function App() {
   return (
     <div className="App">
       {/* <TitleSection /> */}
-      <EditorSection value={data} />
+      <EditorSection value={data} width="768px" />
     </div>
   );
 }

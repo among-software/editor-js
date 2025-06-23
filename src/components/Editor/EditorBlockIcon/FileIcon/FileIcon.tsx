@@ -1,6 +1,7 @@
 import { ChangeEvent, useRef } from "react";
 import * as S from "./FileIcon.style";
 import { UploadHandler } from "../../../../types/upload";
+import { IconLabel } from "../index.style";
 
 interface FileIconProps {
   addBlock: (type: string, data: object) => void;
@@ -55,14 +56,15 @@ export default function FileIcon({
   };
 
   return (
-    <>
+    <S.FileIconWrapper>
       <S.FileIcon onClick={handleIconClick} />
+      <IconLabel>첨부파일</IconLabel>
       <S.FileInput
         type="file"
         ref={fileInputRef}
         onChange={handleFileChange}
         style={{ display: "none" }}
       />
-    </>
+    </S.FileIconWrapper>
   );
 }
