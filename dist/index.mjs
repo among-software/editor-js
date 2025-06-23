@@ -24660,43 +24660,49 @@ function ed({ toolbarTop: t, onUpload: e, width: i }) {
       s === "emoji" && /* @__PURE__ */ M.jsx(Sl, { addBlock: c }),
       s === "line" && /* @__PURE__ */ M.jsx(Tl, { addBlock: c })
     ] }),
-    /* @__PURE__ */ M.jsxs(Ql, { position: { top: t, right: 0, width: i }, children: [
-      /* @__PURE__ */ M.jsx(
-        gl,
-        {
-          handleBlockIndex: a,
-          addBlock: c,
-          onUpload: e
-        }
-      ),
-      /* @__PURE__ */ M.jsx(
-        cl,
-        {
-          handleBlockIndex: a,
-          addBlock: c,
-          onUpload: e
-        }
-      ),
-      /* @__PURE__ */ M.jsx(
-        yl,
-        {
-          handleBlockIndex: a,
-          addBlock: c,
-          onUpload: e
-        }
-      ),
-      /* @__PURE__ */ M.jsx(
-        nl,
-        {
-          handleBlockIndex: a,
-          addBlock: c,
-          onUpload: e
-        }
-      ),
-      /* @__PURE__ */ M.jsx(il, { handleBlockIndex: a }),
-      /* @__PURE__ */ M.jsx(ml, { handleBlockIndex: a }),
-      /* @__PURE__ */ M.jsx(Zc, {})
-    ] })
+    /* @__PURE__ */ M.jsxs(
+      Ql,
+      {
+        position: { top: t, right: 0, width: i ?? "768px" },
+        children: [
+          /* @__PURE__ */ M.jsx(
+            gl,
+            {
+              handleBlockIndex: a,
+              addBlock: c,
+              onUpload: e
+            }
+          ),
+          /* @__PURE__ */ M.jsx(
+            cl,
+            {
+              handleBlockIndex: a,
+              addBlock: c,
+              onUpload: e
+            }
+          ),
+          /* @__PURE__ */ M.jsx(
+            yl,
+            {
+              handleBlockIndex: a,
+              addBlock: c,
+              onUpload: e
+            }
+          ),
+          /* @__PURE__ */ M.jsx(
+            nl,
+            {
+              handleBlockIndex: a,
+              addBlock: c,
+              onUpload: e
+            }
+          ),
+          /* @__PURE__ */ M.jsx(il, { handleBlockIndex: a }),
+          /* @__PURE__ */ M.jsx(ml, { handleBlockIndex: a }),
+          /* @__PURE__ */ M.jsx(Zc, {})
+        ]
+      }
+    )
   ] });
 }
 const id = K.div`

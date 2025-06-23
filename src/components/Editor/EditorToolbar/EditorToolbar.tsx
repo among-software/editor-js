@@ -90,7 +90,9 @@ export default function EditorToolbar({ toolbarTop, onUpload, width }: Props) {
         </EditorToolModal>
       )}
 
-      <FixedToolbar position={{ top: toolbarTop, right: 0, width }}>
+      <FixedToolbar
+        position={{ top: toolbarTop, right: 0, width: width ?? "768px" }}
+      >
         <ImageIcon
           handleBlockIndex={handleBlockIndex}
           addBlock={addBlock}
