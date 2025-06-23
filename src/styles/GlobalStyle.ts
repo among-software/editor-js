@@ -131,13 +131,13 @@ export const GlobalStyle = createGlobalStyle`
 .image-align-modal {
   display: flex;
   position: absolute;
-  top: -35px;
+  top: 0px;
   right: 0;
   background: white;
   border: 1px solid #ccc;
   padding: 4px;
   gap: 4px;
-  z-index: 5;
+  z-index: 9999999;
 }
 
 .image-align-modal-button {
