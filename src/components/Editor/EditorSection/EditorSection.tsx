@@ -8,7 +8,7 @@ import useEditorStore from "../../../store/useEditorStore";
 interface EditorSectionProps {
   value?: any; // ✅ 추가
   onUpload?: UploadHandler;
-  width?: string;
+  width: string;
   onChange?: (data: any) => void;
 }
 
