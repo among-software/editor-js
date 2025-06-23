@@ -35851,18 +35851,21 @@ var gg = Wr.exports;
 const pg = /* @__PURE__ */ At(gg);
 class hg {
   constructor({ data: e, api: i }) {
-    this.handleKeyDown = (s) => {
-      s.key === "Backspace" && (s.preventDefault(), this.api.blocks.delete());
-    }, this.api = i, this._CSS = {
-      block: this.api.styles.block,
+    this._CSS = {
+      block: "",
       wrapper: "ce-delimiter",
       delimiter: "delimiter",
       active: "ce-delimiter--active"
-    };
+    }, this.handleKeyDown = (s) => {
+      s.key === "Backspace" && (s.preventDefault(), this.api.blocks.delete());
+    }, this.api = i, this._CSS.block = this.api.styles.block;
     const { align: o } = Ce.getState();
     this.data = {
       ...e,
-      align: o
+      align: (e == null ? void 0 : e.align) || o || "center",
+      url: (e == null ? void 0 : e.url) || "",
+      // 기본 URL은 외부에서 들어옴
+      imagePosition: (e == null ? void 0 : e.imagePosition) || "50% 50%"
     }, this._element = this.drawView();
   }
   static get isReadOnlySupported() {
@@ -35873,18 +35876,42 @@ class hg {
   }
   drawView() {
     const e = document.createElement("div"), i = document.createElement("hr");
-    return e.classList.add(this._CSS.wrapper, this._CSS.block), i.classList.add(this._CSS.delimiter), i.addEventListener("click", () => {
-      i.classList.add(this._CSS.active), document.addEventListener("keydown", this.handleKeyDown);
+    switch (e.classList.add(this._CSS.wrapper, this._CSS.block), e.style.textAlign = this.data.align, e.style.position = "relative", i.classList.add(this._CSS.delimiter), i.style.display = "block", i.style.width = "100%", i.style.height = "24px", i.style.border = "none", i.style.backgroundRepeat = "no-repeat", i.style.backgroundImage = `url(${this.data.url})`, this.data.align) {
+      case "left":
+        i.style.backgroundPosition = "8px center";
+        break;
+      case "center":
+        i.style.backgroundPosition = "center";
+        break;
+      case "right":
+        i.style.backgroundPosition = "calc(100% - 8px) center";
+        break;
+    }
+    const o = document.createElement("div");
+    o.className = "image-align-modal", o.style.display = "none";
+    const s = ["left", "center", "right"], n = (r, a = !1) => `https://kr1-api-object-storage.nhncloudservice.com/v1/AUTH_96c6313b6d6a405b9511658326418a69/lotte-foundation/${r}${a ? "-hover.svg" : ".svg"}`;
+    return s.forEach((r) => {
+      const a = document.createElement("button");
+      a.className = "image-align-modal-button", a.style.backgroundImage = `url('${n(r)}')`, a.style.backgroundRepeat = "no-repeat", a.style.backgroundSize = "20px 20px", a.style.backgroundPosition = "center", a.addEventListener("click", () => {
+        this.data.align = r, this.updateView();
+      }), a.addEventListener("mouseenter", () => {
+        a.style.backgroundImage = `url('${n(r, !0)}')`;
+      }), a.addEventListener("mouseleave", () => {
+        a.style.backgroundImage = `url('${n(r, !1)}')`;
+      }), o.appendChild(a);
+    }), i.addEventListener("click", (r) => {
+      r.stopPropagation(), this._element.classList.add(this._CSS.active), o.style.display = "flex", document.addEventListener("keydown", this.handleKeyDown);
     }), document.addEventListener(
       "click",
-      (o) => {
-        this._element.contains(o.target) || (i.classList.remove(this._CSS.active), document.removeEventListener("keydown", this.handleKeyDown));
+      (r) => {
+        this._element.contains(r.target) || (this._element.classList.remove(this._CSS.active), o.style.display = "none", document.removeEventListener("keydown", this.handleKeyDown));
       },
       !0
-    ), this.data && (i.style.backgroundImage = `url(${this.data.url})`, i.style.backgroundPosition = this.data.align === "center" ? "50% 50%" : this.data.imagePosition, e.appendChild(i)), this.applyAlignment(i), e;
+    ), e.appendChild(o), e.appendChild(i), e;
   }
-  applyAlignment(e) {
-    e.classList.remove("align-left", "align-center"), this.data.align === "center" && e.classList.add("align-center"), this.data.align === "left" && e.classList.add("align-left");
+  updateView() {
+    const e = this.drawView();
+    this._element.replaceWith(e), this._element = e;
   }
   render() {
     return this._element;
@@ -35898,8 +35925,8 @@ class hg {
   }
   static get toolbox() {
     return {
-      icon: "🖼️",
-      title: "delimiter"
+      icon: "⎯",
+      title: "Delimiter"
     };
   }
   static get pasteConfig() {

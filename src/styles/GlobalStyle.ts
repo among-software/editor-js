@@ -127,4 +127,27 @@ export const GlobalStyle = createGlobalStyle`
   margin-right: 8px;
   min-width: 100px;
 }
+
+.image-align-modal {
+  display: flex;
+  position: absolute;
+  top: -35px;
+  right: 0;
+  background: white;
+  border: 1px solid #ccc;
+  padding: 4px;
+  gap: 4px;
+  z-index: 5;
+}
+
+.image-align-modal-button {
+  width: 24px;
+  height: 24px;
+  font-size: 12px;
+  background: #f0f0f0;
+  border: 1px solid #aaa;
+  cursor: pointer;
+}
+
+
 `;
