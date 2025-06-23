@@ -36250,11 +36250,8 @@ class Ig {
   }
   render() {
     return this._elements.wrapper = this.makeMainTag(this._data.style), this._data.items.length ? this._data.items.forEach((e) => {
-      this._elements.wrapper.appendChild(
-        this._make("li", this.CSS.item, {
-          innerHTML: e
-        })
-      );
+      const i = this._make("li", this.CSS.item);
+      i.textContent = e, this._elements.wrapper.appendChild(i);
     }) : this._elements.wrapper.appendChild(this._make("li", this.CSS.item)), this.readOnly || this._elements.wrapper.addEventListener(
       "keydown",
       (e) => {
@@ -36286,9 +36283,7 @@ class Ig {
   static get sanitize() {
     return {
       style: {},
-      items: {
-        br: !0
-      }
+      items: !0
     };
   }
   renderSettings() {
@@ -36340,7 +36335,9 @@ class Ig {
     this._data.items = [];
     const e = (i = this._elements.wrapper) == null ? void 0 : i.querySelectorAll(`.${this.CSS.item}`);
     return e && e.forEach((o) => {
-      o.innerHTML.replace("<br>", " ").trim() && this._data.items.push(o.innerHTML);
+      var n;
+      const s = (n = o.textContent) == null ? void 0 : n.trim();
+      s && this._data.items.push(s);
     }), this._data;
   }
   _make(e, i = null, o = {}) {
@@ -36405,10 +36402,10 @@ class Ig {
       items: []
     };
     if (i === "LI")
-      s.items = [e.innerHTML];
+      s.items = [e.textContent || ""];
     else {
       const n = Array.from(e.querySelectorAll("LI"));
-      s.items = n.map((r) => r.innerHTML).filter((r) => !!r.trim());
+      s.items = n.map((r) => r.textContent || "").filter((r) => !!r.trim());
     }
     return s;
   }

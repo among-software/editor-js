@@ -85,11 +85,9 @@ export default class List {
 
     if (this._data.items.length) {
       this._data.items.forEach((item) => {
-        this._elements.wrapper!.appendChild(
-          this._make("li", this.CSS.item, {
-            innerHTML: item,
-          })
-        );
+        const li = this._make("li", this.CSS.item);
+        li.textContent = item;
+        this._elements.wrapper!.appendChild(li);
       });
     } else {
       this._elements.wrapper!.appendChild(this._make("li", this.CSS.item));
@@ -137,9 +135,7 @@ export default class List {
   static get sanitize() {
     return {
       style: {},
-      items: {
-        br: true,
-      },
+      items: true,
     };
   }
 
@@ -221,9 +217,9 @@ export default class List {
 
     if (items) {
       items.forEach((item) => {
-        const value = item.innerHTML.replace("<br>", " ").trim();
+        const value = item.textContent?.trim();
         if (value) {
-          this._data.items.push(item.innerHTML);
+          this._data.items.push(value);
         }
       });
     }
@@ -347,11 +343,11 @@ export default class List {
     };
 
     if (tag === "LI") {
-      data.items = [element.innerHTML];
+      data.items = [element.textContent || ""];
     } else {
       const items = Array.from(element.querySelectorAll("LI"));
       data.items = items
-        .map((li) => li.innerHTML)
+        .map((li) => li.textContent || "")
         .filter((item) => !!item.trim());
     }
 
