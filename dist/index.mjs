@@ -36459,13 +36459,11 @@ class es {
     return "";
   }
   onKeyUp(e) {
-    if (e.code !== "Backspace" && e.code !== "Delete" || !this._element) return;
-    const { textContent: i } = this._element;
-    i === "" && (this._element.innerHTML = "");
+    e.code !== "Backspace" && e.code !== "Delete" || !this._element || this._element.textContent === "" && (this._element.innerHTML = "");
   }
   drawView() {
-    const e = document.createElement("DIV");
-    return e.classList.add(this._CSS.wrapper, this._CSS.block), e.contentEditable = "false", e.dataset.placeholderActive = this.api.i18n.t(this._placeholder), this._data.text && (e.innerHTML = this._data.text), this._data.lineHeight && this._data.lineHeight !== "normal" && (e.style.lineHeight = this._data.lineHeight), this._data.letterSpacing && this._data.letterSpacing !== "normal" && (e.style.letterSpacing = this._data.letterSpacing), this._data.fontSize && (e.style.fontSize = this._data.fontSize), this._data.fontFamily && (e.style.fontFamily = this._data.fontFamily), this._data.isBold && (e.style.fontWeight = "bold"), this._data.isItalic && (e.style.fontStyle = "italic"), this.readOnly || (e.contentEditable = "true", e.addEventListener("keyup", this.onKeyUp)), this.applyAlignment(e), e;
+    const e = document.createElement("div");
+    return e.classList.add(this._CSS.wrapper, this._CSS.block), e.dataset.placeholderActive = this.api.i18n.t(this._placeholder), this._data.text && (e.innerHTML = this._data.text), this._data.lineHeight && this._data.lineHeight !== "normal" && (e.style.lineHeight = this._data.lineHeight), this._data.letterSpacing && this._data.letterSpacing !== "normal" && (e.style.letterSpacing = this._data.letterSpacing), this._data.fontSize && (e.style.fontSize = this._data.fontSize), this._data.fontFamily && (e.style.fontFamily = this._data.fontFamily), this._data.isBold && (e.style.fontWeight = "bold"), this._data.isItalic && (e.style.fontStyle = "italic"), this.readOnly ? e.contentEditable = "false" : (e.contentEditable = "true", e.addEventListener("keyup", this.onKeyUp)), this.applyAlignment(e), e;
   }
   applyAlignment(e) {
     const i = this._data.align, o = ["left", "center", "right", "justify"];
@@ -36492,47 +36490,45 @@ class es {
     return e.innerText || "";
   }
   mergeNestedSpans(e) {
-    const i = e.querySelectorAll("span");
+    const i = Array.from(e.querySelectorAll("span"));
     if (i.length <= 1) return e;
     const o = document.createElement("span");
     let s = "";
-    return i.forEach((n) => {
-      Array.from(n.attributes).forEach((a) => {
-        a.name.startsWith("data-") && o.setAttribute(a.name, a.value);
-      });
+    for (const n of i) {
+      s += n.textContent || "";
       const r = n.style;
-      r.fontSize && (o.style.fontSize = r.fontSize), r.fontFamily && (o.style.fontFamily = r.fontFamily), r.letterSpacing && (o.style.letterSpacing = r.letterSpacing), r.lineHeight && (o.style.lineHeight = r.lineHeight), s = n.textContent || s;
-    }), o.textContent = s, o.style.display = "inline-block", o.style.wordBreak = "break-word", e.innerHTML = "", e.appendChild(o), e;
+      r.fontSize && !o.style.fontSize && (o.style.fontSize = r.fontSize), r.fontFamily && !o.style.fontFamily && (o.style.fontFamily = r.fontFamily), r.letterSpacing && !o.style.letterSpacing && (o.style.letterSpacing = r.letterSpacing), r.lineHeight && !o.style.lineHeight && (o.style.lineHeight = r.lineHeight);
+    }
+    return o.textContent = s, o.style.display = "inline-block", o.style.wordBreak = "break-word", e.innerHTML = "", e.appendChild(o), e;
   }
   save(e) {
-    const i = e.style.textAlign, o = i === "center" || i === "right" || i === "justify" ? i : "left", s = this.mergeNestedSpans(
+    const i = this.getAlignment(e), o = this.mergeNestedSpans(
       e.cloneNode(!0)
-    ), n = [
+    ), s = [
       "span[data-font-size]",
       "span[style*='font-size']",
       "span[data-font-family]",
       "span[style*='font-family']",
       "span[style*='letter-spacing']",
       "span[style*='line-height']"
-    ], r = s.querySelector(n.join(", ")) || s, a = window.getComputedStyle(r), c = !!s.querySelector("b, strong"), l = !!s.querySelector("i, em");
+    ], n = o.querySelector(s.join(", ")) || o, r = window.getComputedStyle(n), a = r.fontWeight, c = r.fontStyle;
     return {
-      text: s.innerHTML,
-      realText: this.extractRealText(s),
-      align: o,
-      letterSpacing: a.letterSpacing || "normal",
-      lineHeight: a.lineHeight || "normal",
-      isBold: c,
-      isItalic: l,
-      fontSize: a.fontSize,
-      fontFamily: a.fontFamily
+      text: o.innerHTML,
+      realText: this.extractRealText(o),
+      align: i,
+      letterSpacing: r.letterSpacing || "normal",
+      lineHeight: r.lineHeight || "normal",
+      isBold: a === "bold" || parseInt(a) >= 600,
+      isItalic: c === "italic",
+      fontSize: r.fontSize,
+      fontFamily: r.fontFamily
     };
   }
   onPaste(e) {
-    const i = {
+    this._data = {
       text: e.detail.data.innerHTML,
       align: this._data.align
-    };
-    this._data = i, window.requestAnimationFrame(() => {
+    }, window.requestAnimationFrame(() => {
       this._element && (this._element.innerHTML = this._data.text || "");
     });
   }
