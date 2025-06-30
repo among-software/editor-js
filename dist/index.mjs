@@ -36513,8 +36513,8 @@ class es {
       "span[style*='line-height']"
     ], n = o.querySelector(s.join(", ")) || o, r = window.getComputedStyle(n), a = r.fontWeight, c = r.fontStyle;
     return {
-      text: o.innerHTML,
-      realText: this.extractRealText(o),
+      text: this.cleanTextArtifacts(o.innerHTML),
+      realText: this.cleanTextArtifacts(this.extractRealText(o)),
       align: i,
       letterSpacing: r.letterSpacing || "normal",
       lineHeight: r.lineHeight || "normal",
@@ -36531,6 +36531,9 @@ class es {
     }, window.requestAnimationFrame(() => {
       this._element && (this._element.innerHTML = this._data.text || "");
     });
+  }
+  cleanTextArtifacts(e) {
+    return e.replace(/\)\s*\d{1,2}:\d{2}/g, ")").replace(/,\s*\d+$/, "").replace(/([가-힣])\s*\d+\s*/g, "$1 ").replace(/\s{2,}/g, " ");
   }
   static get conversionConfig() {
     return {

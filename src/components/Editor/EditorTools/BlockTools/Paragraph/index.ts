@@ -225,8 +225,8 @@ export default class Paragraph {
     const fontStyle = computedStyle.fontStyle;
 
     return {
-      text: mergedContent.innerHTML,
-      realText: this.extractRealText(mergedContent),
+      text: this.cleanTextArtifacts(mergedContent.innerHTML),
+      realText: this.cleanTextArtifacts(this.extractRealText(mergedContent)),
       align,
       letterSpacing: computedStyle.letterSpacing || "normal",
       lineHeight: computedStyle.lineHeight || "normal",
@@ -248,6 +248,14 @@ export default class Paragraph {
         this._element.innerHTML = this._data.text || "";
       }
     });
+  }
+
+  cleanTextArtifacts(text: string): string {
+    return text
+      .replace(/\)\s*\d{1,2}:\d{2}/g, ")") // 중복된 시간
+      .replace(/,\s*\d+$/, "") // 문장 끝 숫자
+      .replace(/([가-힣])\s*\d+\s*/g, "$1 ") // 문장 중간 숫자
+      .replace(/\s{2,}/g, " "); // 다중 공백
   }
 
   static get conversionConfig(): ConversionConfig {
