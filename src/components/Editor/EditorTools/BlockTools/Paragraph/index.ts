@@ -1,8 +1,6 @@
 import "./index.css";
-
 import { IconText } from "@codexteam/icons";
 import makeFragment from "./utils/makeFragment";
-
 import type {
   API,
   ConversionConfig,
@@ -50,7 +48,6 @@ export default class Paragraph {
 
   api: API;
   readOnly: boolean;
-
   private _CSS: ParagraphCSS;
   private _placeholder: string;
   private _data: ParagraphData;
@@ -60,15 +57,12 @@ export default class Paragraph {
   constructor({ data, config = {}, api, readOnly }: ParagraphParams) {
     this.api = api;
     this.readOnly = readOnly;
-
     this._CSS = {
       block: this.api.styles.block,
       wrapper: "ce-paragraph",
     };
 
-    if (!this.readOnly) {
-      this.onKeyUp = this.onKeyUp.bind(this);
-    }
+    if (!this.readOnly) this.onKeyUp = this.onKeyUp.bind(this);
 
     this._placeholder = config.placeholder || Paragraph.DEFAULT_PLACEHOLDER;
     const { align: defaultAlign } = useEditorStore.getState();
@@ -82,20 +76,16 @@ export default class Paragraph {
   }
 
   onKeyUp(e: KeyboardEvent): void {
-    if (e.code !== "Backspace" && e.code !== "Delete") return;
-    if (!this._element) return;
-
-    const { textContent } = this._element;
-    if (textContent === "") {
+    if ((e.code !== "Backspace" && e.code !== "Delete") || !this._element)
+      return;
+    if (this._element.textContent === "") {
       this._element.innerHTML = "";
     }
   }
 
   drawView(): HTMLDivElement {
-    const div = document.createElement("DIV") as HTMLDivElement;
-
+    const div = document.createElement("div");
     div.classList.add(this._CSS.wrapper, this._CSS.block);
-    div.contentEditable = "false";
     div.dataset.placeholderActive = this.api.i18n.t(this._placeholder);
 
     if (this._data.text) {
@@ -129,6 +119,8 @@ export default class Paragraph {
     if (!this.readOnly) {
       div.contentEditable = "true";
       div.addEventListener("keyup", this.onKeyUp);
+    } else {
+      div.contentEditable = "false";
     }
 
     this.applyAlignment(div);
@@ -137,8 +129,7 @@ export default class Paragraph {
 
   applyAlignment(element: HTMLDivElement) {
     const align = this._data.align;
-    const allowedAlignments = ["left", "center", "right", "justify"];
-
+    const allowed = ["left", "center", "right", "justify"];
     element.classList.remove(
       "text-align-left",
       "text-align-center",
@@ -146,7 +137,7 @@ export default class Paragraph {
       "text-align-justify"
     );
 
-    if (allowedAlignments.includes(align)) {
+    if (allowed.includes(align)) {
       element.classList.add(`text-align-${align}`);
       element.style.textAlign = align;
     } else {
@@ -170,8 +161,7 @@ export default class Paragraph {
   }
 
   validate(savedData: ParagraphData): boolean {
-    if (savedData.text.trim() === "" && !this._preserveBlank) return false;
-    return true;
+    return !(savedData.text.trim() === "" && !this._preserveBlank);
   }
 
   getAlignment = (el: HTMLElement): ParagraphData["align"] => {
@@ -186,31 +176,24 @@ export default class Paragraph {
   }
 
   private mergeNestedSpans(root: HTMLElement): HTMLElement {
-    const spans = root.querySelectorAll("span");
-
+    const spans = Array.from(root.querySelectorAll("span"));
     if (spans.length <= 1) return root;
 
     const mergedSpan = document.createElement("span");
     let text = "";
 
-    spans.forEach((span) => {
-      // data-* 속성 복사
-      Array.from(span.attributes).forEach((attr) => {
-        if (attr.name.startsWith("data-")) {
-          mergedSpan.setAttribute(attr.name, attr.value);
-        }
-      });
-
-      // style 병합
+    for (const span of spans) {
+      text += span.textContent || "";
       const style = (span as HTMLElement).style;
-      if (style.fontSize) mergedSpan.style.fontSize = style.fontSize;
-      if (style.fontFamily) mergedSpan.style.fontFamily = style.fontFamily;
-      if (style.letterSpacing)
+      if (style.fontSize && !mergedSpan.style.fontSize)
+        mergedSpan.style.fontSize = style.fontSize;
+      if (style.fontFamily && !mergedSpan.style.fontFamily)
+        mergedSpan.style.fontFamily = style.fontFamily;
+      if (style.letterSpacing && !mergedSpan.style.letterSpacing)
         mergedSpan.style.letterSpacing = style.letterSpacing;
-      if (style.lineHeight) mergedSpan.style.lineHeight = style.lineHeight;
-
-      text = span.textContent || text;
-    });
+      if (style.lineHeight && !mergedSpan.style.lineHeight)
+        mergedSpan.style.lineHeight = style.lineHeight;
+    }
 
     mergedSpan.textContent = text;
     mergedSpan.style.display = "inline-block";
@@ -218,23 +201,14 @@ export default class Paragraph {
 
     root.innerHTML = "";
     root.appendChild(mergedSpan);
-
     return root;
   }
 
   save(toolsContent: HTMLDivElement): ParagraphData {
-    const textAlign = toolsContent.style.textAlign;
-    const align: ParagraphData["align"] =
-      textAlign === "center" || textAlign === "right" || textAlign === "justify"
-        ? textAlign
-        : "left";
-
-    // 1. 중첩된 span 병합
+    const align = this.getAlignment(toolsContent);
     const mergedContent = this.mergeNestedSpans(
       toolsContent.cloneNode(true) as HTMLElement
     );
-
-    // 2. 병합된 span 선택
     const spanSelectors = [
       "span[data-font-size]",
       "span[style*='font-size']",
@@ -245,12 +219,10 @@ export default class Paragraph {
     ];
     const targetSpan =
       mergedContent.querySelector(spanSelectors.join(", ")) || mergedContent;
-
     const computedStyle = window.getComputedStyle(targetSpan as HTMLElement);
 
-    // 3. <b>, <strong>, <i>, <em> 태그로 bold/italic 판단
-    const containsBold = !!mergedContent.querySelector("b, strong");
-    const containsItalic = !!mergedContent.querySelector("i, em");
+    const fontWeight = computedStyle.fontWeight;
+    const fontStyle = computedStyle.fontStyle;
 
     return {
       text: mergedContent.innerHTML,
@@ -258,24 +230,23 @@ export default class Paragraph {
       align,
       letterSpacing: computedStyle.letterSpacing || "normal",
       lineHeight: computedStyle.lineHeight || "normal",
-      isBold: containsBold,
-      isItalic: containsItalic,
+      isBold: fontWeight === "bold" || parseInt(fontWeight) >= 600,
+      isItalic: fontStyle === "italic",
       fontSize: computedStyle.fontSize,
       fontFamily: computedStyle.fontFamily,
     };
   }
 
   onPaste(event: HTMLPasteEvent): void {
-    const data = {
+    this._data = {
       text: event.detail.data.innerHTML,
       align: this._data.align,
     };
 
-    this._data = data;
-
     window.requestAnimationFrame(() => {
-      if (!this._element) return;
-      this._element.innerHTML = this._data.text || "";
+      if (this._element) {
+        this._element.innerHTML = this._data.text || "";
+      }
     });
   }
 
