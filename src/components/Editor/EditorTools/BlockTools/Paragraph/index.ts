@@ -240,10 +240,9 @@ export default class Paragraph {
   onPaste(event: HTMLPasteEvent): void {
     const rawHtml =
       event.detail.data.innerHTML || event.detail.data.innerText || "";
-    const normalizedHtml = rawHtml.replace(/[‘’“”]/g, "'");
 
     const parser = new DOMParser();
-    const doc = parser.parseFromString(normalizedHtml, "text/html");
+    const doc = parser.parseFromString(rawHtml, "text/html");
 
     // 텍스트만 추출
     const cleanText = doc.body.innerText || doc.body.textContent || "";

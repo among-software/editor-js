@@ -36525,11 +36525,11 @@ class es {
     };
   }
   onPaste(e) {
-    const i = e.detail.data.innerHTML || e.detail.data.innerText || "", o = i.replace(/[‘’“”]/g, "'"), n = new DOMParser().parseFromString(o, "text/html"), r = n.body.innerText || n.body.textContent || "", a = document.createElement("span");
-    a.style.display = "inline-block", a.style.wordBreak = "break-word", a.innerText = r;
-    const c = a.outerHTML;
-    console.log("[onPaste] Raw HTML:", i), console.log("[onPaste] Normalized HTML:", o), console.log("[onPaste] Cleaned HTML:", c), this._data = {
-      text: c,
+    const i = e.detail.data.innerHTML || e.detail.data.innerText || "", s = new DOMParser().parseFromString(i, "text/html"), n = s.body.innerText || s.body.textContent || "", r = document.createElement("span");
+    r.style.display = "inline-block", r.style.wordBreak = "break-word", r.innerText = n;
+    const a = r.outerHTML;
+    console.log("[onPaste] Raw HTML:", i), console.log("[onPaste] Normalized HTML:", normalizedHtml), console.log("[onPaste] Cleaned HTML:", a), this._data = {
+      text: a,
       align: this._data.align
     }, window.requestAnimationFrame(() => {
       this._element && (this._element.innerHTML = this._data.text || "");
