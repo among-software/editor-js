@@ -65,7 +65,7 @@ export const EDITOR_JS_TOOLS = {
   unifiedImage: UnifiedImage,
   video: Video,
   file: File,
-  place: Place,
+  // place: Place,
   emoji: Emoji,
   delimiter: Delimiter,
 
