@@ -36513,8 +36513,8 @@ class es {
       "span[style*='line-height']"
     ], n = o.querySelector(s.join(", ")) || o, r = window.getComputedStyle(n), a = r.fontWeight, c = r.fontStyle;
     return {
-      text: this.cleanTextArtifacts(o.innerHTML),
-      realText: this.cleanTextArtifacts(this.extractRealText(o)),
+      text: o.innerHTML,
+      realText: this.extractRealText(o),
       align: i,
       letterSpacing: r.letterSpacing || "normal",
       lineHeight: r.lineHeight || "normal",
@@ -36525,15 +36525,15 @@ class es {
     };
   }
   onPaste(e) {
-    this._data = {
-      text: e.detail.data.innerHTML,
+    const i = e.detail.data.innerHTML || e.detail.data.innerText || "", o = i.replace(/[‘’“”]/g, "'"), n = new DOMParser().parseFromString(o, "text/html"), r = n.body.innerText || n.body.textContent || "", a = document.createElement("span");
+    a.style.display = "inline-block", a.style.wordBreak = "break-word", a.innerText = r;
+    const c = a.outerHTML;
+    console.log("[onPaste] Raw HTML:", i), console.log("[onPaste] Normalized HTML:", o), console.log("[onPaste] Cleaned HTML:", c), this._data = {
+      text: c,
       align: this._data.align
     }, window.requestAnimationFrame(() => {
       this._element && (this._element.innerHTML = this._data.text || "");
     });
-  }
-  cleanTextArtifacts(e) {
-    return e.replace(/\)\s*\d{1,2}:\d{2}/g, ")").replace(/,\s*\d+$/, "").replace(/([가-힣])\s*\d+\s*/g, "$1 ").replace(/\s{2,}/g, " ");
   }
   static get conversionConfig() {
     return {

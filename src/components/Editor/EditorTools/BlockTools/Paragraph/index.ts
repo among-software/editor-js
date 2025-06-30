@@ -225,8 +225,8 @@ export default class Paragraph {
     const fontStyle = computedStyle.fontStyle;
 
     return {
-      text: this.cleanTextArtifacts(mergedContent.innerHTML),
-      realText: this.cleanTextArtifacts(this.extractRealText(mergedContent)),
+      text: mergedContent.innerHTML,
+      realText: this.extractRealText(mergedContent),
       align,
       letterSpacing: computedStyle.letterSpacing || "normal",
       lineHeight: computedStyle.lineHeight || "normal",
@@ -238,8 +238,29 @@ export default class Paragraph {
   }
 
   onPaste(event: HTMLPasteEvent): void {
+    const rawHtml =
+      event.detail.data.innerHTML || event.detail.data.innerText || "";
+    const normalizedHtml = rawHtml.replace(/[‘’“”]/g, "'");
+
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(normalizedHtml, "text/html");
+
+    // 텍스트만 추출
+    const cleanText = doc.body.innerText || doc.body.textContent || "";
+
+    const span = document.createElement("span");
+    span.style.display = "inline-block";
+    span.style.wordBreak = "break-word";
+    span.innerText = cleanText;
+
+    const finalHtml = span.outerHTML;
+
+    console.log("[onPaste] Raw HTML:", rawHtml);
+    console.log("[onPaste] Normalized HTML:", normalizedHtml);
+    console.log("[onPaste] Cleaned HTML:", finalHtml);
+
     this._data = {
-      text: event.detail.data.innerHTML,
+      text: finalHtml,
       align: this._data.align,
     };
 
@@ -248,14 +269,6 @@ export default class Paragraph {
         this._element.innerHTML = this._data.text || "";
       }
     });
-  }
-
-  cleanTextArtifacts(text: string): string {
-    return text
-      .replace(/\)\s*\d{1,2}:\d{2}/g, ")") // 중복된 시간
-      .replace(/,\s*\d+$/, "") // 문장 끝 숫자
-      .replace(/([가-힣])\s*\d+\s*/g, "$1 ") // 문장 중간 숫자
-      .replace(/\s{2,}/g, " "); // 다중 공백
   }
 
   static get conversionConfig(): ConversionConfig {
