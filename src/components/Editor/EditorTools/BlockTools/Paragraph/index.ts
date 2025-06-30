@@ -244,52 +244,18 @@ export default class Paragraph {
     const parser = new DOMParser();
     const doc = parser.parseFromString(rawHtml, "text/html");
 
-    const body = doc.body;
+    // 텍스트만 추출
+    const cleanText = doc.body.innerText || doc.body.textContent || "";
 
-    // Word 등에서 오는 중첩 <b><span> 같은 구조 제거 & flatten
-    const walker = document.createTreeWalker(body, NodeFilter.SHOW_ELEMENT);
-    const flattened: string[] = [];
+    const span = document.createElement("span");
+    span.style.display = "inline-block";
+    span.style.wordBreak = "break-word";
+    span.innerText = cleanText;
 
-    while (walker.nextNode()) {
-      const el = walker.currentNode as HTMLElement;
-
-      if (
-        el.tagName === "SPAN" ||
-        el.tagName === "B" ||
-        el.tagName === "STRONG"
-      ) {
-        const style = el.style;
-        const text = el.innerText || el.textContent || "";
-
-        if (text.trim() === "") continue;
-
-        const styleAttrs: string[] = [];
-
-        if (style.fontSize) styleAttrs.push(`font-size: ${style.fontSize}`);
-        if (style.lineHeight)
-          styleAttrs.push(`line-height: ${style.lineHeight}`);
-        if (style.letterSpacing)
-          styleAttrs.push(`letter-spacing: ${style.letterSpacing}`);
-        if (style.fontFamily)
-          styleAttrs.push(`font-family: ${style.fontFamily}`);
-        if (style.fontWeight && style.fontWeight !== "normal")
-          styleAttrs.push(`font-weight: ${style.fontWeight}`);
-        if (style.fontStyle && style.fontStyle !== "normal")
-          styleAttrs.push(`font-style: ${style.fontStyle}`);
-
-        flattened.push(
-          `<span style="${styleAttrs.join(
-            "; "
-          )}; display: inline-block; word-break: break-word;">${text}</span>`
-        );
-      }
-    }
-
-    const mergedHtml =
-      flattened.join("") || `<span>${body.innerText || ""}</span>`;
+    const finalHtml = span.outerHTML;
 
     this._data = {
-      text: mergedHtml,
+      text: finalHtml,
       align: this._data.align,
     };
 

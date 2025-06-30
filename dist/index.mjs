@@ -36525,23 +36525,11 @@ class es {
     };
   }
   onPaste(e) {
-    const i = e.detail.data.innerHTML || e.detail.data.innerText || "", n = new DOMParser().parseFromString(i, "text/html").body, r = document.createTreeWalker(n, NodeFilter.SHOW_ELEMENT), a = [];
-    for (; r.nextNode(); ) {
-      const l = r.currentNode;
-      if (l.tagName === "SPAN" || l.tagName === "B" || l.tagName === "STRONG") {
-        const d = l.style, u = l.innerText || l.textContent || "";
-        if (u.trim() === "") continue;
-        const g = [];
-        d.fontSize && g.push(`font-size: ${d.fontSize}`), d.lineHeight && g.push(`line-height: ${d.lineHeight}`), d.letterSpacing && g.push(`letter-spacing: ${d.letterSpacing}`), d.fontFamily && g.push(`font-family: ${d.fontFamily}`), d.fontWeight && d.fontWeight !== "normal" && g.push(`font-weight: ${d.fontWeight}`), d.fontStyle && d.fontStyle !== "normal" && g.push(`font-style: ${d.fontStyle}`), a.push(
-          `<span style="${g.join(
-            "; "
-          )}; display: inline-block; word-break: break-word;">${u}</span>`
-        );
-      }
-    }
-    const c = a.join("") || `<span>${n.innerText || ""}</span>`;
+    const i = e.detail.data.innerHTML || e.detail.data.innerText || "", s = new DOMParser().parseFromString(i, "text/html"), n = s.body.innerText || s.body.textContent || "", r = document.createElement("span");
+    r.style.display = "inline-block", r.style.wordBreak = "break-word", r.innerText = n;
+    const a = r.outerHTML;
     this._data = {
-      text: c,
+      text: a,
       align: this._data.align
     }, window.requestAnimationFrame(() => {
       this._element && (this._element.innerHTML = this._data.text || "");
