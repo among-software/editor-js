@@ -130,6 +130,7 @@ export default class Paragraph {
   applyAlignment(element: HTMLDivElement) {
     const align = this._data.align;
     const allowed = ["left", "center", "right", "justify"];
+
     element.classList.remove(
       "text-align-left",
       "text-align-center",
@@ -165,10 +166,22 @@ export default class Paragraph {
   }
 
   getAlignment = (el: HTMLElement): ParagraphData["align"] => {
-    if (el.classList.contains("text-align-center")) return "center";
-    if (el.classList.contains("text-align-right")) return "right";
-    if (el.classList.contains("text-align-justify")) return "justify";
-    return "left";
+    const classAlign = (() => {
+      if (el.classList.contains("text-align-center")) return "center";
+      if (el.classList.contains("text-align-right")) return "right";
+      if (el.classList.contains("text-align-justify")) return "justify";
+      if (el.classList.contains("text-align-left")) return "left";
+      return null;
+    })();
+
+    const styleAlign = (el.style.textAlign || "").toLowerCase();
+
+    // style 우선, 없으면 class 기준
+    if (["center", "right", "justify", "left"].includes(styleAlign)) {
+      return styleAlign as ParagraphData["align"];
+    }
+
+    return (classAlign ?? "left") as ParagraphData["align"];
   };
 
   extractRealText(el: HTMLElement): string {

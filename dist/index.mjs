@@ -36445,7 +36445,10 @@ function Og(t) {
 }
 class es {
   constructor({ data: e, config: i = {}, api: o, readOnly: s }) {
-    this.getAlignment = (r) => r.classList.contains("text-align-center") ? "center" : r.classList.contains("text-align-right") ? "right" : r.classList.contains("text-align-justify") ? "justify" : "left", this.api = o, this.readOnly = s, this._CSS = {
+    this.getAlignment = (r) => {
+      const a = r.classList.contains("text-align-center") ? "center" : r.classList.contains("text-align-right") ? "right" : r.classList.contains("text-align-justify") ? "justify" : r.classList.contains("text-align-left") ? "left" : null, c = (r.style.textAlign || "").toLowerCase();
+      return ["center", "right", "justify", "left"].includes(c) ? c : a ?? "left";
+    }, this.api = o, this.readOnly = s, this._CSS = {
       block: this.api.styles.block,
       wrapper: "ce-paragraph"
     }, this.readOnly || (this.onKeyUp = this.onKeyUp.bind(this)), this._placeholder = i.placeholder || es.DEFAULT_PLACEHOLDER;
