@@ -1,4 +1,4 @@
-import Iframe from "@/components/Editor/EditorTools/BlockTools/Iframe";
+import Iframe from "../components/Editor/EditorTools/BlockTools/Iframe";
 import {
   Delimiter,
   Emoji,
