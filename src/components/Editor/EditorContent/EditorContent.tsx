@@ -67,7 +67,7 @@ const EditorContent = memo(({ value, onChange }: EditorContentProps) => {
           fontFamily: originalData.fontFamily ?? "",
         };
 
-        editor.blocks.update(blockIndex, updatedData);
+        editor.blocks.update(blockIndex.toString(), updatedData);
         editor.caret.setToBlock(blockIndex, "end"); // 리렌더 유도
       }
     });

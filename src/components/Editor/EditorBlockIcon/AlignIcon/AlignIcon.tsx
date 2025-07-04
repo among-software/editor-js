@@ -24,8 +24,8 @@ export default function AlignIcon() {
     }
 
     const savedData = await editor.save();
-    const blocksToUpdate = savedData.blocks.filter((b) =>
-      selectedBlockIds.includes(b.id)
+    const blocksToUpdate = savedData.blocks.filter(
+      (b) => typeof b.id === "string" && selectedBlockIds.includes(b.id)
     );
 
     console.log(savedData.blocks);
@@ -42,7 +42,7 @@ export default function AlignIcon() {
       const currentAlign = (block.data.align || "left") as AlignValue;
       console.log(`[정렬] ${block.id} → ${currentAlign} → ${nextAlign}`);
 
-      await editor.blocks.update(block.id, {
+      await editor.blocks.update(block.id!, {
         ...block.data,
         align: nextAlign,
       });

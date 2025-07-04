@@ -1853,7 +1853,7 @@ function Zc() {
       return;
     }
     const d = await r.save(), u = d.blocks.filter(
-      (f) => a.includes(f.id)
+      (f) => typeof f.id == "string" && a.includes(f.id)
     );
     console.log(d.blocks), console.log(u.at(-1));
     const g = s(
@@ -38721,7 +38721,7 @@ const Qp = La(({ value: t, onChange: e }) => {
           fontSize: g.fontSize ?? "",
           fontFamily: g.fontFamily ?? ""
         };
-        r.blocks.update(u, h), r.caret.setToBlock(u, "end");
+        r.blocks.update(u.toString(), h), r.caret.setToBlock(u, "end");
       }
     });
   };
