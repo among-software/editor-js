@@ -75,6 +75,18 @@ export default class Paragraph {
     this._preserveBlank = config.preserveBlank ?? false;
   }
 
+  update(data: ParagraphData): void {
+    this._data = {
+      ...this._data,
+      ...data,
+    };
+
+    if (this._element) {
+      this._element.innerHTML = data.text || "";
+      this.applyAlignment(this._element);
+    }
+  }
+
   onKeyUp(e: KeyboardEvent): void {
     if ((e.code !== "Backspace" && e.code !== "Delete") || !this._element)
       return;
@@ -92,11 +104,11 @@ export default class Paragraph {
       div.innerHTML = this._data.text;
     }
 
-    if (this._data.lineHeight && this._data.lineHeight !== "normal") {
+    if (this._data.lineHeight) {
       div.style.lineHeight = this._data.lineHeight;
     }
 
-    if (this._data.letterSpacing && this._data.letterSpacing !== "normal") {
+    if (this._data.letterSpacing) {
       div.style.letterSpacing = this._data.letterSpacing;
     }
 
@@ -150,6 +162,33 @@ export default class Paragraph {
 
   render(): HTMLDivElement {
     this._element = this.drawView();
+
+    if (!this.readOnly && this._element) {
+      setTimeout(() => {
+        const blockWrapper = this._element?.closest(".ce-block") as HTMLElement;
+        const blockId = blockWrapper?.dataset.id;
+
+        if (blockId) {
+          this._element?.addEventListener("click", (e) => {
+            const {
+              addSelectedBlockId,
+              clearSelectedBlockIds,
+              selectedBlockIds,
+            } = useEditorStore.getState();
+
+            if (!e.shiftKey) {
+              clearSelectedBlockIds();
+              addSelectedBlockId(blockId);
+            } else {
+              if (!selectedBlockIds.includes(blockId)) {
+                addSelectedBlockId(blockId);
+              }
+            }
+          });
+        }
+      }, 0);
+    }
+
     return this._element;
   }
 
@@ -175,8 +214,6 @@ export default class Paragraph {
     })();
 
     const styleAlign = (el.style.textAlign || "").toLowerCase();
-
-    // style 우선, 없으면 class 기준
     if (["center", "right", "justify", "left"].includes(styleAlign)) {
       return styleAlign as ParagraphData["align"];
     }
@@ -188,76 +225,69 @@ export default class Paragraph {
     return el.innerText || "";
   }
 
-  private mergeNestedSpans(root: HTMLElement): HTMLElement {
-    const spans = Array.from(root.querySelectorAll("span"));
-    if (spans.length <= 1) return root;
+  wrapOuterSpan(html: string): string {
+    const outerSpanRegex = /^<span[^>]*>[\s\S]*<\/span>$/i;
 
-    const mergedSpan = document.createElement("span");
-    let text = "";
-
-    for (const span of spans) {
-      text += span.textContent || "";
-      const style = (span as HTMLElement).style;
-      if (style.fontSize && !mergedSpan.style.fontSize)
-        mergedSpan.style.fontSize = style.fontSize;
-      if (style.fontFamily && !mergedSpan.style.fontFamily)
-        mergedSpan.style.fontFamily = style.fontFamily;
-      if (style.letterSpacing && !mergedSpan.style.letterSpacing)
-        mergedSpan.style.letterSpacing = style.letterSpacing;
-      if (style.lineHeight && !mergedSpan.style.lineHeight)
-        mergedSpan.style.lineHeight = style.lineHeight;
+    // 이미 외부 span으로 감싸져 있으면 그대로 반환
+    if (outerSpanRegex.test(html.trim())) {
+      return html;
     }
 
-    mergedSpan.textContent = text;
-    mergedSpan.style.display = "inline-block";
-    mergedSpan.style.wordBreak = "break-word";
-
-    root.innerHTML = "";
-    root.appendChild(mergedSpan);
-    return root;
+    // 없는 경우 wrapping 추가
+    return `<span style="display: inline-block; word-break: break-word;">${html}</span>`;
   }
 
-  save(toolsContent: HTMLDivElement): ParagraphData {
-    const align = this.getAlignment(toolsContent);
-    const mergedContent = this.mergeNestedSpans(
-      toolsContent.cloneNode(true) as HTMLElement
-    );
-    const spanSelectors = [
-      "span[data-font-size]",
-      "span[style*='font-size']",
-      "span[data-font-family]",
-      "span[style*='font-family']",
-      "span[style*='letter-spacing']",
-      "span[style*='line-height']",
-    ];
-    const targetSpan =
-      mergedContent.querySelector(spanSelectors.join(", ")) || mergedContent;
-    const computedStyle = window.getComputedStyle(targetSpan as HTMLElement);
+  save(blockContent: HTMLElement) {
+    const spans = blockContent.querySelectorAll("span");
 
-    const fontWeight = computedStyle.fontWeight;
-    const fontStyle = computedStyle.fontStyle;
+    let isBold = false;
+    let isItalic = false;
+    let fontSize = "";
+    let fontFamily = "";
+    let letterSpacing = "";
+    let lineHeight = "";
+
+    spans.forEach((span) => {
+      const style = span.style;
+      if (style.fontWeight === "bold" || style.fontWeight === "700") {
+        isBold = true;
+      }
+      if (style.fontStyle === "italic") {
+        isItalic = true;
+      }
+      if (style.fontSize) {
+        fontSize = style.fontSize;
+      }
+      if (style.fontFamily) {
+        fontFamily = style.fontFamily;
+      }
+      if (style.letterSpacing) {
+        letterSpacing = style.letterSpacing;
+      }
+      if (style.lineHeight) {
+        lineHeight = style.lineHeight;
+      }
+    });
+
+    const realText = blockContent.innerText || "";
 
     return {
-      text: mergedContent.innerHTML,
-      realText: this.extractRealText(mergedContent),
-      align,
-      letterSpacing: computedStyle.letterSpacing || "normal",
-      lineHeight: computedStyle.lineHeight || "normal",
-      isBold: fontWeight === "bold" || parseInt(fontWeight) >= 600,
-      isItalic: fontStyle === "italic",
-      fontSize: computedStyle.fontSize,
-      fontFamily: computedStyle.fontFamily,
+      text: blockContent.innerHTML,
+      realText,
+      isBold,
+      isItalic,
+      fontSize,
+      fontFamily,
+      letterSpacing,
+      lineHeight,
     };
   }
 
   onPaste(event: HTMLPasteEvent): void {
     const rawHtml =
       event.detail.data.innerHTML || event.detail.data.innerText || "";
-
     const parser = new DOMParser();
     const doc = parser.parseFromString(rawHtml, "text/html");
-
-    // 텍스트만 추출
     const cleanText = doc.body.innerText || doc.body.textContent || "";
 
     const span = document.createElement("span");

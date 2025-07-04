@@ -6,7 +6,7 @@ import { UploadHandler } from "../../../types/upload";
 import useEditorStore from "../../../store/useEditorStore";
 
 interface EditorSectionProps {
-  value?: any; // ✅ 추가
+  value?: any;
   onUpload?: UploadHandler;
   width: string;
   onChange?: (data: any) => void;
@@ -24,10 +24,9 @@ export default function EditorSection({
 }: EditorSectionProps) {
   const editorSectionRef = useRef<HTMLDivElement>(null);
   const [toolbarTop, setToolbarTop] = useState(0);
-  const { editor } = useEditorStore();
+  const { editor, setSelectedBlockIds } = useEditorStore();
 
-  console.log("lib value:", value);
-
+  // 스크롤에 따라 툴바 위치 조정
   useEffect(() => {
     const handleScroll = () => {
       if (editorSectionRef.current) {
@@ -49,9 +48,52 @@ export default function EditorSection({
     };
   }, []);
 
+  // ✅ 드래그 기반 블럭 선택 기능
+  useEffect(() => {
+    let startY = 0;
+    let endY = 0;
+
+    const handleMouseDown = (e: MouseEvent) => {
+      startY = e.clientY;
+    };
+
+    const handleMouseUp = (e: MouseEvent) => {
+      endY = e.clientY;
+
+      const minY = Math.min(startY, endY);
+      const maxY = Math.max(startY, endY);
+
+      const selectedIds: string[] = [];
+
+      document.querySelectorAll(".ce-block").forEach((block) => {
+        const rect = block.getBoundingClientRect();
+        const intersects = rect.top <= maxY && rect.bottom >= minY;
+
+        if (intersects) {
+          const id = block.getAttribute("data-id");
+          if (id) selectedIds.push(id);
+        }
+      });
+
+      // ✅ 상태 저장을 마이크로태스크 이후로 defer
+      setTimeout(() => {
+        useEditorStore.getState().setSelectedBlockIds(selectedIds);
+        console.log("[드래그 선택된 블럭 ID들]", selectedIds);
+      }, 0);
+    };
+
+    document.addEventListener("mousedown", handleMouseDown);
+    document.addEventListener("mouseup", handleMouseUp);
+
+    return () => {
+      document.removeEventListener("mousedown", handleMouseDown);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [setSelectedBlockIds]);
+
   return (
     <S.EditorSectionContainer ref={editorSectionRef} $width={width}>
-      <EditorContent value={value} onChange={onChange} /> {/* ✅ value 전달 */}
+      <EditorContent value={value} onChange={onChange} />
       <EditorToolbar
         toolbarTop={toolbarTop}
         onUpload={onUpload}
