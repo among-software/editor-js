@@ -1,3 +1,4 @@
+import Iframe from "@/components/Editor/EditorTools/BlockTools/Iframe";
 import {
   Delimiter,
   Emoji,
@@ -64,6 +65,7 @@ export const EDITOR_JS_TOOLS = {
   },
   unifiedImage: UnifiedImage,
   video: Video,
+  iframe: Iframe,
   file: File,
   // place: Place,
   emoji: Emoji,

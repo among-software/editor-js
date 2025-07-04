@@ -72,7 +72,7 @@
     "@types/node": "^22.9.1",
     "@vitejs/plugin-react": "^4.3.3",
     "editorjs-drag-drop": "^1.1.16",
-    "editorjs-undo": "^2.0.28",
+    "editorjs-undo": "1.0.1",
     "rollup": "^4.43.0",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-postcss": "^4.0.2",

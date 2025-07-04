@@ -3,6 +3,7 @@ import {
   EmojiIcon,
   FileIcon,
   GroupImageIcon,
+  IframeIcon,
   ImageIcon,
   LineIcon,
   PlaceIcon,
@@ -117,6 +118,7 @@ export default function EditorToolbar({ toolbarTop, onUpload, width }: Props) {
         <EmojiIcon handleBlockIndex={handleBlockIndex} />
         <LineIcon handleBlockIndex={handleBlockIndex} />
         <AlignIcon />
+        <IframeIcon addBlock={addBlock} handleBlockIndex={handleBlockIndex} />
         {/* <S.TitleSaveWrapper id="save-btn" onClick={onClickSave}>
           저장
         </S.TitleSaveWrapper> */}

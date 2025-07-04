@@ -15,6 +15,7 @@ interface EditorContentProps {
 const EditorContent = memo(({ value, onChange }: EditorContentProps) => {
   const { setEditor } = useEditorStore();
   const editorInstanceRef = useRef<EditorJS | null>(null);
+  const undoRef = useRef<any>(null); // ✅ undo 인스턴스 추적
 
   // ✅ 블록 선택 기능 (Shift+클릭)
   useEffect(() => {
@@ -98,11 +99,18 @@ const EditorContent = memo(({ value, onChange }: EditorContentProps) => {
         autofocus: true,
         tools: EDITOR_JS_TOOLS as any,
         data: value || undefined,
-        onReady: () => {
-          console.log("✅ Editor is ready");
-          new Undo({ editor: editorInstance });
+        onReady: async () => {
+          const undo = new Undo({ editor: editorInstance });
+          undo.initialize(value || undefined); // 🔹 명시적 초기화
+          undoRef.current = undo;
+
           new DragDrop(editorInstance);
           setEditor(editorInstance);
+
+          // 🔹 초기값 undo 스택에 수동 push
+          const data = await editorInstance.save();
+          undo.stack.push(data);
+          console.log("[Editor] editorjs-undo 초기값 push 완료");
         },
         onChange: async () => {
           try {
@@ -119,6 +127,31 @@ const EditorContent = memo(({ value, onChange }: EditorContentProps) => {
       editorInstanceRef.current = editorInstance;
     }
   }, [value, onChange]);
+
+  useEffect(() => {
+    const handleUndoGuard = (e: KeyboardEvent) => {
+      const isUndo =
+        (e.ctrlKey || e.metaKey) && !e.shiftKey && e.key.toLowerCase() === "z";
+      if (!isUndo) return;
+
+      const undo = undoRef.current;
+      if (!undo) return;
+
+      const { stack, position } = undo;
+      console.log(stack, position);
+      const isEmpty = !stack || stack.length === 0 || position <= 0;
+
+      if (isEmpty) {
+        console.warn("⛔️ undo stack 없음 → Ctrl+Z 차단");
+        e.preventDefault();
+      }
+    };
+
+    window.addEventListener("keydown", handleUndoGuard);
+    return () => {
+      window.removeEventListener("keydown", handleUndoGuard);
+    };
+  }, []);
 
   return (
     <S.EditorContentContainer id="editorjs" style={{ cursor: "pointer" }} />

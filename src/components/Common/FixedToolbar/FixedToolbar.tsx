@@ -14,7 +14,7 @@ interface Props {
 export default function FixedToolbar({ position, children }: Props) {
   return (
     <S.FixedToolbarContainer
-      $top={position.top}
+      $top={0}
       $right={position.right}
       $width={position.width}
     >

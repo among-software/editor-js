@@ -6,3 +6,4 @@ export { default as ImageIcon } from "./ImageIcon/ImageIcon";
 export { default as LineIcon } from "./LineIcon/LineIcon";
 export { default as PlaceIcon } from "./PlaceIcon/PlaceIcon";
 export { default as VideoIcon } from "./VideoIcon/VideoIcon";
+export { default as IframeIcon } from "./IframeIcon/IframeIcon";
