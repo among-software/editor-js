@@ -28,9 +28,15 @@ export default function AlignIcon() {
       selectedBlockIds.includes(b.id)
     );
 
+    console.log(savedData.blocks);
+    console.log(blocksToUpdate.at(-1));
+
     const nextAlign = getNextAlign(
       (blocksToUpdate.at(-1)?.data.align || "left") as AlignValue
     );
+
+    console.log("asdf2", blocksToUpdate.at(-1)?.data.align);
+    console.log("asdf", nextAlign);
 
     for (const block of blocksToUpdate) {
       const currentAlign = (block.data.align || "left") as AlignValue;

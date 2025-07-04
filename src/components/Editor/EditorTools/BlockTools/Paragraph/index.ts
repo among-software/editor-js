@@ -238,48 +238,20 @@ export default class Paragraph {
   }
 
   save(blockContent: HTMLElement) {
-    const spans = blockContent.querySelectorAll("span");
+    const rawHtml = blockContent.innerHTML;
 
-    let isBold = false;
-    let isItalic = false;
-    let fontSize = "";
-    let fontFamily = "";
-    let letterSpacing = "";
-    let lineHeight = "";
-
-    spans.forEach((span) => {
-      const style = span.style;
-      if (style.fontWeight === "bold" || style.fontWeight === "700") {
-        isBold = true;
-      }
-      if (style.fontStyle === "italic") {
-        isItalic = true;
-      }
-      if (style.fontSize) {
-        fontSize = style.fontSize;
-      }
-      if (style.fontFamily) {
-        fontFamily = style.fontFamily;
-      }
-      if (style.letterSpacing) {
-        letterSpacing = style.letterSpacing;
-      }
-      if (style.lineHeight) {
-        lineHeight = style.lineHeight;
-      }
-    });
-
-    const realText = blockContent.innerText || "";
+    const finalHtml = this.wrapOuterSpan(rawHtml);
 
     return {
-      text: blockContent.innerHTML,
-      realText,
-      isBold,
-      isItalic,
-      fontSize,
-      fontFamily,
-      letterSpacing,
-      lineHeight,
+      text: finalHtml,
+      realText: blockContent.innerText,
+      align: this.getAlignment(blockContent) || "left",
+      letterSpacing: this._data.letterSpacing || "normal",
+      lineHeight: this._data.lineHeight || "normal",
+      isBold: this._data.isBold || false,
+      isItalic: this._data.isItalic || false,
+      fontSize: this._data.fontSize || "",
+      fontFamily: this._data.fontFamily || "",
     };
   }
 
