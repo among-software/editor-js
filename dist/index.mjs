@@ -38690,10 +38690,14 @@ function Kh() {
     {
       label: "본문",
       tag: "paragraph",
+      // @ts-ignore
       icon: /* @__PURE__ */ v.jsx(Hn, {})
     },
+    // @ts-ignore
     { label: "제목", tag: "h1", icon: /* @__PURE__ */ v.jsx(Ih, {}) },
+    // @ts-ignore
     { label: "인용구", tag: "blockquote", icon: /* @__PURE__ */ v.jsx(Nh, {}) },
+    // @ts-ignore
     { label: "리스트", tag: "ul", icon: /* @__PURE__ */ v.jsx(Ah, {}) }
   ], m = ["1", "1.5", "1.75", "2", "2.5", "3"], _ = ["normal", "0.5px", "1px", "1.5px", "2px"], [S, j] = Oe(!1), [b, C] = Oe(""), [T, F] = Oe({ top: 40, left: 400 }), P = {
     fontSize: pe(null),
@@ -38743,7 +38747,7 @@ function Kh() {
       V.innerHTML = Q;
       const G = V.querySelector(`span[${H}]`);
       if (G)
-        return G.removeAttribute("style"), G.removeAttribute(H.toString()), G.innerHTML = G.innerHTML, V.innerHTML;
+        return G.removeAttribute("style"), G.removeAttribute(H), G.innerHTML = G.innerHTML, V.innerHTML;
       const ie = document.createElement("span");
       return Object.entries(f).forEach(([ne, Ce]) => {
         Ce && (ie.style[ne] = Ce);
@@ -39000,7 +39004,7 @@ function Kh() {
               ref: P.fontColor,
               onClick: () => I("fontColor"),
               children: [
-                "A",
+                "A // @ts-ignore",
                 /* @__PURE__ */ v.jsx(so, {})
               ]
             }

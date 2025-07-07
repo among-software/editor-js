@@ -90,7 +90,7 @@ const Tooltip = styled.div`
 `;
 
 type IconType = ComponentType<{ className?: string }>;
-
+// @ts-ignore
 const Divider = styled(RxDividerVertical as IconType)`
   font-size: 16px;
   margin: 0 6px;
@@ -230,10 +230,14 @@ export default function MultiSelectToolbar() {
     {
       label: "본문",
       tag: "paragraph",
+      // @ts-ignore
       icon: (<FaAlignLeft />) as any,
     },
+    // @ts-ignore
     { label: "제목", tag: "h1", icon: (<FaHeading />) as any },
+    // @ts-ignore
     { label: "인용구", tag: "blockquote", icon: (<FaQuoteRight />) as any },
+    // @ts-ignore
     { label: "리스트", tag: "ul", icon: (<FaListUl />) as any },
   ];
   const lineHeights = ["1", "1.5", "1.75", "2", "2.5", "3"];
@@ -312,7 +316,8 @@ export default function MultiSelectToolbar() {
       const existing = container.querySelector(`span[${dataAttr}]`);
       if (existing) {
         existing.removeAttribute("style");
-        existing.removeAttribute(dataAttr.toString());
+        // @ts-ignore
+        existing.removeAttribute(dataAttr);
         existing.innerHTML = existing.innerHTML;
         return container.innerHTML;
       }
@@ -617,7 +622,8 @@ export default function MultiSelectToolbar() {
           ref={buttonRefs.fontColor}
           onClick={() => toggleDropdown("fontColor")}
         >
-          A<FiChevronDown />
+          A // @ts-ignore
+          <FiChevronDown />
         </ToolButton>
         <Tooltip className="tooltip">글자 색상</Tooltip>
         {renderDropdown(
