@@ -55,10 +55,16 @@ export default function EditorSection({
     let endY = 0;
 
     const handleMouseDown = (e: MouseEvent) => {
+      const isInsideBlock = (e.target as HTMLElement).closest(".ce-block");
+      if (!isInsideBlock) return;
+
       startY = e.clientY;
     };
 
     const handleMouseUp = (e: MouseEvent) => {
+      const isInsideBlock = (e.target as HTMLElement).closest(".ce-block");
+      if (!isInsideBlock) return;
+
       endY = e.clientY;
 
       const minY = Math.min(startY, endY);
@@ -95,32 +101,6 @@ export default function EditorSection({
             left: rect.left + window.scrollX, // 마지막 블록의 좌측 기준
           });
         }
-
-        // const editor = useEditorStore.getState().editor;
-        // if (!editor || selectedIds.length === 0) return;
-
-        // // 선택된 첫 블록의 DOM 요소
-        // const firstBlockEl = document.querySelector(
-        //   `.ce-block[data-id="${selectedIds[0]}"]`
-        // );
-
-        // // ✅ 텍스트 선택 영역 생성
-        // const target = firstBlockEl?.querySelector(".ce-paragraph");
-        // if (target) {
-        //   const range = document.createRange();
-        //   const selection = window.getSelection();
-
-        //   const textNode = target.firstChild;
-        //   if (textNode && selection) {
-        //     range.setStart(textNode, 0);
-        //     range.setEnd(textNode, textNode.textContent?.length || 0);
-        //     selection.removeAllRanges();
-        //     selection.addRange(range);
-
-        //     // ✅ 툴바 강제 오픈
-        //     editor.inlineToolbar?.open();
-        //   }
-        // }
       }, 0);
     };
 
