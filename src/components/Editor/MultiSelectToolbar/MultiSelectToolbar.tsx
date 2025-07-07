@@ -622,7 +622,9 @@ export default function MultiSelectToolbar() {
           ref={buttonRefs.fontColor}
           onClick={() => toggleDropdown("fontColor")}
         >
-          A // @ts-ignore
+          A
+          {/*
+          // @ts-ignore */}
           <FiChevronDown />
         </ToolButton>
         <Tooltip className="tooltip">글자 색상</Tooltip>

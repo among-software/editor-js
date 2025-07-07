@@ -39004,7 +39004,7 @@ function Kh() {
               ref: P.fontColor,
               onClick: () => I("fontColor"),
               children: [
-                "A // @ts-ignore",
+                "A",
                 /* @__PURE__ */ v.jsx(so, {})
               ]
             }
