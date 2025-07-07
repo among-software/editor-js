@@ -592,6 +592,8 @@ See https://s-c.sh/2BAXzed for more info.`),window[si]+=1);const el=N.div`
   gap: 3px;
   z-index: 1000;
   box-shadow: none;
+  width: 100%;
+  border-bottom: 1px solid #dedede;
 `,Pe=N.button`
   background: white;
   border-radius: 2px;

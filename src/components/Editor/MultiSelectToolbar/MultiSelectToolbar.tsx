@@ -110,6 +110,8 @@ const ToolbarWrapper = styled.div<{ top: number; left: number }>`
   gap: 3px;
   z-index: 1000;
   box-shadow: none;
+  width: 100%;
+  border-bottom: 1px solid #dedede;
 `;
 
 const ToolButton = styled.button<{ active?: boolean }>`
