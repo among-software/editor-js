@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { ComponentType, useRef, useState } from "react";
 import styled from "styled-components";
 import useEditorStore from "../../../store/useEditorStore";
 import {
@@ -89,7 +89,9 @@ const Tooltip = styled.div`
   z-index: 999;
 `;
 
-const Divider = styled(RxDividerVertical)`
+type IconType = ComponentType<{ className?: string }>;
+
+const Divider = styled(RxDividerVertical as IconType)`
   font-size: 16px;
   margin: 0 6px;
   align-self: center;
@@ -225,10 +227,14 @@ export default function MultiSelectToolbar() {
     "#5c5cb2",
   ];
   const blockTypes = [
-    { label: "본문", tag: "paragraph", icon: <FaAlignLeft /> },
-    { label: "제목", tag: "h1", icon: <FaHeading /> },
-    { label: "인용구", tag: "blockquote", icon: <FaQuoteRight /> },
-    { label: "리스트", tag: "ul", icon: <FaListUl /> },
+    {
+      label: "본문",
+      tag: "paragraph",
+      icon: (<FaAlignLeft />) as any,
+    },
+    { label: "제목", tag: "h1", icon: (<FaHeading />) as any },
+    { label: "인용구", tag: "blockquote", icon: (<FaQuoteRight />) as any },
+    { label: "리스트", tag: "ul", icon: (<FaListUl />) as any },
   ];
   const lineHeights = ["1", "1.5", "1.75", "2", "2.5", "3"];
   const letterSpacings = ["normal", "0.5px", "1px", "1.5px", "2px"];
@@ -306,7 +312,7 @@ export default function MultiSelectToolbar() {
       const existing = container.querySelector(`span[${dataAttr}]`);
       if (existing) {
         existing.removeAttribute("style");
-        existing.removeAttribute(dataAttr);
+        existing.removeAttribute(dataAttr.toString());
         existing.innerHTML = existing.innerHTML;
         return container.innerHTML;
       }
@@ -441,7 +447,7 @@ export default function MultiSelectToolbar() {
   };
 
   return (
-    <ToolbarWrapper top={65} left={toolbarPosition.left}>
+    <ToolbarWrapper top={65} left={0}>
       <TooltipWrapper
         onMouseDown={(e) => {
           e.preventDefault();
@@ -452,7 +458,11 @@ export default function MultiSelectToolbar() {
           ref={buttonRefs.blockType}
           onClick={() => toggleDropdown("blockType")}
         >
+          {/* 
+          // @ts-ignore */}
           <FaAlignLeft />
+          {/* 
+          // @ts-ignore */}
           <FiChevronDown />
         </ToolButton>
         <Tooltip className="tooltip">블록 타입</Tooltip>
@@ -490,7 +500,11 @@ export default function MultiSelectToolbar() {
             e.stopPropagation();
           }}
         >
+          {/* 
+          // @ts-ignore */}
           <FaFont />
+          {/* 
+          // @ts-ignore */}
           <FiChevronDown />
         </ToolButton>
         <Tooltip className="tooltip">폰트 선택</Tooltip>
@@ -513,7 +527,11 @@ export default function MultiSelectToolbar() {
           ref={buttonRefs.fontSize}
           onClick={() => toggleDropdown("fontSize")}
         >
+          {/* 
+          // @ts-ignore */}
           <FaTextHeight />
+          {/* 
+          // @ts-ignore */}
           <FiChevronDown />
         </ToolButton>
         <Tooltip className="tooltip">글자 크기</Tooltip>
@@ -530,6 +548,8 @@ export default function MultiSelectToolbar() {
         <ToolButton
           onClick={() => toggleStyle("fontWeight", "bold", "data-bold")}
         >
+          {/* 
+          // @ts-ignore */}
           <FaBold />
         </ToolButton>
         <Tooltip className="tooltip">굵게</Tooltip>
@@ -544,6 +564,8 @@ export default function MultiSelectToolbar() {
         <ToolButton
           onClick={() => toggleStyle("fontStyle", "italic", "data-italic")}
         >
+          {/* 
+          // @ts-ignore */}
           <FaItalic />
         </ToolButton>
         <Tooltip className="tooltip">기울임꼴</Tooltip>
@@ -560,6 +582,8 @@ export default function MultiSelectToolbar() {
             toggleStyle("textDecoration", "underline", "data-underline")
           }
         >
+          {/* 
+          // @ts-ignore */}
           <FaUnderline />
         </ToolButton>
         <Tooltip className="tooltip">밑줄</Tooltip>
@@ -576,6 +600,8 @@ export default function MultiSelectToolbar() {
             toggleStyle("textDecoration", "line-through", "data-strikethrough")
           }
         >
+          {/* 
+          // @ts-ignore */}
           <FaStrikethrough />
         </ToolButton>
         <Tooltip className="tooltip">취소선</Tooltip>
@@ -613,8 +639,12 @@ export default function MultiSelectToolbar() {
           ref={buttonRefs.backgroundColor}
           onClick={() => toggleDropdown("backgroundColor")}
         >
-          {" "}
-          <FaPalette /> <FiChevronDown />{" "}
+          {/* 
+          // @ts-ignore */}
+          <FaPalette />
+          {/* 
+          // @ts-ignore */}
+          <FiChevronDown />
         </ToolButton>
         <Tooltip className="tooltip">배경 색상</Tooltip>
         {renderDropdown(
@@ -638,7 +668,11 @@ export default function MultiSelectToolbar() {
           ref={buttonRefs.letterSpacing}
           onClick={() => toggleDropdown("letterSpacing")}
         >
+          {/* 
+          // @ts-ignore */}
           <RiLetterSpacing2 />
+          {/* 
+          // @ts-ignore */}
           <FiChevronDown />
         </ToolButton>
         <Tooltip className="tooltip">자간 설정</Tooltip>
@@ -660,7 +694,11 @@ export default function MultiSelectToolbar() {
           ref={buttonRefs.lineHeight}
           onClick={() => toggleDropdown("lineHeight")}
         >
+          {/* 
+          // @ts-ignore */}
           <CiLineHeight />
+          {/* 
+          // @ts-ignore */}
           <FiChevronDown />
         </ToolButton>
         <Tooltip className="tooltip">줄 간격 설정</Tooltip>
@@ -678,6 +716,8 @@ export default function MultiSelectToolbar() {
         }}
       >
         <ToolButton onClick={handleInsertLinkClick}>
+          {/* 
+          // @ts-ignore */}
           {showLinkInput ? <FaLink color="#1aff00" /> : <FaLink />}
         </ToolButton>
         <Tooltip className="tooltip">링크 추가</Tooltip>

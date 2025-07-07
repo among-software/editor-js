@@ -38687,7 +38687,11 @@ function Kh() {
     "#ec4c69",
     "#5c5cb2"
   ], h = [
-    { label: "본문", tag: "paragraph", icon: /* @__PURE__ */ v.jsx(Hn, {}) },
+    {
+      label: "본문",
+      tag: "paragraph",
+      icon: /* @__PURE__ */ v.jsx(Hn, {})
+    },
     { label: "제목", tag: "h1", icon: /* @__PURE__ */ v.jsx(Ih, {}) },
     { label: "인용구", tag: "blockquote", icon: /* @__PURE__ */ v.jsx(Nh, {}) },
     { label: "리스트", tag: "ul", icon: /* @__PURE__ */ v.jsx(Ah, {}) }
@@ -38739,7 +38743,7 @@ function Kh() {
       V.innerHTML = Q;
       const G = V.querySelector(`span[${H}]`);
       if (G)
-        return G.removeAttribute("style"), G.removeAttribute(H), G.innerHTML = G.innerHTML, V.innerHTML;
+        return G.removeAttribute("style"), G.removeAttribute(H.toString()), G.innerHTML = G.innerHTML, V.innerHTML;
       const ie = document.createElement("span");
       return Object.entries(f).forEach(([ne, Ce]) => {
         Ce && (ie.style[ne] = Ce);
@@ -38811,7 +38815,7 @@ function Kh() {
       ))
     }
   );
-  return /* @__PURE__ */ v.jsxs(Vh, { top: 65, left: o.left, children: [
+  return /* @__PURE__ */ v.jsxs(Vh, { top: 65, left: 0, children: [
     /* @__PURE__ */ v.jsxs(
       Te,
       {
@@ -39025,11 +39029,8 @@ function Kh() {
               ref: P.backgroundColor,
               onClick: () => I("backgroundColor"),
               children: [
-                " ",
                 /* @__PURE__ */ v.jsx(Lh, {}),
-                " ",
-                /* @__PURE__ */ v.jsx(so, {}),
-                " "
+                /* @__PURE__ */ v.jsx(so, {})
               ]
             }
           ),
