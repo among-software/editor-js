@@ -1,0 +1,23 @@
+.multi-toolbar {
+  z-index: 999;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 6px 10px;
+  display: flex;
+  position: absolute;
+  gap: 8px;
+}
+
+.color-picker {
+  display: flex;
+  gap: 4px;
+}
+
+.color-box {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+}

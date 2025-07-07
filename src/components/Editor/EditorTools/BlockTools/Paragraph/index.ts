@@ -17,6 +17,7 @@ export interface ParagraphConfig extends ToolConfig {
   preserveBlank?: boolean;
 }
 
+// 추가된 타입 정의
 export interface ParagraphData {
   text: string;
   realText?: string;
@@ -25,6 +26,8 @@ export interface ParagraphData {
   lineHeight?: string;
   isBold?: boolean;
   isItalic?: boolean;
+  isUnderline?: boolean;
+  isStrikethrough?: boolean;
   fontSize?: string;
   fontFamily?: string;
 }
@@ -104,6 +107,7 @@ export default class Paragraph {
       div.innerHTML = this._data.text;
     }
 
+    // 스타일 적용
     if (this._data.lineHeight) {
       div.style.lineHeight = this._data.lineHeight;
     }
@@ -126,6 +130,14 @@ export default class Paragraph {
 
     if (this._data.isItalic) {
       div.style.fontStyle = "italic";
+    }
+
+    // ✅ underline + strikethrough 처리
+    const decorations: string[] = [];
+    if (this._data.isUnderline) decorations.push("underline");
+    if (this._data.isStrikethrough) decorations.push("line-through");
+    if (decorations.length > 0) {
+      div.style.textDecoration = decorations.join(" ");
     }
 
     if (!this.readOnly) {
@@ -239,7 +251,6 @@ export default class Paragraph {
 
   save(blockContent: HTMLElement) {
     const rawHtml = blockContent.innerHTML;
-
     const finalHtml = this.wrapOuterSpan(rawHtml);
 
     return {
@@ -250,6 +261,8 @@ export default class Paragraph {
       lineHeight: this._data.lineHeight || "normal",
       isBold: this._data.isBold || false,
       isItalic: this._data.isItalic || false,
+      isUnderline: this._data.isUnderline || false,
+      isStrikethrough: this._data.isStrikethrough || false,
       fontSize: this._data.fontSize || "",
       fontFamily: this._data.fontFamily || "",
     };

@@ -6,7 +6,8 @@ const useEditorStore = create<EditorStore>((set) => ({
   activeModal: null,
   align: "left",
   currentBlockIndex: -1,
-  selectedBlockIds: [], // ✅ 선택된 블럭 ID 목록 추가
+  selectedBlockIds: [],
+  toolbarPosition: { top: 0, left: 0 }, // ✅ 툴바 위치 상태 추가
 
   setEditor: (editor) => set({ editor }),
 
@@ -22,23 +23,21 @@ const useEditorStore = create<EditorStore>((set) => ({
 
   setCurrentBlockIndex: (index) => set({ currentBlockIndex: index }),
 
-  // ✅ 선택 블럭 ID 설정 함수
   setSelectedBlockIds: (ids) => set({ selectedBlockIds: ids }),
 
-  // ✅ 특정 블럭 ID 추가
   addSelectedBlockId: (id) =>
     set((state) => ({
       selectedBlockIds: Array.from(new Set([...state.selectedBlockIds, id])),
     })),
 
-  // ✅ 특정 블럭 ID 제거
   removeSelectedBlockId: (id) =>
     set((state) => ({
       selectedBlockIds: state.selectedBlockIds.filter((b) => b !== id),
     })),
 
-  // ✅ 전체 초기화
   clearSelectedBlockIds: () => set({ selectedBlockIds: [] }),
+
+  setToolbarPosition: (pos) => set({ toolbarPosition: pos }), // ✅ 툴바 위치 setter 추가
 }));
 
 export default useEditorStore;

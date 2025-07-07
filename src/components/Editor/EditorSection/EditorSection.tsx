@@ -4,6 +4,7 @@ import EditorToolbar from "../../../components/Editor/EditorToolbar/EditorToolba
 import EditorContent from "../../../components/Editor/EditorContent/EditorContent";
 import { UploadHandler } from "../../../types/upload";
 import useEditorStore from "../../../store/useEditorStore";
+import MultiSelectToolbar from "../MultiSelectToolbar/MultiSelectToolbar";
 
 interface EditorSectionProps {
   value?: any;
@@ -79,6 +80,47 @@ export default function EditorSection({
       setTimeout(() => {
         useEditorStore.getState().setSelectedBlockIds(selectedIds);
         console.log("[드래그 선택된 블럭 ID들]", selectedIds);
+
+        // ⛔️ 기존 selectedIds[0] → ✅ selectedIds[selectedIds.length - 1]
+        const lastId = selectedIds[selectedIds.length - 1];
+
+        const lastBlock = document.querySelector(
+          `.ce-block[data-id="${lastId}"]`
+        );
+        if (lastBlock) {
+          const rect = lastBlock.getBoundingClientRect();
+
+          useEditorStore.getState().setToolbarPosition({
+            top: rect.top + window.scrollY - 60, // 마지막 블록 위 60px
+            left: rect.left + window.scrollX, // 마지막 블록의 좌측 기준
+          });
+        }
+
+        // const editor = useEditorStore.getState().editor;
+        // if (!editor || selectedIds.length === 0) return;
+
+        // // 선택된 첫 블록의 DOM 요소
+        // const firstBlockEl = document.querySelector(
+        //   `.ce-block[data-id="${selectedIds[0]}"]`
+        // );
+
+        // // ✅ 텍스트 선택 영역 생성
+        // const target = firstBlockEl?.querySelector(".ce-paragraph");
+        // if (target) {
+        //   const range = document.createRange();
+        //   const selection = window.getSelection();
+
+        //   const textNode = target.firstChild;
+        //   if (textNode && selection) {
+        //     range.setStart(textNode, 0);
+        //     range.setEnd(textNode, textNode.textContent?.length || 0);
+        //     selection.removeAllRanges();
+        //     selection.addRange(range);
+
+        //     // ✅ 툴바 강제 오픈
+        //     editor.inlineToolbar?.open();
+        //   }
+        // }
       }, 0);
     };
 
@@ -94,6 +136,9 @@ export default function EditorSection({
   return (
     <S.EditorSectionContainer ref={editorSectionRef} $width={width}>
       <EditorContent value={value} onChange={onChange} />
+      <div>asdf</div>
+      <MultiSelectToolbar />
+      <div>asdf</div>
       <EditorToolbar
         toolbarTop={toolbarTop}
         onUpload={onUpload}

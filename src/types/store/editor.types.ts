@@ -16,10 +16,14 @@ export interface EditorStore {
   setAlign: (align: AlignValue) => void;
   setCurrentBlockIndex: (index: number) => void;
 
-  // ✅ 선택된 블럭 ID 관련 상태 및 메서드 추가
+  // ✅ 선택된 블럭 ID 관련 상태 및 메서드
   selectedBlockIds: string[];
   setSelectedBlockIds: (ids: string[]) => void;
   addSelectedBlockId: (id: string) => void;
   removeSelectedBlockId: (id: string) => void;
   clearSelectedBlockIds: () => void;
+
+  // ✅ 인라인 툴바 위치
+  toolbarPosition: { top: number; left: number };
+  setToolbarPosition: (pos: { top: number; left: number }) => void;
 }
