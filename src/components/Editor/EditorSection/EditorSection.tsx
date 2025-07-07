@@ -135,10 +135,8 @@ export default function EditorSection({
 
   return (
     <S.EditorSectionContainer ref={editorSectionRef} $width={width}>
-      <EditorContent value={value} onChange={onChange} />
-      <div>asdf</div>
       <MultiSelectToolbar />
-      <div>asdf</div>
+      <EditorContent value={value} onChange={onChange} />
       <EditorToolbar
         toolbarTop={toolbarTop}
         onUpload={onUpload}

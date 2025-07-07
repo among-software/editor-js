@@ -9,6 +9,9 @@ export interface EditorStore {
   align: AlignValue;
   currentBlockIndex: number;
 
+  selectionRange: Range | null;
+  setSelectionRange: (range: Range | null) => void;
+
   // 기존 메서드
   setEditor: (editor: EditorJS) => void;
   toggleModal: (modalType: Exclude<ModalType, null>) => void;

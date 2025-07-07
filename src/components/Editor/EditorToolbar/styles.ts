@@ -4,7 +4,7 @@ export const TitleSaveWrapper = styled.button`
   border-radius: 15px;
   width: 66px;
   height: 30px;
-  border: 1px solid ${COMMON_THEME.gray_primary};
+  border: 1px solid #dedede;
   font-size: 12px;
   color: ${COMMON_THEME.dark_gray};
   background-color: ${COMMON_THEME.white_primary};

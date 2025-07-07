@@ -9,6 +9,10 @@ const useEditorStore = create<EditorStore>((set) => ({
   selectedBlockIds: [],
   toolbarPosition: { top: 0, left: 0 }, // ✅ 툴바 위치 상태 추가
 
+  selectionRange: null,
+
+  setSelectionRange: (range) => set({ selectionRange: range }),
+
   setEditor: (editor) => set({ editor }),
 
   toggleModal: (modalType) => {

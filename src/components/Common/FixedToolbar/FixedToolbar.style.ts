@@ -9,13 +9,13 @@ interface ToolbarProps {
 export const FixedToolbarContainer = styled.div<ToolbarProps>`
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  gap: 24px;
   min-width: ${(props) => props.$width};
   position: absolute;
   top: ${(props) => props.$top}px;
   min-height: 40px;
   /* right: ${(props) => props.$right}%; */
   z-index: 1000;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid #dedede;
   padding: 8px;
 `;
