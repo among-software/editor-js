@@ -17,5 +17,6 @@ export const FixedToolbarContainer = styled.div<ToolbarProps>`
   /* right: ${(props) => props.$right}%; */
   z-index: 1000;
   border-bottom: 1px solid #dedede;
-  padding: 8px;
+  padding-top: 8px;
+  padding-bottom: 8px;
 `;

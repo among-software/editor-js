@@ -24758,7 +24758,8 @@ const yd = N.div`
   /* right: ${(t) => t.$right}%; */
   z-index: 1000;
   border-bottom: 1px solid #dedede;
-  padding: 8px;
+  padding-top: 8px;
+  padding-bottom: 8px;
 `;
 function bd({ position: t, children: e }) {
   return /* @__PURE__ */ v.jsx(
@@ -38586,7 +38587,8 @@ const zh = N.div`
   left: ${({ left: t }) => `${t}px`};
   background: white;
   border: none;
-  padding: 4px;
+  padding-top: 4px;
+  padding-bottom: 4px;
   display: flex;
   gap: 3px;
   z-index: 1000;

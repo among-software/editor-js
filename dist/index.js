@@ -438,7 +438,8 @@ See https://s-c.sh/2BAXzed for more info.`),window[si]+=1);const el=N.div`
   /* right: ${t=>t.$right}%; */
   z-index: 1000;
   border-bottom: 1px solid #dedede;
-  padding: 8px;
+  padding-top: 8px;
+  padding-bottom: 8px;
 `;function pd({position:t,children:e}){return v.jsx(gd,{$top:0,$right:t.right,$width:t.width,children:e})}function hd({toolbarTop:t,onUpload:e,width:o}){const{editor:i,activeModal:s,currentBlockIndex:n,setCurrentBlockIndex:r}=ge(),a=()=>{if(!i)return;const l=i.blocks.getCurrentBlockIndex(),d=i.blocks.getBlocksCount();if(l>-1){r(l);return}if(d===1){const u=i.blocks.getBlockByIndex(0),g=(u==null?void 0:u.name)==="paragraph"&&u.isEmpty;r(g?0:1);return}r(Math.max(0,d-1))},c=(l,d)=>{if(!i)return;const u=i.blocks.getBlockByIndex(n);(u==null?void 0:u.name)==="paragraph"&&u.isEmpty?(i.blocks.delete(n),i.blocks.insert(l,d,void 0,n)):i.blocks.insert(l,d,void 0,n+1)};return v.jsxs(v.Fragment,{children:[s&&v.jsxs(ud,{top:40,children:[s==="place"&&v.jsx(cd,{addBlock:c}),s==="emoji"&&v.jsx(Rl,{addBlock:c}),s==="line"&&v.jsx(Ul,{addBlock:c})]}),v.jsxs(pd,{position:{top:t,right:0,width:o??"768px"},children:[v.jsx(kl,{handleBlockIndex:a,addBlock:c,onUpload:e}),v.jsx(fl,{handleBlockIndex:a,addBlock:c,onUpload:e}),v.jsx(Bl,{handleBlockIndex:a,addBlock:c,onUpload:e}),v.jsx(hl,{handleBlockIndex:a,addBlock:c,onUpload:e}),v.jsx(dl,{handleBlockIndex:a}),v.jsx(xl,{handleBlockIndex:a}),v.jsx(al,{}),v.jsx(Al,{addBlock:c,handleBlockIndex:a})]})]})}const md=N.div`
   margin-top: 20px;
   cursor: pointer;
@@ -587,7 +588,8 @@ See https://s-c.sh/2BAXzed for more info.`),window[si]+=1);const el=N.div`
   left: ${({left:t})=>`${t}px`};
   background: white;
   border: none;
-  padding: 4px;
+  padding-top: 4px;
+  padding-bottom: 4px;
   display: flex;
   gap: 3px;
   z-index: 1000;

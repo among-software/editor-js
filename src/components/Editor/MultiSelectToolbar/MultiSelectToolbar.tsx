@@ -105,7 +105,8 @@ const ToolbarWrapper = styled.div<{ top: number; left: number }>`
   left: ${({ left }) => `${left}px`};
   background: white;
   border: none;
-  padding: 4px;
+  padding-top: 4px;
+  padding-bottom: 4px;
   display: flex;
   gap: 3px;
   z-index: 1000;
