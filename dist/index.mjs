@@ -2242,6 +2242,7 @@ function Nl({
   ] });
 }
 const Ml = N.div`
+  position: relative; /* 중요: 기준점이 되어줌 */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -2253,18 +2254,18 @@ const Ml = N.div`
   background-repeat: no-repeat;
   cursor: pointer;
 `, Dl = N.div`
-  position: fixed;
-  top: 0;
+  position: absolute;
+  top: 36px; /* 버튼 아래로 살짝 띄움 */
   left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-`, Rl = N.div`
-  background: white;
-  padding: 24px;
-  max-width: 400px;
-  margin: 20% auto;
+  background-color: white;
+  border: 1px solid #ddd;
   border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+  z-index: 100;
+`, Rl = N.div`
+  padding: 16px;
+  width: 300px;
+  font-size: 14px;
 
   input {
     width: 100%;

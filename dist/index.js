@@ -253,6 +253,7 @@ See https://s-c.sh/2BAXzed for more info.`),window[si]+=1);const el=N.div`
   display: none;
   pointer-events: none;
 `;function Bl({handleBlockIndex:t,addBlock:e,onUpload:o}){const i=D.useRef(null),s=async r=>{var l;const a=(l=r.target.files)==null?void 0:l[0];if(!a)return;let c;if(o){const d=await o(a);c={url:d.path,name:d.name,type:a.type,size:a.size}}else{const d=new FileReader;c={url:await new Promise(g=>{d.onloadend=()=>g(d.result),d.readAsDataURL(a)}),name:a.name,type:a.type,size:a.size}}e("video",c),i.current&&(i.current.value="")},n=()=>{var r;t(),(r=i.current)==null||r.click()};return v.jsxs(Sl,{children:[v.jsx(El,{onClick:n}),v.jsx(Je,{children:"비디오"}),v.jsx(Cl,{type:"file",accept:"video/*",ref:i,onChange:s,style:{display:"none"}})]})}const Tl=N.div`
+  position: relative; /* 중요: 기준점이 되어줌 */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -264,18 +265,18 @@ See https://s-c.sh/2BAXzed for more info.`),window[si]+=1);const el=N.div`
   background-repeat: no-repeat;
   cursor: pointer;
 `,Il=N.div`
-  position: fixed;
-  top: 0;
+  position: absolute;
+  top: 36px; /* 버튼 아래로 살짝 띄움 */
   left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-`,Ol=N.div`
-  background: white;
-  padding: 24px;
-  max-width: 400px;
-  margin: 20% auto;
+  background-color: white;
+  border: 1px solid #ddd;
   border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+  z-index: 100;
+`,Ol=N.div`
+  padding: 16px;
+  width: 300px;
+  font-size: 14px;
 
   input {
     width: 100%;
