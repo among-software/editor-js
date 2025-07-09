@@ -540,74 +540,125 @@ export default function MultiSelectToolbar() {
       const container = document.createElement("div");
       container.appendChild(selectedContents);
 
-      let span = container.querySelector(`span[${dataAttr}]`) as HTMLElement;
-
-      if (span) {
-        const currentValue = dataAttr ? span.getAttribute(dataAttr) : null;
-        if (currentValue === dataValue) {
-          unwrapSpan(span); // ✅ 토글: 값 같으면 제거
-        } else {
-          // ✅ 값 다르면 업데이트
-          Object.entries(style).forEach(([key, value]) => {
-            if (value) (span.style as any)[key] = value;
-          });
-          if (dataAttr && dataValue) {
-            span.setAttribute(dataAttr, dataValue);
-          }
-        }
-      } else {
-        // 새로 생성
-        span = document.createElement("span");
-        Object.entries(style).forEach(([key, value]) => {
-          if (value) (span.style as any)[key] = value;
-        });
-        if (dataAttr && dataValue) {
-          span.setAttribute(dataAttr, dataValue);
-        }
-        span.innerHTML = container.innerHTML;
+      // 선택 영역 내 기존 색상 span 제거 (중첩 방지)
+      if (dataAttr) {
+        const spans = container.querySelectorAll(`span[${dataAttr}]`);
+        spans.forEach((span) => unwrapSpan(span as HTMLElement));
       }
 
-      range.deleteContents();
-      range.insertNode(span);
-      sel!.removeAllRanges();
+      // 새 span 생성 및 스타일 적용
+      const newSpan = document.createElement("span");
+      Object.entries(style).forEach(([key, value]) => {
+        if (value) (newSpan.style as any)[key] = value;
+      });
+      if (dataAttr && dataValue) {
+        newSpan.setAttribute(dataAttr, dataValue);
+      }
 
-      const newRange = document.createRange();
-      newRange.selectNodeContents(span);
-      sel!.addRange(newRange);
+      // container 내용물을 newSpan에 이동
+      newSpan.innerHTML = container.innerHTML;
+
+      // 토글: 이미 동일 스타일이 전체 선택된 경우 해제 처리
+      const parentNode = sel!.anchorNode?.parentElement;
+      const entireParentSelected =
+        parentNode &&
+        dataAttr &&
+        parentNode.getAttribute(dataAttr) &&
+        parentNode.textContent === sel!.toString(); // 부모 span 전체 선택 여부
+      const alreadyStyled = parentNode?.getAttribute(dataAttr) === dataValue;
+
+      range.deleteContents();
+      if (alreadyStyled) {
+        // 동일 스타일 토글 해제: span 제거
+        range.insertNode(document.createTextNode(sel!.toString()));
+      } else if (entireParentSelected && parentNode) {
+        // 부모 span 전체가 선택됐고 다른 색 -> 부모 span을 새로운 스타일로 교체
+        parentNode.setAttribute(dataAttr!, dataValue!);
+        Object.entries(style).forEach(([key, value]) => {
+          if (value) (parentNode.style as any)[key] = value;
+        });
+        // 새 span을 삽입할 필요 없음 (기존 span이 업데이트됨)
+      } else {
+        // 새로운 스타일 span 삽입
+        range.insertNode(newSpan);
+        // ※ newSpan이 기존 span 내부에 삽입되었을 수 있으므로 중첩 분리
+        if (
+          parentNode &&
+          dataAttr &&
+          parentNode.getAttribute(dataAttr) &&
+          parentNode.contains(newSpan)
+        ) {
+          const oldSpan = parentNode;
+          const beforeNodes: ChildNode[] = [];
+          const afterNodes: ChildNode[] = [];
+          let foundNewSpan = false;
+          // oldSpan 자식들을 newSpan 기준으로 분리
+          oldSpan.childNodes.forEach((node) => {
+            if (node === newSpan) {
+              foundNewSpan = true;
+              return; // newSpan 자체는 oldSpan에서 제거
+            }
+            if (!foundNewSpan) {
+              beforeNodes.push(node);
+            } else {
+              afterNodes.push(node);
+            }
+          });
+          // oldSpan 비우고 beforeNodes만 유지
+          oldSpan.innerHTML = "";
+          beforeNodes.forEach((node) => oldSpan.appendChild(node));
+          // oldSpan 다음에 newSpan 삽입
+          oldSpan.parentNode!.insertBefore(newSpan, oldSpan.nextSibling);
+          // afterNodes가 있으면 oldSpan 복제하여 뒤쪽 부분 처리
+          if (afterNodes.length > 0) {
+            const cloneSpan = oldSpan.cloneNode(false) as HTMLElement;
+            afterNodes.forEach((node) => cloneSpan.appendChild(node));
+            oldSpan.parentNode!.insertBefore(cloneSpan, newSpan.nextSibling);
+          }
+          // oldSpan이 내용이 비었다면 제거
+          if (!oldSpan.textContent) {
+            oldSpan.parentNode!.removeChild(oldSpan);
+          }
+        }
+        // 선택한 새 span을 다시 선택 상태로 (사용자 피드백을 위해)
+        sel!.removeAllRanges();
+        const newRange = document.createRange();
+        newRange.selectNodeContents(newSpan);
+        sel!.addRange(newRange);
+      }
     } else {
       // ✅ 블록 스타일 처리
       applyToBlocks((html) => {
         const container = document.createElement("div");
         container.innerHTML = html;
-
-        let span = container.querySelector(`span[${dataAttr}]`) as HTMLElement;
-
-        if (span) {
-          const currentValue = dataAttr ? span.getAttribute(dataAttr) : null;
-          if (currentValue === dataValue) {
-            unwrapSpan(span); // ✅ 같은 값이면 제거 (토글)
-          } else {
-            Object.entries(style).forEach(([key, value]) => {
-              if (value) (span.style as any)[key] = value;
-            });
-            if (dataAttr && dataValue) {
-              span.setAttribute(dataAttr, dataValue);
-            }
-          }
+        const span = container.querySelector(
+          `span[${dataAttr}]`
+        ) as HTMLElement;
+        const isUniformSpan =
+          span &&
+          span.parentElement === container &&
+          container.childNodes.length === 1;
+        const alreadyStyled =
+          isUniformSpan && span.getAttribute(dataAttr!) === dataValue;
+        if (alreadyStyled && span) {
+          // 블록이 이미 동일 스타일로 전체 감싸져 있음 -> span 제거(토글 해제)
+          unwrapSpan(span);
           return container.innerHTML;
         }
-
-        // 새로 생성
-        span = document.createElement("span");
+        // 기존 블록 내 모든 해당 스타일 span 제거 (중첩/혼합 방지)
+        container
+          .querySelectorAll(`span[${dataAttr}]`)
+          .forEach((s) => unwrapSpan(s as HTMLElement));
+        // 새 span으로 전체 내용 감싸기
+        const newSpan = document.createElement("span");
         Object.entries(style).forEach(([key, value]) => {
-          if (value) (span.style as any)[key] = value;
+          if (value) (newSpan.style as any)[key] = value;
         });
         if (dataAttr && dataValue) {
-          span.setAttribute(dataAttr, dataValue);
+          newSpan.setAttribute(dataAttr, dataValue);
         }
-
-        span.innerHTML = container.innerHTML;
-        return span.outerHTML;
+        newSpan.innerHTML = container.innerHTML;
+        return newSpan.outerHTML;
       });
     }
   };
