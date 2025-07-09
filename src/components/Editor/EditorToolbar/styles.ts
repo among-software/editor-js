@@ -9,4 +9,5 @@ export const TitleSaveWrapper = styled.button`
   color: ${COMMON_THEME.dark_gray};
   background-color: ${COMMON_THEME.white_primary};
   z-index: 100;
+  padding-left: 10px;
 `;

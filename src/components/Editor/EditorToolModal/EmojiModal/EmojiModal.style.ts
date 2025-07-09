@@ -3,7 +3,7 @@ import { COMMON_THEME } from "../../../../styles/Theme";
 
 export const EmojiModalWrapper = styled.div`
   width: 358px;
-  height: 400px;
+  height: 500px;
   display: flex;
   flex-direction: column;
   justify-content: center;

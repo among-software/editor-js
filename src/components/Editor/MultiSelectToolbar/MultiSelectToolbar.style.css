@@ -8,6 +8,7 @@
   display: flex;
   position: absolute;
   gap: 8px;
+  padding-left: 20px;
 }
 
 .color-picker {

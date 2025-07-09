@@ -81,6 +81,15 @@ export default function EditorToolbar({ toolbarTop, onUpload, width }: Props) {
       .catch((error) => console.log("Saving failed: ", error));
   };
 
+  const adjustedWidth = (() => {
+    if (!width) return "768px";
+    const match = width.match(/^(\d+)([a-z%]+)?$/i);
+    if (!match) return width;
+    const num = parseInt(match[1], 10);
+    const unit = match[2] || "px";
+    return `${num + 40}${unit}`;
+  })();
+
   return (
     <>
       {activeModal && (
@@ -92,7 +101,11 @@ export default function EditorToolbar({ toolbarTop, onUpload, width }: Props) {
       )}
 
       <FixedToolbar
-        position={{ top: toolbarTop, right: 0, width: width ?? "768px" }}
+        position={{
+          top: toolbarTop,
+          right: 0,
+          width: adjustedWidth ?? "768px",
+        }}
       >
         <ImageIcon
           handleBlockIndex={handleBlockIndex}

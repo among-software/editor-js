@@ -244,50 +244,110 @@ export default class UnifiedImage implements BlockTool {
 
     // ✅ 리사이저 핸들: 단일 이미지일 때만 추가
     if (totalImages === 1) {
-      const resizer = document.createElement("div");
-      resizer.classList.add("image-resizer-handle");
-      imageWrapper.appendChild(resizer);
+      const positions = [
+        "top-left",
+        "top-right",
+        "bottom-left",
+        "bottom-right",
+      ];
 
-      let startX = 0;
-      let startWidth = 0;
+      // 이미지 원본 비율 계산
+      const originalImage = imageWrapper.querySelector(
+        "img"
+      ) as HTMLImageElement;
+      const naturalWidth = originalImage?.naturalWidth || imageData.width;
+      const naturalHeight = originalImage?.naturalHeight || imageData.height;
+      const aspectRatio = naturalWidth / naturalHeight;
 
-      const onMouseMove = (e: MouseEvent) => {
-        const delta = e.clientX - startX;
-        let newWidth = startWidth + delta;
+      positions.forEach((pos) => {
+        const handle = document.createElement("div");
+        handle.className = `resize-handle ${pos}`;
+        imageWrapper.appendChild(handle);
 
-        // 에디터 최대 너비 얻기
-        const editorContainer =
-          this.api?.ui?.nodes?.redactor ||
-          document.querySelector(".codex-editor");
-        const maxWidth =
-          editorContainer instanceof HTMLElement
-            ? editorContainer.offsetWidth
-            : 800;
+        let startX = 0;
+        let startWidth = 0;
 
-        if (newWidth >= maxWidth) {
-          imageWrapper.style.width = "100%";
-          imageData.width = maxWidth;
-          imageData.ratio = maxWidth / imageData.height;
-        } else if (newWidth > 50) {
-          imageWrapper.style.width = `${newWidth}px`;
-          imageData.width = newWidth;
-          imageData.ratio = newWidth / imageData.height;
-        }
-      };
+        handle.addEventListener("mousedown", (e: MouseEvent) => {
+          e.preventDefault();
+          startX = e.clientX;
+          const rect = imageWrapper.getBoundingClientRect();
+          startWidth = rect.width;
 
-      const onMouseUp = () => {
-        document.removeEventListener("mousemove", onMouseMove);
-        document.removeEventListener("mouseup", onMouseUp);
-      };
+          const onMouseMove = (e: MouseEvent) => {
+            const deltaX = e.clientX - startX;
+            let newWidth = startWidth;
 
-      resizer.addEventListener("mousedown", (e) => {
-        e.preventDefault();
-        startX = e.clientX;
-        startWidth = imageWrapper.getBoundingClientRect().width;
+            if (pos.includes("right")) newWidth += deltaX;
+            if (pos.includes("left")) newWidth -= deltaX;
 
-        document.addEventListener("mousemove", onMouseMove);
-        document.addEventListener("mouseup", onMouseUp);
+            // 최대 너비 제한
+            const editorContainer =
+              this.api?.ui?.nodes?.redactor ||
+              document.querySelector(".codex-editor");
+            const maxWidth =
+              editorContainer instanceof HTMLElement
+                ? editorContainer.offsetWidth - 20
+                : 768;
+
+            // 최소/최대 너비 체크
+            if (newWidth > 50 && newWidth < maxWidth) {
+              const newHeight = newWidth / aspectRatio;
+
+              imageWrapper.style.width = `${newWidth}px`;
+              imageWrapper.style.height = `${newHeight}px`;
+
+              imageData.width = newWidth;
+              imageData.height = newHeight;
+              imageData.ratio = aspectRatio;
+
+              sizeLabel.innerText = `${Math.round(newWidth)} × ${Math.round(
+                newHeight
+              )}`;
+            }
+          };
+
+          const onMouseUp = () => {
+            // 드래그 종료
+            document.removeEventListener("mousemove", onMouseMove);
+            document.removeEventListener("mouseup", onMouseUp);
+
+            const editorContainer =
+              this.api?.ui?.nodes?.redactor ||
+              document.querySelector(".codex-editor");
+
+            const padding = 38;
+            const maxWidth =
+              editorContainer instanceof HTMLElement
+                ? editorContainer.clientWidth - padding
+                : 768;
+
+            // 만약 현재 이미지 크기가 maxWidth 초과되면, 강제로 줄이기
+            const wrapperWidth = imageWrapper.getBoundingClientRect().width;
+            if (wrapperWidth > maxWidth) {
+              imageWrapper.style.width = `${maxWidth}px`;
+              imageData.width = maxWidth;
+              imageData.height = maxWidth / imageData.ratio;
+              imageWrapper.style.height = `${imageData.height}px`;
+            }
+
+            // 크기 라벨 업데이트
+            sizeLabel.innerText = `${Math.round(
+              imageData.width
+            )} × ${Math.round(imageData.height)}`;
+          };
+
+          document.addEventListener("mousemove", onMouseMove);
+          document.addEventListener("mouseup", onMouseUp);
+        });
       });
+
+      // 크기 라벨 추가
+      const sizeLabel = document.createElement("div");
+      sizeLabel.className = "image-size-label";
+      sizeLabel.innerText = `${Math.round(imageData.width)} × ${Math.round(
+        imageData.height
+      )}`;
+      imageWrapper.appendChild(sizeLabel);
     }
 
     return imageWrapper;

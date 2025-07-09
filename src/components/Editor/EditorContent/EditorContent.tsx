@@ -100,6 +100,13 @@ const EditorContent = memo(({ value, onChange }: EditorContentProps) => {
         tools: EDITOR_JS_TOOLS as any,
         data: value || undefined,
         onReady: async () => {
+          const redactor = document.querySelector(
+            ".codex-editor__redactor"
+          ) as HTMLElement;
+          if (redactor) {
+            redactor.style.paddingBottom = "0px"; // ✅ 하단 패딩 제거
+            redactor.style.padding = "20px"; // ✅ 하단 패딩 제거
+          }
           const undo = new Undo({ editor: editorInstance });
           undo.initialize(value || undefined); // 🔹 명시적 초기화
           undoRef.current = undo;
@@ -154,7 +161,7 @@ const EditorContent = memo(({ value, onChange }: EditorContentProps) => {
   }, []);
 
   return (
-    <S.EditorContentContainer id="editorjs" style={{ cursor: "pointer" }} />
+    <S.EditorContentContainer id='editorjs' style={{ cursor: "pointer" }} />
   );
 });
 

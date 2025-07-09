@@ -19,6 +19,7 @@ import { FiChevronDown } from "react-icons/fi";
 import { RxDividerVertical } from "react-icons/rx";
 import { RiLetterSpacing2 } from "react-icons/ri";
 import { FaLink } from "react-icons/fa";
+import ColorPalette from "@/components/ColorPalette/ColorPalette";
 
 const LinkInputWrapper = styled.div<{ top: number; left: number }>`
   position: absolute;
@@ -113,6 +114,7 @@ const ToolbarWrapper = styled.div<{ top: number; left: number }>`
   box-shadow: none;
   width: 100%;
   border-bottom: 1px solid #dedede;
+  padding-left: 20px;
 `;
 
 const ToolButton = styled.button<{ active?: boolean }>`
@@ -211,24 +213,111 @@ export default function MultiSelectToolbar() {
     "Georgia",
   ];
   const backgroundColors = [
-    "#ffff99",
-    "#d3f8d3",
-    "#d1ecf1",
-    "#f8d7da",
-    "#fce5cd",
-  ];
-  const fontColors = [
-    "#ffffff",
     "#000000",
-    "#16b06d",
-    "#00c6be",
-    "#2e84b6",
-    "#959595",
-    "#f4c016",
-    "#f6655b",
-    "#ec4c69",
-    "#5c5cb2",
+    "#434343",
+    "#666666",
+    "#999999",
+    "#B7B7B7",
+    "#CCCCCC",
+    "#D9D9D9",
+    "#EFEFEF",
+    "#F3F3F3",
+    "#FFFFFF",
+    "#980000",
+    "#FF0000",
+    "#FF9900",
+    "#FFFF00",
+    "#00FF00",
+    "#00FFFF",
+    "#4A86E8",
+    "#0000FF",
+    "#9900FF",
+    "#FF00FF",
+    "#E6B8AF",
+    "#F4CCCC",
+    "#FCE5CD",
+    "#FFF2CC",
+    "#D9EAD3",
+    "#D0E0E3",
+    "#C9DAF8",
+    "#CFE2F3",
+    "#D9D2E9",
+    "#EAD1DC",
+    "#DD7E6B",
+    "#EA9999",
+    "#F9CB9C",
+    "#FFE599",
+    "#B6D7A8",
+    "#A2C4C9",
+    "#A4C2F4",
+    "#9FC5E8",
+    "#B4A7D6",
+    "#D5A6BD",
+    "#CC4125",
+    "#E06666",
+    "#F6B26B",
+    "#FFD966",
+    "#93C47D",
+    "#76A5AF",
+    "#6D9EEB",
+    "#6FA8DC",
+    "#8E7CC3",
+    "#C27BA0",
   ];
+
+  const fontColors = [
+    "#000000",
+    "#434343",
+    "#666666",
+    "#999999",
+    "#B7B7B7",
+    "#CCCCCC",
+    "#D9D9D9",
+    "#EFEFEF",
+    "#F3F3F3",
+    "#FFFFFF",
+    "#980000",
+    "#FF0000",
+    "#FF9900",
+    "#FFFF00",
+    "#00FF00",
+    "#00FFFF",
+    "#4A86E8",
+    "#0000FF",
+    "#9900FF",
+    "#FF00FF",
+    "#E6B8AF",
+    "#F4CCCC",
+    "#FCE5CD",
+    "#FFF2CC",
+    "#D9EAD3",
+    "#D0E0E3",
+    "#C9DAF8",
+    "#CFE2F3",
+    "#D9D2E9",
+    "#EAD1DC",
+    "#DD7E6B",
+    "#EA9999",
+    "#F9CB9C",
+    "#FFE599",
+    "#B6D7A8",
+    "#A2C4C9",
+    "#A4C2F4",
+    "#9FC5E8",
+    "#B4A7D6",
+    "#D5A6BD",
+    "#CC4125",
+    "#E06666",
+    "#F6B26B",
+    "#FFD966",
+    "#93C47D",
+    "#76A5AF",
+    "#6D9EEB",
+    "#6FA8DC",
+    "#8E7CC3",
+    "#C27BA0",
+  ];
+
   const blockTypes = [
     {
       label: "본문",
@@ -473,7 +562,7 @@ export default function MultiSelectToolbar() {
           // @ts-ignore */}
           <FiChevronDown />
         </ToolButton>
-        <Tooltip className="tooltip">블록 타입</Tooltip>
+        <Tooltip className='tooltip'>블록 타입</Tooltip>
         {activeDropdown === "blockType" && (
           <FloatingDropdown
             top={dropdownPosition.top}
@@ -515,7 +604,7 @@ export default function MultiSelectToolbar() {
           // @ts-ignore */}
           <FiChevronDown />
         </ToolButton>
-        <Tooltip className="tooltip">폰트 선택</Tooltip>
+        <Tooltip className='tooltip'>폰트 선택</Tooltip>
       </TooltipWrapper>
       {renderDropdown(
         "fontFamily",
@@ -542,7 +631,7 @@ export default function MultiSelectToolbar() {
           // @ts-ignore */}
           <FiChevronDown />
         </ToolButton>
-        <Tooltip className="tooltip">글자 크기</Tooltip>
+        <Tooltip className='tooltip'>글자 크기</Tooltip>
       </TooltipWrapper>
       {renderDropdown("fontSize", fontSizes, "fontSize", "data-font-size")}
       <Divider />
@@ -560,7 +649,7 @@ export default function MultiSelectToolbar() {
           // @ts-ignore */}
           <FaBold />
         </ToolButton>
-        <Tooltip className="tooltip">굵게</Tooltip>
+        <Tooltip className='tooltip'>굵게</Tooltip>
       </TooltipWrapper>
 
       <TooltipWrapper
@@ -576,7 +665,7 @@ export default function MultiSelectToolbar() {
           // @ts-ignore */}
           <FaItalic />
         </ToolButton>
-        <Tooltip className="tooltip">기울임꼴</Tooltip>
+        <Tooltip className='tooltip'>기울임꼴</Tooltip>
       </TooltipWrapper>
 
       <TooltipWrapper
@@ -594,7 +683,7 @@ export default function MultiSelectToolbar() {
           // @ts-ignore */}
           <FaUnderline />
         </ToolButton>
-        <Tooltip className="tooltip">밑줄</Tooltip>
+        <Tooltip className='tooltip'>밑줄</Tooltip>
       </TooltipWrapper>
 
       <TooltipWrapper
@@ -612,7 +701,7 @@ export default function MultiSelectToolbar() {
           // @ts-ignore */}
           <FaStrikethrough />
         </ToolButton>
-        <Tooltip className="tooltip">취소선</Tooltip>
+        <Tooltip className='tooltip'>취소선</Tooltip>
       </TooltipWrapper>
 
       <TooltipWrapper
@@ -630,13 +719,20 @@ export default function MultiSelectToolbar() {
           // @ts-ignore */}
           <FiChevronDown />
         </ToolButton>
-        <Tooltip className="tooltip">글자 색상</Tooltip>
-        {renderDropdown(
-          "fontColor",
-          fontColors,
-          "color",
-          "data-color",
-          (color) => ({ color })
+        <Tooltip className='tooltip'>글자 색상</Tooltip>
+        {activeDropdown === "fontColor" && (
+          <FloatingDropdown
+            top={dropdownPosition.top}
+            left={dropdownPosition.left}
+          >
+            <ColorPalette
+              colors={fontColors}
+              onSelect={(color) => {
+                wrapWithStyle({ color }, "data-color", color);
+                setActiveDropdown(null);
+              }}
+            />
+          </FloatingDropdown>
         )}
       </TooltipWrapper>
 
@@ -657,13 +753,20 @@ export default function MultiSelectToolbar() {
           // @ts-ignore */}
           <FiChevronDown />
         </ToolButton>
-        <Tooltip className="tooltip">배경 색상</Tooltip>
-        {renderDropdown(
-          "backgroundColor",
-          backgroundColors,
-          "backgroundColor",
-          "data-bg",
-          (bg) => ({ backgroundColor: bg })
+        <Tooltip className='tooltip'>배경 색상</Tooltip>
+        {activeDropdown === "backgroundColor" && (
+          <FloatingDropdown
+            top={dropdownPosition.top}
+            left={dropdownPosition.left}
+          >
+            <ColorPalette
+              colors={backgroundColors}
+              onSelect={(bg) => {
+                wrapWithStyle({ backgroundColor: bg }, "data-bg", bg);
+                setActiveDropdown(null);
+              }}
+            />
+          </FloatingDropdown>
         )}
       </TooltipWrapper>
 
@@ -686,7 +789,7 @@ export default function MultiSelectToolbar() {
           // @ts-ignore */}
           <FiChevronDown />
         </ToolButton>
-        <Tooltip className="tooltip">자간 설정</Tooltip>
+        <Tooltip className='tooltip'>자간 설정</Tooltip>
         {renderDropdown(
           "letterSpacing",
           letterSpacings,
@@ -712,7 +815,7 @@ export default function MultiSelectToolbar() {
           // @ts-ignore */}
           <FiChevronDown />
         </ToolButton>
-        <Tooltip className="tooltip">줄 간격 설정</Tooltip>
+        <Tooltip className='tooltip'>줄 간격 설정</Tooltip>
         {renderDropdown(
           "lineHeight",
           lineHeights,
@@ -729,16 +832,16 @@ export default function MultiSelectToolbar() {
         <ToolButton onClick={handleInsertLinkClick}>
           {/* 
           // @ts-ignore */}
-          {showLinkInput ? <FaLink color="#1aff00" /> : <FaLink />}
+          {showLinkInput ? <FaLink color='#1aff00' /> : <FaLink />}
         </ToolButton>
-        <Tooltip className="tooltip">링크 추가</Tooltip>
+        <Tooltip className='tooltip'>링크 추가</Tooltip>
       </TooltipWrapper>
 
       {showLinkInput && (
         <LinkInputWrapper top={linkInputPos.top} left={linkInputPos.left}>
           <LinkInput
-            type="text"
-            placeholder="URL을 입력하세요."
+            type='text'
+            placeholder='URL을 입력하세요.'
             value={linkInputValue}
             onChange={(e) => setLinkInputValue(e.target.value)}
           />

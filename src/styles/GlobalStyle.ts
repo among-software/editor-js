@@ -149,5 +149,8 @@ export const GlobalStyle = createGlobalStyle`
   cursor: pointer;
 }
 
+.ce-inline-toolbar {
+  display: none !important;
+}
 
 `;

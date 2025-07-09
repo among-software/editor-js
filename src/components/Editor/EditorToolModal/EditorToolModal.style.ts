@@ -12,4 +12,5 @@ export const EditorToolModalContainer = styled.div<{
   border: 1px solid ${COMMON_THEME.modal_border_color};
   border-radius: 1px;
   background-color: ${COMMON_THEME.white_primary};
+  z-index: 9999;
 `;
