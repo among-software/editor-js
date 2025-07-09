@@ -251,119 +251,32 @@ export default class UnifiedImage implements BlockTool {
         "bottom-right",
       ];
 
-      // 이미지 원본 비율 계산
       const originalImage = imageWrapper.querySelector(
         "img"
       ) as HTMLImageElement;
-      const naturalWidth = originalImage?.naturalWidth || imageData.width;
-      const naturalHeight = originalImage?.naturalHeight || imageData.height;
-      const aspectRatio = naturalWidth / naturalHeight;
-
-      positions.forEach((pos) => {
-        const handle = document.createElement("div");
-        handle.className = `resize-handle ${pos}`;
-        imageWrapper.appendChild(handle);
-
-        let startX = 0;
-        let startWidth = 0;
-
-        handle.addEventListener("mousedown", (e: MouseEvent) => {
-          e.preventDefault();
-          startX = e.clientX;
-          const rect = imageWrapper.getBoundingClientRect();
-          startWidth = rect.width;
-
-          const onMouseMove = (e: MouseEvent) => {
-            const deltaX = e.clientX - startX;
-            let newWidth = startWidth;
-
-            if (pos.includes("right")) newWidth += deltaX;
-            if (pos.includes("left")) newWidth -= deltaX;
-
-            // 최대 너비 제한
-            const editorContainer =
-              this.api?.ui?.nodes?.redactor ||
-              document.querySelector(".codex-editor");
-            const maxWidth =
-              editorContainer instanceof HTMLElement
-                ? editorContainer.offsetWidth - 20
-                : 768;
-
-            // 최소/최대 너비 체크
-            if (newWidth > 50 && newWidth < maxWidth) {
-              const newHeight = newWidth / aspectRatio;
-
-              imageWrapper.style.width = `${newWidth}px`;
-              imageWrapper.style.height = `${newHeight}px`;
-
-              imageData.width = newWidth;
-              imageData.height = newHeight;
-              imageData.ratio = aspectRatio;
-
-              sizeLabel.innerText = `${Math.round(newWidth)} × ${Math.round(
-                newHeight
-              )}`;
-            }
-          };
-
-          const onMouseUp = () => {
-            // 드래그 종료
-            document.removeEventListener("mousemove", onMouseMove);
-            document.removeEventListener("mouseup", onMouseUp);
-
-            const editorContainer =
-              this.api?.ui?.nodes?.redactor ||
-              document.querySelector(".codex-editor");
-
-            const padding = 40;
-            const maxWidth =
-              editorContainer instanceof HTMLElement
-                ? editorContainer.clientWidth - padding
-                : 768;
-
-            // 만약 현재 이미지 크기가 maxWidth 초과되면, 강제로 줄이기
-            const wrapperWidth = imageWrapper.getBoundingClientRect().width;
-            if (wrapperWidth > maxWidth) {
-              imageWrapper.style.width = `${maxWidth}px`;
-              imageData.width = maxWidth;
-              imageData.height = maxWidth / imageData.ratio;
-              imageWrapper.style.height = `${imageData.height}px`;
-            }
-
-            // 크기 라벨 업데이트
-            sizeLabel.innerText = `${Math.round(
-              imageData.width
-            )} × ${Math.round(imageData.height)}`;
-          };
-
-          document.addEventListener("mousemove", onMouseMove);
-          document.addEventListener("mouseup", onMouseUp);
-        });
-      });
 
       // 크기 라벨 추가
       const sizeLabel = document.createElement("div");
       sizeLabel.className = "image-size-label";
-      sizeLabel.innerText = `${Math.round(imageData.width)} × ${Math.round(
-        imageData.height
-      )}`;
       imageWrapper.appendChild(sizeLabel);
 
       const editorContainer =
         this.api?.ui?.nodes?.redactor ||
         document.querySelector(".codex-editor");
-
       const padding = 40;
       const maxWidth =
         editorContainer instanceof HTMLElement
           ? editorContainer.clientWidth - padding
           : 768;
 
-      // 최초 로딩 시 너비 초과 이미지 보정
-      const wrapperRect = imageWrapper.getBoundingClientRect();
-      if (wrapperRect.width > maxWidth) {
-        const newWidth = maxWidth;
-        const newHeight = newWidth / aspectRatio;
+      // 이미지 onload 이벤트에서 크기 및 표시 보정
+      originalImage.onload = () => {
+        const naturalWidth = originalImage.naturalWidth || imageData.width;
+        const naturalHeight = originalImage.naturalHeight || imageData.height;
+        const aspectRatio = naturalWidth / naturalHeight;
+
+        let newWidth = imageData.width > maxWidth ? maxWidth : imageData.width;
+        let newHeight = newWidth / aspectRatio;
 
         imageWrapper.style.width = `${newWidth}px`;
         imageWrapper.style.height = `${newHeight}px`;
@@ -375,7 +288,75 @@ export default class UnifiedImage implements BlockTool {
         sizeLabel.innerText = `${Math.round(newWidth)} × ${Math.round(
           newHeight
         )}`;
-      }
+
+        // ⚠️ 강제 리플로우 유도
+        imageWrapper.offsetHeight;
+        imageWrapper.style.transform = "translateZ(0)";
+
+        // 핸들 추가 (이 시점에서 사이즈 보정이 끝난 후여야 정확한 위치)
+        positions.forEach((pos) => {
+          const handle = document.createElement("div");
+          handle.className = `resize-handle ${pos}`;
+          imageWrapper.appendChild(handle);
+
+          let startX = 0;
+          let startWidth = 0;
+
+          handle.addEventListener("mousedown", (e: MouseEvent) => {
+            e.preventDefault();
+            startX = e.clientX;
+            const rect = imageWrapper.getBoundingClientRect();
+            startWidth = rect.width;
+
+            const onMouseMove = (e: MouseEvent) => {
+              const deltaX = e.clientX - startX;
+              let newWidth = startWidth;
+
+              if (pos.includes("right")) newWidth += deltaX;
+              if (pos.includes("left")) newWidth -= deltaX;
+
+              if (newWidth > 50 && newWidth < maxWidth) {
+                const newHeight = newWidth / aspectRatio;
+
+                imageWrapper.style.width = `${newWidth}px`;
+                imageWrapper.style.height = `${newHeight}px`;
+
+                imageData.width = newWidth;
+                imageData.height = newHeight;
+                imageData.ratio = aspectRatio;
+
+                sizeLabel.innerText = `${Math.round(newWidth)} × ${Math.round(
+                  newHeight
+                )}`;
+              }
+            };
+
+            const onMouseUp = () => {
+              document.removeEventListener("mousemove", onMouseMove);
+              document.removeEventListener("mouseup", onMouseUp);
+
+              const wrapperWidth = imageWrapper.getBoundingClientRect().width;
+              if (wrapperWidth > maxWidth) {
+                const newWidth = maxWidth;
+                const newHeight = newWidth / imageData.ratio;
+
+                imageWrapper.style.width = `${newWidth}px`;
+                imageWrapper.style.height = `${newHeight}px`;
+
+                imageData.width = newWidth;
+                imageData.height = newHeight;
+
+                sizeLabel.innerText = `${Math.round(newWidth)} × ${Math.round(
+                  newHeight
+                )}`;
+              }
+            };
+
+            document.addEventListener("mousemove", onMouseMove);
+            document.addEventListener("mouseup", onMouseUp);
+          });
+        });
+      };
     }
 
     return imageWrapper;

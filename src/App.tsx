@@ -6,18 +6,18 @@ function App() {
     time: 1750655789889,
     blocks: [
       {
-        id: "FDlqWHGwf5",
+        id: "_h0FJetfDX",
         type: "unifiedImage",
         data: {
           images: [
             {
-              url: "https://kr1-api-object-storage.nhncloudservice.com/v1/AUTH_96c6313b6d6a405b9511658326418a69/lotte-foundation/uploads/2025-06-22/57603eb4-706c-484b-a424-a2041ba3be5b.jpg",
-              name: "20240711_213243.jpg",
-              size: 3241512,
+              url: "https://kr1-api-object-storage.nhncloudservice.com/v1/AUTH_96c6313b6d6a405b9511658326418a69/lotte-foundation/uploads/2025-07-04/23d493c2-7796-4e49-9132-7d2d9d1b161f.jpg",
+              name: "[붙임7] 인도네시아 장학금 전달식.jpg",
+              size: 4881420,
               type: "image/jpeg",
-              width: 1024,
-              height: 2252,
-              ratio: 0.3410301953818828,
+              width: 853.9931640625,
+              height: 2507,
+              ratio: 0.3406434639260072,
             },
           ],
           caption: "",

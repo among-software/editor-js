@@ -51,57 +51,47 @@ export default function EditorSection({
 
   // ✅ 드래그 기반 블럭 선택 기능
   useEffect(() => {
-    let startY = 0;
-    let endY = 0;
+    let startBlock: HTMLElement | null = null;
 
     const handleMouseDown = (e: MouseEvent) => {
-      const isInsideBlock = (e.target as HTMLElement).closest(".ce-block");
-      if (!isInsideBlock) return;
-
-      startY = e.clientY;
+      startBlock = (e.target as HTMLElement).closest(".ce-block");
     };
 
     const handleMouseUp = (e: MouseEvent) => {
-      const isInsideBlock = (e.target as HTMLElement).closest(".ce-block");
-      if (!isInsideBlock) return;
+      const endBlock = (e.target as HTMLElement).closest(".ce-block");
+      if (!startBlock || !endBlock) return;
 
-      endY = e.clientY;
+      const blocks = Array.from(document.querySelectorAll(".ce-block"));
 
-      const minY = Math.min(startY, endY);
-      const maxY = Math.max(startY, endY);
+      const startIndex = blocks.indexOf(startBlock);
+      const endIndex = blocks.indexOf(endBlock);
 
-      const selectedIds: string[] = [];
+      if (startIndex === -1 || endIndex === -1) return;
 
-      document.querySelectorAll(".ce-block").forEach((block) => {
-        const rect = block.getBoundingClientRect();
-        const intersects = rect.top <= maxY && rect.bottom >= minY;
+      const [from, to] = [
+        Math.min(startIndex, endIndex),
+        Math.max(startIndex, endIndex),
+      ];
 
-        if (intersects) {
-          const id = block.getAttribute("data-id");
-          if (id) selectedIds.push(id);
-        }
-      });
+      const selectedBlocks = blocks.slice(from, to + 1);
+      const selectedIds = selectedBlocks
+        .map((block) => block.getAttribute("data-id"))
+        .filter(Boolean) as string[];
 
-      // ✅ 상태 저장을 마이크로태스크 이후로 defer
-      setTimeout(() => {
-        useEditorStore.getState().setSelectedBlockIds(selectedIds);
-        console.log("[드래그 선택된 블럭 ID들]", selectedIds);
+      useEditorStore.getState().setSelectedBlockIds(selectedIds);
+      console.log("[정확한 드래그 선택 블럭 ID]", selectedIds);
 
-        // ⛔️ 기존 selectedIds[0] → ✅ selectedIds[selectedIds.length - 1]
-        const lastId = selectedIds[selectedIds.length - 1];
+      const lastBlock = blocks[to];
+      if (lastBlock) {
+        const rect = lastBlock.getBoundingClientRect();
+        useEditorStore.getState().setToolbarPosition({
+          top: rect.top + window.scrollY - 60,
+          left: rect.left + window.scrollX,
+        });
+      }
 
-        const lastBlock = document.querySelector(
-          `.ce-block[data-id="${lastId}"]`
-        );
-        if (lastBlock) {
-          const rect = lastBlock.getBoundingClientRect();
-
-          useEditorStore.getState().setToolbarPosition({
-            top: rect.top + window.scrollY - 60, // 마지막 블록 위 60px
-            left: rect.left + window.scrollX, // 마지막 블록의 좌측 기준
-          });
-        }
-      }, 0);
+      // 초기화
+      startBlock = null;
     };
 
     document.addEventListener("mousedown", handleMouseDown);
@@ -111,7 +101,7 @@ export default function EditorSection({
       document.removeEventListener("mousedown", handleMouseDown);
       document.removeEventListener("mouseup", handleMouseUp);
     };
-  }, [setSelectedBlockIds]);
+  }, []);
 
   return (
     <S.EditorSectionContainer ref={editorSectionRef} $width={width}>

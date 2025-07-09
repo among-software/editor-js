@@ -114,6 +114,17 @@ const EditorContent = memo(({ value, onChange }: EditorContentProps) => {
           new DragDrop(editorInstance);
           setEditor(editorInstance);
 
+          document.addEventListener("keydown", (e) => {
+            if (
+              (e.ctrlKey || e.metaKey) &&
+              e.shiftKey &&
+              e.key.toLowerCase() === "z"
+            ) {
+              e.preventDefault();
+              undoRef.current?.redo(); // 🔄 redo 실행
+            }
+          });
+
           // 🔹 초기값 undo 스택에 수동 push
           const data = await editorInstance.save();
           undo.stack.push(data);
@@ -161,7 +172,7 @@ const EditorContent = memo(({ value, onChange }: EditorContentProps) => {
   }, []);
 
   return (
-    <S.EditorContentContainer id='editorjs' style={{ cursor: "pointer" }} />
+    <S.EditorContentContainer id="editorjs" style={{ cursor: "pointer" }} />
   );
 });
 
