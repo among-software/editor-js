@@ -583,7 +583,7 @@ export default function MultiSelectToolbar() {
         let span = container.querySelector(`span[${dataAttr}]`) as HTMLElement;
 
         if (span) {
-          const currentValue = span.getAttribute(dataAttr);
+          const currentValue = dataAttr ? span.getAttribute(dataAttr) : null;
           if (currentValue === dataValue) {
             unwrapSpan(span); // ✅ 같은 값이면 제거 (토글)
           } else {

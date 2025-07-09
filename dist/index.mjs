@@ -38968,7 +38968,7 @@ function Xh() {
         const ne = document.createElement("div");
         ne.innerHTML = oe;
         let K = ne.querySelector(`span[${S}]`);
-        return K ? (K.getAttribute(S) === R ? W(K) : (Object.entries(y).forEach(([Ee, Pe]) => {
+        return K ? ((S ? K.getAttribute(S) : null) === R ? W(K) : (Object.entries(y).forEach(([Ee, Pe]) => {
           Pe && (K.style[Ee] = Pe);
         }), K.setAttribute(S, R || "")), ne.innerHTML) : (K = document.createElement("span"), Object.entries(y).forEach(([ae, Ee]) => {
           Ee && (K.style[ae] = Ee);
