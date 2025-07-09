@@ -315,7 +315,7 @@ export default class UnifiedImage implements BlockTool {
               this.api?.ui?.nodes?.redactor ||
               document.querySelector(".codex-editor");
 
-            const padding = 38;
+            const padding = 40;
             const maxWidth =
               editorContainer instanceof HTMLElement
                 ? editorContainer.clientWidth - padding

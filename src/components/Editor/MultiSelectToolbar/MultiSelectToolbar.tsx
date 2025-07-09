@@ -19,7 +19,7 @@ import { FiChevronDown } from "react-icons/fi";
 import { RxDividerVertical } from "react-icons/rx";
 import { RiLetterSpacing2 } from "react-icons/ri";
 import { FaLink } from "react-icons/fa";
-import ColorPalette from "@/components/ColorPalette/ColorPalette";
+import ColorPalette from "../../../components/ColorPalette/ColorPalette";
 
 const LinkInputWrapper = styled.div<{ top: number; left: number }>`
   position: absolute;
@@ -727,7 +727,7 @@ export default function MultiSelectToolbar() {
           >
             <ColorPalette
               colors={fontColors}
-              onSelect={(color) => {
+              onSelect={(color: any) => {
                 wrapWithStyle({ color }, "data-color", color);
                 setActiveDropdown(null);
               }}
@@ -761,7 +761,7 @@ export default function MultiSelectToolbar() {
           >
             <ColorPalette
               colors={backgroundColors}
-              onSelect={(bg) => {
+              onSelect={(bg: any) => {
                 wrapWithStyle({ backgroundColor: bg }, "data-bg", bg);
                 setActiveDropdown(null);
               }}

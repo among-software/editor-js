@@ -37145,7 +37145,7 @@ const N = class N {
             }, I = () => {
               var L, T, R;
               document.removeEventListener("mousemove", A), document.removeEventListener("mouseup", I);
-              const j = ((R = (T = (L = this.api) == null ? void 0 : L.ui) == null ? void 0 : T.nodes) == null ? void 0 : R.redactor) || document.querySelector(".codex-editor"), C = j instanceof HTMLElement ? j.clientWidth - 38 : 768;
+              const j = ((R = (T = (L = this.api) == null ? void 0 : L.ui) == null ? void 0 : T.nodes) == null ? void 0 : R.redactor) || document.querySelector(".codex-editor"), C = j instanceof HTMLElement ? j.clientWidth - 40 : 768;
               a.getBoundingClientRect().width > C && (a.style.width = `${C}px`, i.width = C, i.height = C / i.ratio, a.style.height = `${i.height}px`), f.innerText = `${Math.round(
                 i.width
               )} × ${Math.round(i.height)}`;
