@@ -543,7 +543,7 @@ export default function MultiSelectToolbar() {
       let span = container.querySelector(`span[${dataAttr}]`) as HTMLElement;
 
       if (span) {
-        const currentValue = span.getAttribute(dataAttr);
+        const currentValue = dataAttr ? span.getAttribute(dataAttr) : null;
         if (currentValue === dataValue) {
           unwrapSpan(span); // ✅ 토글: 값 같으면 제거
         } else {
@@ -551,7 +551,9 @@ export default function MultiSelectToolbar() {
           Object.entries(style).forEach(([key, value]) => {
             if (value) (span.style as any)[key] = value;
           });
-          span.setAttribute(dataAttr, dataValue || "");
+          if (dataAttr && dataValue) {
+            span.setAttribute(dataAttr, dataValue);
+          }
         }
       } else {
         // 새로 생성
