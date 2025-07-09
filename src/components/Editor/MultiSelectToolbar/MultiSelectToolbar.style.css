@@ -9,6 +9,7 @@
   position: absolute;
   gap: 8px;
   padding-left: 20px;
+  box-sizing: border-box;
 }
 
 .color-picker {

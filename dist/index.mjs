@@ -24767,6 +24767,7 @@ const bd = F.div`
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 10px;
+  box-sizing: border-box;
 `;
 function kd({ position: t, children: e }) {
   return /* @__PURE__ */ v.jsx(

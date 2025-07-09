@@ -20,4 +20,5 @@ export const FixedToolbarContainer = styled.div<ToolbarProps>`
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 10px;
+  box-sizing: border-box;
 `;
