@@ -66,6 +66,7 @@ const TooltipWrapper = styled.div`
   position: relative;
   display: inline-flex;
   align-items: center;
+  z-index: 99999;
 
   &:hover .tooltip {
     opacity: 1;
@@ -75,10 +76,10 @@ const TooltipWrapper = styled.div`
 
 const Tooltip = styled.div`
   position: absolute;
-  bottom: calc(100% + 6px);
+  bottom: calc(100% - 60px);
   left: 50%;
   transform: translateX(-50%);
-  background: #333;
+  background: #000;
   color: white;
   padding: 4px 8px;
   border-radius: 4px;
@@ -87,7 +88,7 @@ const Tooltip = styled.div`
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.2s ease;
-  z-index: 999;
+  z-index: 99999;
 `;
 
 type IconType = ComponentType<{ className?: string }>;

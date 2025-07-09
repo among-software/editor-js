@@ -577,6 +577,7 @@ See https://s-c.sh/2BAXzed for more info.`),window[ni]+=1);const ol=F.div`
   position: relative;
   display: inline-flex;
   align-items: center;
+  z-index: 99999;
 
   &:hover .tooltip {
     opacity: 1;
@@ -584,10 +585,10 @@ See https://s-c.sh/2BAXzed for more info.`),window[ni]+=1);const ol=F.div`
   }
 `,Fe=F.div`
   position: absolute;
-  bottom: calc(100% + 6px);
+  bottom: calc(100% - 60px);
   left: 50%;
   transform: translateX(-50%);
-  background: #333;
+  background: #000;
   color: white;
   padding: 4px 8px;
   border-radius: 4px;
@@ -596,7 +597,7 @@ See https://s-c.sh/2BAXzed for more info.`),window[ni]+=1);const ol=F.div`
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.2s ease;
-  z-index: 999;
+  z-index: 99999;
 `,zn=F(Lh)`
   font-size: 16px;
   margin: 0 6px;
