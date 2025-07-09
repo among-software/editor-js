@@ -566,8 +566,8 @@ export default function MultiSelectToolbar() {
         dataAttr &&
         parentNode.getAttribute(dataAttr) &&
         parentNode.textContent === sel!.toString(); // 부모 span 전체 선택 여부
-      const alreadyStyled = parentNode?.getAttribute(dataAttr) === dataValue;
-
+      const alreadyStyled =
+        !!dataAttr && parentNode?.getAttribute(dataAttr) === dataValue;
       range.deleteContents();
       if (alreadyStyled) {
         // 동일 스타일 토글 해제: span 제거

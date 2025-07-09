@@ -38961,7 +38961,7 @@ function Xh() {
       Object.entries(y).forEach(([re, Z]) => {
         Z && (be.style[re] = Z);
       }), x && H && be.setAttribute(x, H), be.innerHTML = ye.innerHTML;
-      const ce = (me = U.anchorNode) == null ? void 0 : me.parentElement, ke = ce && x && ce.getAttribute(x) && ce.textContent === U.toString(), Be = (ce == null ? void 0 : ce.getAttribute(x)) === H;
+      const ce = (me = U.anchorNode) == null ? void 0 : me.parentElement, ke = ce && x && ce.getAttribute(x) && ce.textContent === U.toString(), Be = !!x && (ce == null ? void 0 : ce.getAttribute(x)) === H;
       if (ie.deleteContents(), Be)
         ie.insertNode(document.createTextNode(U.toString()));
       else if (ke && ce)
