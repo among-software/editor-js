@@ -590,7 +590,9 @@ export default function MultiSelectToolbar() {
             Object.entries(style).forEach(([key, value]) => {
               if (value) (span.style as any)[key] = value;
             });
-            span.setAttribute(dataAttr, dataValue || "");
+            if (dataAttr && dataValue) {
+              span.setAttribute(dataAttr, dataValue);
+            }
           }
           return container.innerHTML;
         }
