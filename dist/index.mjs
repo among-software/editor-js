@@ -38670,6 +38670,7 @@ const Uh = F.div`
   width: 100%;
   border-bottom: 1px solid #dedede;
   padding-left: 20px;
+  box-sizing: border-box;
 `, Ie = F.button`
   background: white;
   border-radius: 2px;

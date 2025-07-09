@@ -618,6 +618,7 @@ See https://s-c.sh/2BAXzed for more info.`),window[si]+=1);const ol=F.div`
   width: 100%;
   border-bottom: 1px solid #dedede;
   padding-left: 20px;
+  box-sizing: border-box;
 `,Pe=F.button`
   background: white;
   border-radius: 2px;
