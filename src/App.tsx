@@ -15,7 +15,7 @@ function App() {
               name: "20240711_213243.jpg",
               size: 3241512,
               type: "image/jpeg",
-              width: 768,
+              width: 1024,
               height: 2252,
               ratio: 0.3410301953818828,
             },
@@ -39,7 +39,7 @@ function App() {
   return (
     <div className="App">
       {/* <TitleSection /> */}
-      <EditorSection value={data} width="768px" />
+      <EditorSection value={data} width="912px" />
     </div>
   );
 }

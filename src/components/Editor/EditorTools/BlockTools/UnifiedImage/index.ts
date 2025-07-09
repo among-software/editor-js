@@ -348,6 +348,34 @@ export default class UnifiedImage implements BlockTool {
         imageData.height
       )}`;
       imageWrapper.appendChild(sizeLabel);
+
+      const editorContainer =
+        this.api?.ui?.nodes?.redactor ||
+        document.querySelector(".codex-editor");
+
+      const padding = 40;
+      const maxWidth =
+        editorContainer instanceof HTMLElement
+          ? editorContainer.clientWidth - padding
+          : 768;
+
+      // 최초 로딩 시 너비 초과 이미지 보정
+      const wrapperRect = imageWrapper.getBoundingClientRect();
+      if (wrapperRect.width > maxWidth) {
+        const newWidth = maxWidth;
+        const newHeight = newWidth / aspectRatio;
+
+        imageWrapper.style.width = `${newWidth}px`;
+        imageWrapper.style.height = `${newHeight}px`;
+
+        imageData.width = newWidth;
+        imageData.height = newHeight;
+        imageData.ratio = aspectRatio;
+
+        sizeLabel.innerText = `${Math.round(newWidth)} × ${Math.round(
+          newHeight
+        )}`;
+      }
     }
 
     return imageWrapper;
