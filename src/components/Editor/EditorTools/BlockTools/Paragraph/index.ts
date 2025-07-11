@@ -207,49 +207,108 @@ export default class Paragraph {
   merge(data: ParagraphData): void {
     if (!this._element) return;
 
-    console.log("🟡 기존 this._element.innerHTML:", this._element.innerHTML);
-    console.log("🟡 들어온 data.text:", data.text);
-
-    const extractTextOnly = (html: string): string => {
+    const flattenTextSpans = (html: string): HTMLElement[] => {
       const temp = document.createElement("div");
       temp.innerHTML = html;
-      return temp.textContent || "";
+
+      const leafSpans: HTMLElement[] = [];
+
+      const collectStyleChain = (span: HTMLElement): CSSStyleDeclaration[] => {
+        const styles: CSSStyleDeclaration[] = [];
+        let current: HTMLElement | null = span;
+        while (current && current.tagName === "SPAN") {
+          styles.unshift(current.style);
+          current = current.parentElement;
+        }
+        return styles;
+      };
+
+      const mergeStyles = (styles: CSSStyleDeclaration[]): string => {
+        const styleMap = new Map<string, string>();
+        styles.forEach((style) => {
+          for (let i = 0; i < style.length; i++) {
+            const prop = style[i];
+            styleMap.set(prop, style.getPropertyValue(prop));
+          }
+        });
+        return Array.from(styleMap.entries())
+          .map(([k, v]) => `${k}: ${v}`)
+          .join("; ");
+      };
+
+      const walk = (node: ChildNode) => {
+        if (
+          node.nodeType === Node.ELEMENT_NODE &&
+          (node as HTMLElement).tagName === "SPAN"
+        ) {
+          const span = node as HTMLElement;
+          const isLeaf = !Array.from(span.children).some(
+            (child) => child.tagName === "SPAN"
+          );
+          if (isLeaf && span.textContent?.trim()) {
+            const styleChain = collectStyleChain(span);
+            const mergedStyle = mergeStyles(styleChain);
+
+            const finalSpan = document.createElement("span");
+            finalSpan.textContent = span.textContent;
+            finalSpan.setAttribute("style", mergedStyle);
+            finalSpan.style.display = "inline";
+
+            leafSpans.push(finalSpan);
+          }
+        }
+        node.childNodes.forEach(walk);
+      };
+
+      temp.childNodes.forEach(walk);
+      return leafSpans;
     };
 
-    // 기존 element에서 텍스트 추출 (중복 span 제거)
-    const beforeText = extractTextOnly(this._element.innerHTML);
-    console.log("✅ beforeText:", beforeText);
+    const beforeSpans = flattenTextSpans(this._element.innerHTML);
+    const afterSpans = flattenTextSpans(data.text);
 
-    // 들어온 데이터에서 텍스트 추출
-    const afterText = extractTextOnly(data.text);
-    console.log("✅ afterText:", afterText);
+    const beforeTextSet = new Set(
+      beforeSpans.map((span) => span.textContent?.trim() || "")
+    );
 
-    const fullHTML = `${beforeText}<span id="cursor-marker"></span>${afterText}`;
-    console.log("🧩 결합된 fullHTML:", fullHTML);
+    const filteredAfterSpans = afterSpans.filter((span) => {
+      const text = span.textContent?.trim();
+      return text && !beforeTextSet.has(text);
+    });
 
-    const unifiedSpan = document.createElement("span");
-    unifiedSpan.style.wordBreak = "break-word";
-    unifiedSpan.innerHTML = fullHTML;
+    const mergedParagraph = document.createElement("p");
+    mergedParagraph.style.lineHeight = "normal";
+    mergedParagraph.style.letterSpacing = "normal";
+    mergedParagraph.style.wordBreak = "break-word";
 
-    console.log("📦 최종 unifiedSpan.outerHTML:", unifiedSpan.outerHTML);
+    beforeSpans.forEach((span) =>
+      mergedParagraph.appendChild(span.cloneNode(true))
+    );
 
-    this._data.text = unifiedSpan.outerHTML;
+    const marker = document.createElement("span");
+    marker.id = "cursor-marker";
+    mergedParagraph.appendChild(marker);
+
+    filteredAfterSpans.forEach((span) =>
+      mergedParagraph.appendChild(span.cloneNode(true))
+    );
+
+    this._data.text = mergedParagraph.outerHTML;
     this._element.innerHTML = "";
-    this._element.appendChild(unifiedSpan);
+    this._element.appendChild(mergedParagraph);
     this._element.normalize();
 
+    // 커서 복원
     setTimeout(() => {
-      const markerEl = this._element?.querySelector("#cursor-marker");
+      const markerEl = this._element.querySelector("#cursor-marker");
       if (markerEl) {
         const range = document.createRange();
         const selection = window.getSelection();
-
         range.setStartAfter(markerEl);
         range.collapse(true);
         selection?.removeAllRanges();
         selection?.addRange(range);
-
-        this._element?.focus();
+        this._element.focus();
         markerEl.remove();
       }
     }, 0);
@@ -293,7 +352,7 @@ export default class Paragraph {
     }
 
     // 없는 경우 wrapping 추가
-    return `<span style="display: inline-block; word-break: break-word;">${html}</span>`;
+    return `<span style="display: inline; word-break: break-word;">${html}</span>`;
   }
 
   save(blockContent: HTMLElement) {

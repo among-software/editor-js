@@ -9,7 +9,7 @@ export function applyInlineStyle(style: Record<string, string>) {
     span.style.setProperty(key, value);
     span.setAttribute(`data-${key}`, value);
   });
-  span.style.display = "inline-block";
+  span.style.display = "inline";
   span.style.wordBreak = "break-word";
 
   span.appendChild(range.extractContents());
