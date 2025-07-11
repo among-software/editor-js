@@ -104,41 +104,34 @@ export default class Paragraph {
     div.dataset.placeholderActive = this.api.i18n.t(this._placeholder);
 
     if (this._data.text) {
-      div.innerHTML = this._data.text;
+      // ✅ 기존 span 제거하고 하나의 span으로 재구성
+      const mergedText = this._data.text
+        .replace(/<span[^>]*>/g, "") // 모든 opening <span ...>
+        .replace(/<\/span>/g, "") // 모든 closing </span>
+        .trim();
+
+      const span = document.createElement("span");
+      span.style.display = "inline-block";
+      span.style.wordBreak = "break-word";
+      span.innerHTML = mergedText;
+
+      div.appendChild(span);
     }
 
-    // 스타일 적용
-    if (this._data.lineHeight) {
-      div.style.lineHeight = this._data.lineHeight;
-    }
-
-    if (this._data.letterSpacing) {
+    // 스타일 설정
+    if (this._data.lineHeight) div.style.lineHeight = this._data.lineHeight;
+    if (this._data.letterSpacing)
       div.style.letterSpacing = this._data.letterSpacing;
-    }
+    if (this._data.fontSize) div.style.fontSize = this._data.fontSize;
+    if (this._data.fontFamily) div.style.fontFamily = this._data.fontFamily;
+    if (this._data.isBold) div.style.fontWeight = "bold";
+    if (this._data.isItalic) div.style.fontStyle = "italic";
 
-    if (this._data.fontSize) {
-      div.style.fontSize = this._data.fontSize;
-    }
-
-    if (this._data.fontFamily) {
-      div.style.fontFamily = this._data.fontFamily;
-    }
-
-    if (this._data.isBold) {
-      div.style.fontWeight = "bold";
-    }
-
-    if (this._data.isItalic) {
-      div.style.fontStyle = "italic";
-    }
-
-    // ✅ underline + strikethrough 처리
     const decorations: string[] = [];
     if (this._data.isUnderline) decorations.push("underline");
     if (this._data.isStrikethrough) decorations.push("line-through");
-    if (decorations.length > 0) {
+    if (decorations.length > 0)
       div.style.textDecoration = decorations.join(" ");
-    }
 
     if (!this.readOnly) {
       div.contentEditable = "true";
@@ -206,10 +199,33 @@ export default class Paragraph {
 
   merge(data: ParagraphData): void {
     if (!this._element) return;
-    this._data.text += data.text;
-    const fragment = makeFragment(data.text);
-    this._element.appendChild(fragment);
+
+    // 기존 span + 추가 span 내부의 텍스트를 모두 합치기
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = this._data.text + data.text;
+
+    let combinedHTML = "";
+    const spans = tempDiv.querySelectorAll("span");
+    spans.forEach((span) => {
+      combinedHTML += span.innerHTML;
+    });
+
+    // ✅ span 하나만 생성하여 다시 렌더링
+    const unifiedSpan = document.createElement("span");
+    unifiedSpan.style.display = "inline-block";
+    unifiedSpan.style.wordBreak = "break-word";
+    unifiedSpan.innerHTML = combinedHTML;
+
+    this._data.text = unifiedSpan.outerHTML;
+
+    // 🔄 기존 내용 초기화 후 재렌더링
+    this._element.innerHTML = "";
+    this._element.appendChild(unifiedSpan);
     this._element.normalize();
+  }
+
+  static get mergeable(): boolean {
+    return true;
   }
 
   validate(savedData: ParagraphData): boolean {
