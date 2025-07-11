@@ -104,34 +104,41 @@ export default class Paragraph {
     div.dataset.placeholderActive = this.api.i18n.t(this._placeholder);
 
     if (this._data.text) {
-      // ✅ 기존 span 제거하고 하나의 span으로 재구성
-      const mergedText = this._data.text
-        .replace(/<span[^>]*>/g, "") // 모든 opening <span ...>
-        .replace(/<\/span>/g, "") // 모든 closing </span>
-        .trim();
-
-      const span = document.createElement("span");
-      span.style.display = "inline-block";
-      span.style.wordBreak = "break-word";
-      span.innerHTML = mergedText;
-
-      div.appendChild(span);
+      div.innerHTML = this._data.text;
     }
 
-    // 스타일 설정
-    if (this._data.lineHeight) div.style.lineHeight = this._data.lineHeight;
-    if (this._data.letterSpacing)
-      div.style.letterSpacing = this._data.letterSpacing;
-    if (this._data.fontSize) div.style.fontSize = this._data.fontSize;
-    if (this._data.fontFamily) div.style.fontFamily = this._data.fontFamily;
-    if (this._data.isBold) div.style.fontWeight = "bold";
-    if (this._data.isItalic) div.style.fontStyle = "italic";
+    // 스타일 적용
+    if (this._data.lineHeight) {
+      div.style.lineHeight = this._data.lineHeight;
+    }
 
+    if (this._data.letterSpacing) {
+      div.style.letterSpacing = this._data.letterSpacing;
+    }
+
+    if (this._data.fontSize) {
+      div.style.fontSize = this._data.fontSize;
+    }
+
+    if (this._data.fontFamily) {
+      div.style.fontFamily = this._data.fontFamily;
+    }
+
+    if (this._data.isBold) {
+      div.style.fontWeight = "bold";
+    }
+
+    if (this._data.isItalic) {
+      div.style.fontStyle = "italic";
+    }
+
+    // ✅ underline + strikethrough 처리
     const decorations: string[] = [];
     if (this._data.isUnderline) decorations.push("underline");
     if (this._data.isStrikethrough) decorations.push("line-through");
-    if (decorations.length > 0)
+    if (decorations.length > 0) {
       div.style.textDecoration = decorations.join(" ");
+    }
 
     if (!this.readOnly) {
       div.contentEditable = "true";
@@ -200,37 +207,37 @@ export default class Paragraph {
   merge(data: ParagraphData): void {
     if (!this._element) return;
 
-    // 1. 기존 span + 추가 span을 임시 div에 렌더
-    const tempDiv = document.createElement("div");
-    tempDiv.innerHTML = this._element.innerHTML + data.text;
+    console.log("🟡 기존 this._element.innerHTML:", this._element.innerHTML);
+    console.log("🟡 들어온 data.text:", data.text);
 
-    // 2. span 합치기
-    let combinedHTML = "";
-    const spans = Array.from(tempDiv.querySelectorAll("span"));
+    const extractTextOnly = (html: string): string => {
+      const temp = document.createElement("div");
+      temp.innerHTML = html;
+      return temp.textContent || "";
+    };
 
-    spans.forEach((span, idx) => {
-      combinedHTML += span.innerHTML;
+    // 기존 element에서 텍스트 추출 (중복 span 제거)
+    const beforeText = extractTextOnly(this._element.innerHTML);
+    console.log("✅ beforeText:", beforeText);
 
-      // ✅ 첫 span 뒤에 커서 마커 삽입
-      if (idx === 0) {
-        combinedHTML += '<span id="cursor-marker"></span>';
-      }
-    });
+    // 들어온 데이터에서 텍스트 추출
+    const afterText = extractTextOnly(data.text);
+    console.log("✅ afterText:", afterText);
 
-    // 3. 하나의 span으로 구성
+    const fullHTML = `${beforeText}<span id="cursor-marker"></span>${afterText}`;
+    console.log("🧩 결합된 fullHTML:", fullHTML);
+
     const unifiedSpan = document.createElement("span");
-    unifiedSpan.style.display = "inline-block";
     unifiedSpan.style.wordBreak = "break-word";
-    unifiedSpan.innerHTML = combinedHTML;
+    unifiedSpan.innerHTML = fullHTML;
+
+    console.log("📦 최종 unifiedSpan.outerHTML:", unifiedSpan.outerHTML);
 
     this._data.text = unifiedSpan.outerHTML;
-
-    // 4. 기존 렌더링 제거 후 재렌더
     this._element.innerHTML = "";
     this._element.appendChild(unifiedSpan);
     this._element.normalize();
 
-    // 5. 커서 마커 탐지 및 커서 이동
     setTimeout(() => {
       const markerEl = this._element?.querySelector("#cursor-marker");
       if (markerEl) {
