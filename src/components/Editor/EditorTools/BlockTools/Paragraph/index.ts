@@ -200,17 +200,24 @@ export default class Paragraph {
   merge(data: ParagraphData): void {
     if (!this._element) return;
 
-    // 기존 span + 추가 span 내부의 텍스트를 모두 합치기
+    // 1. 기존 span + 추가 span을 임시 div에 렌더
     const tempDiv = document.createElement("div");
-    tempDiv.innerHTML = this._data.text + data.text;
+    tempDiv.innerHTML = this._element.innerHTML + data.text;
 
+    // 2. span 합치기
     let combinedHTML = "";
-    const spans = tempDiv.querySelectorAll("span");
-    spans.forEach((span) => {
+    const spans = Array.from(tempDiv.querySelectorAll("span"));
+
+    spans.forEach((span, idx) => {
       combinedHTML += span.innerHTML;
+
+      // ✅ 첫 span 뒤에 커서 마커 삽입
+      if (idx === 0) {
+        combinedHTML += '<span id="cursor-marker"></span>';
+      }
     });
 
-    // ✅ span 하나만 생성하여 다시 렌더링
+    // 3. 하나의 span으로 구성
     const unifiedSpan = document.createElement("span");
     unifiedSpan.style.display = "inline-block";
     unifiedSpan.style.wordBreak = "break-word";
@@ -218,10 +225,27 @@ export default class Paragraph {
 
     this._data.text = unifiedSpan.outerHTML;
 
-    // 🔄 기존 내용 초기화 후 재렌더링
+    // 4. 기존 렌더링 제거 후 재렌더
     this._element.innerHTML = "";
     this._element.appendChild(unifiedSpan);
     this._element.normalize();
+
+    // 5. 커서 마커 탐지 및 커서 이동
+    setTimeout(() => {
+      const markerEl = this._element?.querySelector("#cursor-marker");
+      if (markerEl) {
+        const range = document.createRange();
+        const selection = window.getSelection();
+
+        range.setStartAfter(markerEl);
+        range.collapse(true);
+        selection?.removeAllRanges();
+        selection?.addRange(range);
+
+        this._element?.focus();
+        markerEl.remove();
+      }
+    }, 0);
   }
 
   static get mergeable(): boolean {

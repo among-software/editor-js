@@ -36134,13 +36134,20 @@ class rs {
   merge(e) {
     if (!this._element) return;
     const o = document.createElement("div");
-    o.innerHTML = this._data.text + e.text;
+    o.innerHTML = this._element.innerHTML + e.text;
     let i = "";
-    o.querySelectorAll("span").forEach((r) => {
-      i += r.innerHTML;
+    Array.from(o.querySelectorAll("span")).forEach((r, a) => {
+      i += r.innerHTML, a === 0 && (i += '<span id="cursor-marker"></span>');
     });
     const n = document.createElement("span");
-    n.style.display = "inline-block", n.style.wordBreak = "break-word", n.innerHTML = i, this._data.text = n.outerHTML, this._element.innerHTML = "", this._element.appendChild(n), this._element.normalize();
+    n.style.display = "inline-block", n.style.wordBreak = "break-word", n.innerHTML = i, this._data.text = n.outerHTML, this._element.innerHTML = "", this._element.appendChild(n), this._element.normalize(), setTimeout(() => {
+      var a, c;
+      const r = (a = this._element) == null ? void 0 : a.querySelector("#cursor-marker");
+      if (r) {
+        const l = document.createRange(), d = window.getSelection();
+        l.setStartAfter(r), l.collapse(!0), d == null || d.removeAllRanges(), d == null || d.addRange(l), (c = this._element) == null || c.focus(), r.remove();
+      }
+    }, 0);
   }
   static get mergeable() {
     return !0;
