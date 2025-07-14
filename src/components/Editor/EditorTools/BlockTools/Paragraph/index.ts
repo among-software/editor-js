@@ -300,7 +300,7 @@ export default class Paragraph {
 
     // 커서 복원
     setTimeout(() => {
-      const markerEl = this._element?.querySelector("#cursor-marker");
+      const markerEl = this._element.querySelector("#cursor-marker");
       if (markerEl) {
         const range = document.createRange();
         const selection = window.getSelection();
@@ -308,10 +308,7 @@ export default class Paragraph {
         range.collapse(true);
         selection?.removeAllRanges();
         selection?.addRange(range);
-        if (this._element) {
-          this._element.focus();
-        }
-
+        this._element.focus();
         markerEl.remove();
       }
     }, 0);
