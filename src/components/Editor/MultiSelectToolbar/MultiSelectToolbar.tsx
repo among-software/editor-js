@@ -529,25 +529,64 @@ export default function MultiSelectToolbar() {
 
     const unwrapSpan = (span: HTMLElement) => {
       const parent = span.parentNode!;
+      const fragment = document.createDocumentFragment();
       while (span.firstChild) {
-        parent.insertBefore(span.firstChild, span);
+        fragment.appendChild(span.firstChild);
       }
-      parent.removeChild(span);
+      parent.replaceChild(fragment, span);
+      parent.normalize();
+    };
+
+    const findClosestStyledSpan = (
+      node: Node | null,
+      dataAttr: string,
+      dataValue: string
+    ): HTMLElement | null => {
+      while (node) {
+        if (
+          node.nodeType === Node.ELEMENT_NODE &&
+          (node as HTMLElement).getAttribute(dataAttr) === dataValue
+        ) {
+          return node as HTMLElement;
+        }
+        node = (node as HTMLElement).parentElement;
+      }
+      return null;
     };
 
     if (hasSelection) {
       const range = sel!.getRangeAt(0);
-      const selectedContents = range.extractContents();
-      const container = document.createElement("div");
-      container.appendChild(selectedContents);
+      const selectedText = sel!.toString();
 
-      // 선택 영역 내 기존 색상 span 제거 (중첩 방지)
-      if (dataAttr) {
-        const spans = container.querySelectorAll(`span[${dataAttr}]`);
-        spans.forEach((span) => unwrapSpan(span as HTMLElement));
+      const matchedStyledSpan =
+        dataAttr && dataValue
+          ? findClosestStyledSpan(sel!.anchorNode, dataAttr, dataValue)
+          : null;
+
+      if (matchedStyledSpan && matchedStyledSpan.textContent === selectedText) {
+        // ✅ 동일 스타일 전체 선택 → 토글 해제
+        const textNode = document.createTextNode(selectedText);
+        matchedStyledSpan.replaceWith(textNode);
+
+        sel!.removeAllRanges();
+        const r = document.createRange();
+        r.selectNodeContents(textNode);
+        sel!.addRange(r);
+        return;
       }
 
-      // 새 span 생성 및 스타일 적용
+      // ✅ 새 스타일 적용
+      const extracted = range.extractContents();
+      const container = document.createElement("div");
+      container.appendChild(extracted);
+
+      // 기존 동일 스타일 unwrap
+      if (dataAttr) {
+        container
+          .querySelectorAll(`span[${dataAttr}]`)
+          .forEach((s) => unwrapSpan(s as HTMLElement));
+      }
+
       const newSpan = document.createElement("span");
       Object.entries(style).forEach(([key, value]) => {
         if (value) (newSpan.style as any)[key] = value;
@@ -556,101 +595,68 @@ export default function MultiSelectToolbar() {
         newSpan.setAttribute(dataAttr, dataValue);
       }
 
-      // container 내용물을 newSpan에 이동
       newSpan.innerHTML = container.innerHTML;
+      range.insertNode(newSpan);
 
-      // 토글: 이미 동일 스타일이 전체 선택된 경우 해제 처리
-      const parentNode = sel!.anchorNode?.parentElement;
-      const entireParentSelected =
-        parentNode &&
+      // ✅ 중첩된 span 정리 (부모 span 감싼 경우)
+      const parent = newSpan.parentElement;
+      if (
+        parent &&
         dataAttr &&
-        parentNode.getAttribute(dataAttr) &&
-        parentNode.textContent === sel!.toString(); // 부모 span 전체 선택 여부
-      const alreadyStyled =
-        !!dataAttr && parentNode?.getAttribute(dataAttr) === dataValue;
-      range.deleteContents();
-      if (alreadyStyled) {
-        // 동일 스타일 토글 해제: span 제거
-        range.insertNode(document.createTextNode(sel!.toString()));
-      } else if (entireParentSelected && parentNode) {
-        // 부모 span 전체가 선택됐고 다른 색 -> 부모 span을 새로운 스타일로 교체
-        parentNode.setAttribute(dataAttr!, dataValue!);
-        Object.entries(style).forEach(([key, value]) => {
-          if (value) (parentNode.style as any)[key] = value;
+        parent !== newSpan &&
+        parent.getAttribute(dataAttr)
+      ) {
+        const before = [];
+        const after = [];
+        let found = false;
+
+        parent.childNodes.forEach((n) => {
+          if (n === newSpan) {
+            found = true;
+          } else if (!found) {
+            before.push(n.cloneNode(true));
+          } else {
+            after.push(n.cloneNode(true));
+          }
         });
-        // 새 span을 삽입할 필요 없음 (기존 span이 업데이트됨)
-      } else {
-        // 새로운 스타일 span 삽입
-        range.insertNode(newSpan);
-        // ※ newSpan이 기존 span 내부에 삽입되었을 수 있으므로 중첩 분리
-        if (
-          parentNode &&
-          dataAttr &&
-          parentNode.getAttribute(dataAttr) &&
-          parentNode.contains(newSpan)
-        ) {
-          const oldSpan = parentNode;
-          const beforeNodes: ChildNode[] = [];
-          const afterNodes: ChildNode[] = [];
-          let foundNewSpan = false;
-          // oldSpan 자식들을 newSpan 기준으로 분리
-          oldSpan.childNodes.forEach((node) => {
-            if (node === newSpan) {
-              foundNewSpan = true;
-              return; // newSpan 자체는 oldSpan에서 제거
-            }
-            if (!foundNewSpan) {
-              beforeNodes.push(node);
-            } else {
-              afterNodes.push(node);
-            }
-          });
-          // oldSpan 비우고 beforeNodes만 유지
-          oldSpan.innerHTML = "";
-          beforeNodes.forEach((node) => oldSpan.appendChild(node));
-          // oldSpan 다음에 newSpan 삽입
-          oldSpan.parentNode!.insertBefore(newSpan, oldSpan.nextSibling);
-          // afterNodes가 있으면 oldSpan 복제하여 뒤쪽 부분 처리
-          if (afterNodes.length > 0) {
-            const cloneSpan = oldSpan.cloneNode(false) as HTMLElement;
-            afterNodes.forEach((node) => cloneSpan.appendChild(node));
-            oldSpan.parentNode!.insertBefore(cloneSpan, newSpan.nextSibling);
-          }
-          // oldSpan이 내용이 비었다면 제거
-          if (!oldSpan.textContent) {
-            oldSpan.parentNode!.removeChild(oldSpan);
-          }
-        }
-        // 선택한 새 span을 다시 선택 상태로 (사용자 피드백을 위해)
-        sel!.removeAllRanges();
-        const newRange = document.createRange();
-        newRange.selectNodeContents(newSpan);
-        sel!.addRange(newRange);
+
+        const cloneBefore = parent.cloneNode(false);
+        const cloneAfter = parent.cloneNode(false);
+        before.forEach((n) => cloneBefore.appendChild(n));
+        after.forEach((n) => cloneAfter.appendChild(n));
+
+        parent.replaceWith(cloneBefore, newSpan, cloneAfter);
       }
+
+      // ✅ 선택 복원
+      sel!.removeAllRanges();
+      const newRange = document.createRange();
+      newRange.selectNodeContents(newSpan);
+      sel!.addRange(newRange);
     } else {
-      // ✅ 블록 스타일 처리
+      // ✅ 선택 없음 → 블록 전체 대상
       applyToBlocks((html) => {
         const container = document.createElement("div");
         container.innerHTML = html;
+
         const span = container.querySelector(
           `span[${dataAttr}]`
         ) as HTMLElement;
-        const isUniformSpan =
+        const isUniform =
           span &&
           span.parentElement === container &&
-          container.childNodes.length === 1;
-        const alreadyStyled =
-          isUniformSpan && span.getAttribute(dataAttr!) === dataValue;
-        if (alreadyStyled && span) {
-          // 블록이 이미 동일 스타일로 전체 감싸져 있음 -> span 제거(토글 해제)
+          container.childNodes.length === 1 &&
+          span.getAttribute(dataAttr) === dataValue;
+
+        if (isUniform) {
           unwrapSpan(span);
           return container.innerHTML;
         }
-        // 기존 블록 내 모든 해당 스타일 span 제거 (중첩/혼합 방지)
+
         container
           .querySelectorAll(`span[${dataAttr}]`)
           .forEach((s) => unwrapSpan(s as HTMLElement));
-        // 새 span으로 전체 내용 감싸기
+
         const newSpan = document.createElement("span");
         Object.entries(style).forEach(([key, value]) => {
           if (value) (newSpan.style as any)[key] = value;
@@ -662,6 +668,13 @@ export default function MultiSelectToolbar() {
         return newSpan.outerHTML;
       });
     }
+
+    // ✅ 마지막: 빈 span 자동 제거
+    setTimeout(() => {
+      document.querySelectorAll("span").forEach((span) => {
+        if (!span.textContent?.trim()) span.remove();
+      });
+    }, 0);
   };
 
   const renderDropdown = (
@@ -713,7 +726,7 @@ export default function MultiSelectToolbar() {
           // @ts-ignore */}
           <FiChevronDown />
         </ToolButton>
-        <Tooltip className="tooltip">블록 타입</Tooltip>
+        <Tooltip className='tooltip'>블록 타입</Tooltip>
         {activeDropdown === "blockType" && (
           <FloatingDropdown
             top={dropdownPosition.top}
@@ -755,7 +768,7 @@ export default function MultiSelectToolbar() {
           // @ts-ignore */}
           <FiChevronDown />
         </ToolButton>
-        <Tooltip className="tooltip">폰트 선택</Tooltip>
+        <Tooltip className='tooltip'>폰트 선택</Tooltip>
       </TooltipWrapper>
       {renderDropdown(
         "fontFamily",
@@ -782,7 +795,7 @@ export default function MultiSelectToolbar() {
           // @ts-ignore */}
           <FiChevronDown />
         </ToolButton>
-        <Tooltip className="tooltip">글자 크기</Tooltip>
+        <Tooltip className='tooltip'>글자 크기</Tooltip>
       </TooltipWrapper>
       {renderDropdown("fontSize", fontSizes, "fontSize", "data-font-size")}
       <Divider />
@@ -802,7 +815,7 @@ export default function MultiSelectToolbar() {
           // @ts-ignore */}
           <FaBold />
         </ToolButton>
-        <Tooltip className="tooltip">굵게</Tooltip>
+        <Tooltip className='tooltip'>굵게</Tooltip>
       </TooltipWrapper>
 
       <TooltipWrapper
@@ -820,7 +833,7 @@ export default function MultiSelectToolbar() {
           // @ts-ignore */}
           <FaItalic />
         </ToolButton>
-        <Tooltip className="tooltip">기울임꼴</Tooltip>
+        <Tooltip className='tooltip'>기울임꼴</Tooltip>
       </TooltipWrapper>
 
       <TooltipWrapper
@@ -842,7 +855,7 @@ export default function MultiSelectToolbar() {
           // @ts-ignore */}
           <FaUnderline />
         </ToolButton>
-        <Tooltip className="tooltip">밑줄</Tooltip>
+        <Tooltip className='tooltip'>밑줄</Tooltip>
       </TooltipWrapper>
 
       <TooltipWrapper
@@ -864,7 +877,7 @@ export default function MultiSelectToolbar() {
           // @ts-ignore */}
           <FaStrikethrough />
         </ToolButton>
-        <Tooltip className="tooltip">취소선</Tooltip>
+        <Tooltip className='tooltip'>취소선</Tooltip>
       </TooltipWrapper>
 
       <TooltipWrapper
@@ -882,7 +895,7 @@ export default function MultiSelectToolbar() {
           // @ts-ignore */}
           <FiChevronDown />
         </ToolButton>
-        <Tooltip className="tooltip">글자 색상</Tooltip>
+        <Tooltip className='tooltip'>글자 색상</Tooltip>
         {activeDropdown === "fontColor" && (
           <FloatingDropdown
             top={dropdownPosition.top}
@@ -916,7 +929,7 @@ export default function MultiSelectToolbar() {
           // @ts-ignore */}
           <FiChevronDown />
         </ToolButton>
-        <Tooltip className="tooltip">배경 색상</Tooltip>
+        <Tooltip className='tooltip'>배경 색상</Tooltip>
         {activeDropdown === "backgroundColor" && (
           <FloatingDropdown
             top={dropdownPosition.top}
@@ -952,7 +965,7 @@ export default function MultiSelectToolbar() {
           // @ts-ignore */}
           <FiChevronDown />
         </ToolButton>
-        <Tooltip className="tooltip">자간 설정</Tooltip>
+        <Tooltip className='tooltip'>자간 설정</Tooltip>
         {renderDropdown(
           "letterSpacing",
           letterSpacings,
@@ -978,7 +991,7 @@ export default function MultiSelectToolbar() {
           // @ts-ignore */}
           <FiChevronDown />
         </ToolButton>
-        <Tooltip className="tooltip">줄 간격 설정</Tooltip>
+        <Tooltip className='tooltip'>줄 간격 설정</Tooltip>
         {renderDropdown(
           "lineHeight",
           lineHeights,
@@ -995,16 +1008,16 @@ export default function MultiSelectToolbar() {
         <ToolButton onClick={handleInsertLinkClick}>
           {/* 
           // @ts-ignore */}
-          {showLinkInput ? <FaLink color="#1aff00" /> : <FaLink />}
+          {showLinkInput ? <FaLink color='#1aff00' /> : <FaLink />}
         </ToolButton>
-        <Tooltip className="tooltip">링크 추가</Tooltip>
+        <Tooltip className='tooltip'>링크 추가</Tooltip>
       </TooltipWrapper>
 
       {showLinkInput && (
         <LinkInputWrapper top={linkInputPos.top} left={linkInputPos.left}>
           <LinkInput
-            type="text"
-            placeholder="URL을 입력하세요."
+            type='text'
+            placeholder='URL을 입력하세요.'
             value={linkInputValue}
             onChange={(e) => setLinkInputValue(e.target.value)}
           />

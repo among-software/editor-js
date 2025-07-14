@@ -245,16 +245,12 @@ export default class Paragraph {
           const isLeaf = !Array.from(span.children).some(
             (child) => child.tagName === "SPAN"
           );
-
-          // 기존: 텍스트 없으면 필터링됨
-          // if (isLeaf && span.textContent?.trim()) {
-
-          if (isLeaf && (span.textContent?.trim() || span.hasAttributes())) {
+          if (isLeaf && span.textContent?.trim()) {
             const styleChain = collectStyleChain(span);
             const mergedStyle = mergeStyles(styleChain);
 
             const finalSpan = document.createElement("span");
-            finalSpan.textContent = span.textContent ?? ""; // 빈 텍스트 허용
+            finalSpan.textContent = span.textContent;
             finalSpan.setAttribute("style", mergedStyle);
             finalSpan.style.display = "inline";
 
@@ -304,7 +300,7 @@ export default class Paragraph {
 
     // 커서 복원
     setTimeout(() => {
-      const markerEl = this._element?.querySelector("#cursor-marker");
+      const markerEl = this._element.querySelector("#cursor-marker");
       if (markerEl) {
         const range = document.createRange();
         const selection = window.getSelection();
@@ -312,7 +308,7 @@ export default class Paragraph {
         range.collapse(true);
         selection?.removeAllRanges();
         selection?.addRange(range);
-        this._element?.focus();
+        this._element.focus();
         markerEl.remove();
       }
     }, 0);
