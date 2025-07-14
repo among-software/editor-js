@@ -29,6 +29,8 @@ export default function EditorSection({
 
   // 스크롤에 따라 툴바 위치 조정
   useEffect(() => {
+    console.log(test);
+
     const handleScroll = () => {
       if (editorSectionRef.current) {
         const rect = editorSectionRef.current.getBoundingClientRect();
