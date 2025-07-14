@@ -37804,17 +37804,17 @@ const Fi = class Fi {
     }
   }
   wrap(e, o) {
-    const i = document.createElement(this.tag);
-    i.style.lineHeight = o, i.setAttribute("data-line-height", o), i.style.display = "inline-block", i.style.wordBreak = "break-word";
-    const s = e.extractContents();
-    this.flattenSpans(s), i.appendChild(s), e.insertNode(i), this.api.selection.expandToTag(i);
+    const i = e.extractContents();
+    this.flattenSpans(i);
+    const s = document.createElement(this.tag);
+    s.setAttribute("data-line-height", o), s.style.lineHeight = o, s.style.display = "inline", s.style.wordBreak = "break-word", s.appendChild(i), e.insertNode(s), this.api.selection.expandToTag(s);
   }
   flattenSpans(e) {
     (e instanceof DocumentFragment || e instanceof Element) && e.querySelectorAll("span[data-line-height]").forEach((i) => {
-      if (i.parentNode) {
-        const s = document.createTextNode(i.textContent || "");
-        i.parentNode.replaceChild(s, i);
-      }
+      const s = i.parentNode;
+      for (; i.firstChild; )
+        s == null || s.insertBefore(i.firstChild, i);
+      s == null || s.removeChild(i);
     });
   }
   findAncestorSpan(e) {

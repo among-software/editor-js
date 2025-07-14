@@ -101,18 +101,25 @@ export default class LineHeightPicker {
   }
 
   private wrap(range: Range, lineHeight: string) {
-    const span = document.createElement(this.tag);
-    span.style.lineHeight = lineHeight;
-    span.setAttribute("data-line-height", lineHeight);
-    span.style.display = "inline-block";
-    span.style.wordBreak = "break-word";
-
     const contents = range.extractContents();
+
+    // 기존 span 중 data-line-height가 있는 경우 제거 (중복 방지)
     this.flattenSpans(contents);
 
+    // 텍스트 노드만 있는 경우 처리
+    const span = document.createElement(this.tag);
+    span.setAttribute("data-line-height", lineHeight);
+    span.style.lineHeight = lineHeight;
+
+    // 다른 스타일이 적용되어 있다면 보존
+    span.style.display = "inline";
+    span.style.wordBreak = "break-word";
+
+    // 병합을 위해 기존 span이 하나뿐이라면 재사용 (선택적으로 구현 가능)
     span.appendChild(contents);
     range.insertNode(span);
 
+    // selection 유지
     this.api.selection.expandToTag(span);
   }
 
@@ -120,10 +127,11 @@ export default class LineHeightPicker {
     if (node instanceof DocumentFragment || node instanceof Element) {
       const spans = node.querySelectorAll("span[data-line-height]");
       spans.forEach((span) => {
-        if (span.parentNode) {
-          const textNode = document.createTextNode(span.textContent || "");
-          span.parentNode.replaceChild(textNode, span);
+        const parent = span.parentNode;
+        while (span.firstChild) {
+          parent?.insertBefore(span.firstChild, span);
         }
+        parent?.removeChild(span);
       });
     }
   }
