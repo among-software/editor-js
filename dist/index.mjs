@@ -36152,9 +36152,9 @@ class rs {
           const w = f;
           if (!Array.from(w.children).some(
             (T) => T.tagName === "SPAN"
-          ) && ((x = w.textContent) != null && x.trim())) {
+          ) && ((x = w.textContent) != null && x.trim() || w.hasAttributes())) {
             const T = p(w), O = g(T), A = document.createElement("span");
-            A.textContent = w.textContent, A.setAttribute("style", O), A.style.display = "inline", u.push(A);
+            A.textContent = w.textContent ?? "", A.setAttribute("style", O), A.style.display = "inline", u.push(A);
           }
         }
         f.childNodes.forEach(m);

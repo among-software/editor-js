@@ -245,12 +245,16 @@ export default class Paragraph {
           const isLeaf = !Array.from(span.children).some(
             (child) => child.tagName === "SPAN"
           );
-          if (isLeaf && span.textContent?.trim()) {
+
+          // 기존: 텍스트 없으면 필터링됨
+          // if (isLeaf && span.textContent?.trim()) {
+
+          if (isLeaf && (span.textContent?.trim() || span.hasAttributes())) {
             const styleChain = collectStyleChain(span);
             const mergedStyle = mergeStyles(styleChain);
 
             const finalSpan = document.createElement("span");
-            finalSpan.textContent = span.textContent;
+            finalSpan.textContent = span.textContent ?? ""; // 빈 텍스트 허용
             finalSpan.setAttribute("style", mergedStyle);
             finalSpan.style.display = "inline";
 
