@@ -39436,6 +39436,7 @@ function Xh({
       window.removeEventListener("scroll", l);
     };
   }, []), oo(() => {
+    console.log("asdf");
     let l = null;
     const d = (u) => {
       l = u.target.closest(".ce-block");

@@ -53,6 +53,7 @@ export default function EditorSection({
 
   // ✅ 드래그 기반 블럭 선택 기능
   useEffect(() => {
+    console.log("asdf");
     let startBlock: HTMLElement | null = null;
 
     const handleMouseDown = (e: MouseEvent) => {
