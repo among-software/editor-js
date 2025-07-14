@@ -39425,7 +39425,7 @@ function Xh({
 }) {
   const s = ve(null), [n, r] = Re(0), { editor: a, setSelectedBlockIds: c } = ge();
   return oo(() => {
-    console.log(test);
+    console.log("test");
     const l = () => {
       if (s.current) {
         const d = s.current.getBoundingClientRect();
