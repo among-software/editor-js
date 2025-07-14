@@ -36177,10 +36177,11 @@ class rs {
     c.id = "cursor-marker", a.appendChild(c), r.forEach(
       (l) => a.appendChild(l.cloneNode(!0))
     ), this._data.text = a.outerHTML, this._element.innerHTML = "", this._element.appendChild(a), this._element.normalize(), setTimeout(() => {
-      const l = this._element.querySelector("#cursor-marker");
+      var d, u;
+      const l = (d = this._element) == null ? void 0 : d.querySelector("#cursor-marker");
       if (l) {
-        const d = document.createRange(), u = window.getSelection();
-        d.setStartAfter(l), d.collapse(!0), u == null || u.removeAllRanges(), u == null || u.addRange(d), this._element.focus(), l.remove();
+        const p = document.createRange(), g = window.getSelection();
+        p.setStartAfter(l), p.collapse(!0), g == null || g.removeAllRanges(), g == null || g.addRange(p), (u = this._element) == null || u.focus(), l.remove();
       }
     }, 0);
   }

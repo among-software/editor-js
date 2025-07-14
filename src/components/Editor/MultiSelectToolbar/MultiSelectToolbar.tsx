@@ -606,8 +606,8 @@ export default function MultiSelectToolbar() {
         parent !== newSpan &&
         parent.getAttribute(dataAttr)
       ) {
-        const before = [];
-        const after = [];
+        const before: Node[] = [];
+        const after: Node[] = [];
         let found = false;
 
         parent.childNodes.forEach((n) => {
@@ -646,7 +646,7 @@ export default function MultiSelectToolbar() {
           span &&
           span.parentElement === container &&
           container.childNodes.length === 1 &&
-          span.getAttribute(dataAttr) === dataValue;
+          span.getAttribute(dataAttr!) === dataValue;
 
         if (isUniform) {
           unwrapSpan(span);
