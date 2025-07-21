@@ -398,36 +398,6 @@ export default function MultiSelectToolbar() {
     });
   };
 
-  const wrapWithStyle = (
-    style: Partial<CSSStyleDeclaration>,
-    dataAttr?: string,
-    dataValue?: string
-  ) => {
-    applyToBlocks((html) => {
-      const container = document.createElement("div");
-      container.innerHTML = html;
-
-      const existing = container.querySelector(`span[${dataAttr}]`);
-      if (existing) {
-        existing.removeAttribute("style");
-        // @ts-ignore
-        existing.removeAttribute(dataAttr);
-        existing.innerHTML = existing.innerHTML;
-        return container.innerHTML;
-      }
-
-      const span = document.createElement("span");
-      Object.entries(style).forEach(([key, value]) => {
-        if (value) (span.style as any)[key as any] = value;
-      });
-      if (dataAttr && dataValue) {
-        span.setAttribute(dataAttr, dataValue);
-      }
-      span.innerHTML = html;
-      return span.outerHTML;
-    });
-  };
-
   const replaceWithBlockType = (tag: string) => {
     applyToBlocks((html) => {
       const content = html.replace(/<[^>]+>/g, "");
@@ -440,32 +410,6 @@ export default function MultiSelectToolbar() {
         return `<ul class="cdx-block cdx-list cdx-list--unordered" contenteditable="true"><li class="cdx-list__item">${content}</li></ul>`;
       } else {
         return `<h1 class="ce-header">${content}</h1>`;
-      }
-    });
-  };
-
-  const toggleStyle = (
-    styleKey: keyof CSSStyleDeclaration,
-    value: string,
-    dataAttr: string
-  ) => {
-    applyToBlocks((html) => {
-      const container = document.createElement("div");
-      container.innerHTML = html;
-      const span = container.querySelector(
-        `span[${dataAttr}]`
-      ) as HTMLSpanElement | null;
-
-      if (span) {
-        (span.style as any)[styleKey] = "";
-        span.removeAttribute(dataAttr);
-        return span.innerHTML;
-      } else {
-        const newSpan = document.createElement("span");
-        (newSpan.style as any)[styleKey] = value;
-        newSpan.setAttribute(dataAttr, "true");
-        newSpan.innerHTML = html;
-        return newSpan.outerHTML;
       }
     });
   };
@@ -557,6 +501,7 @@ export default function MultiSelectToolbar() {
     if (hasSelection) {
       const range = sel!.getRangeAt(0);
       const selectedText = sel!.toString();
+      console.log("✅ [applyStyleSmart] Selection detected:", selectedText);
 
       const matchedStyledSpan =
         dataAttr && dataValue
@@ -564,7 +509,7 @@ export default function MultiSelectToolbar() {
           : null;
 
       if (matchedStyledSpan && matchedStyledSpan.textContent === selectedText) {
-        // ✅ 동일 스타일 전체 선택 → 토글 해제
+        console.log("↩️ [applyStyleSmart] Same style detected, toggling off");
         const textNode = document.createTextNode(selectedText);
         matchedStyledSpan.replaceWith(textNode);
 
@@ -575,12 +520,14 @@ export default function MultiSelectToolbar() {
         return;
       }
 
-      // ✅ 새 스타일 적용
       const extracted = range.extractContents();
       const container = document.createElement("div");
       container.appendChild(extracted);
+      console.log(
+        "📦 [applyStyleSmart] Extracted contents:",
+        container.innerHTML
+      );
 
-      // 기존 동일 스타일 unwrap
       if (dataAttr) {
         container
           .querySelectorAll(`span[${dataAttr}]`)
@@ -595,10 +542,13 @@ export default function MultiSelectToolbar() {
         newSpan.setAttribute(dataAttr, dataValue);
       }
 
-      newSpan.innerHTML = container.innerHTML;
+      newSpan.append(...Array.from(container.childNodes));
       range.insertNode(newSpan);
+      console.log(
+        "🧱 [applyStyleSmart] New styled span inserted:",
+        newSpan.outerHTML
+      );
 
-      // ✅ 중첩된 span 정리 (부모 span 감싼 경우)
       const parent = newSpan.parentElement;
       if (
         parent &&
@@ -628,48 +578,82 @@ export default function MultiSelectToolbar() {
         parent.replaceWith(cloneBefore, newSpan, cloneAfter);
       }
 
-      // ✅ 선택 복원
       sel!.removeAllRanges();
       const newRange = document.createRange();
       newRange.selectNodeContents(newSpan);
       sel!.addRange(newRange);
     } else {
-      // ✅ 선택 없음 → 블록 전체 대상
+      // 기존 코드 중 생략 없이 "else" 분기 내만 교체
       applyToBlocks((html) => {
+        console.log("🌐 [applyStyleSmart] Applying to block HTML:", html);
         const container = document.createElement("div");
         container.innerHTML = html;
 
-        const span = container.querySelector(
-          `span[${dataAttr}]`
-        ) as HTMLElement;
-        const isUniform =
-          span &&
-          span.parentElement === container &&
-          container.childNodes.length === 1 &&
-          span.getAttribute(dataAttr!) === dataValue;
+        // 모든 텍스트 노드를 감싸고 있는 가장 안쪽 <span>을 찾음
+        const findInnermostSpans = (node: Node): HTMLElement[] => {
+          const result: HTMLElement[] = [];
 
-        if (isUniform) {
-          unwrapSpan(span);
-          return container.innerHTML;
+          const walk = (n: Node) => {
+            if (
+              n.nodeType === Node.ELEMENT_NODE &&
+              (n as HTMLElement).tagName === "SPAN" &&
+              Array.from(n.childNodes).every(
+                (c) => c.nodeType === Node.TEXT_NODE
+              )
+            ) {
+              result.push(n as HTMLElement);
+            } else {
+              n.childNodes.forEach(walk);
+            }
+          };
+
+          container.childNodes.forEach(walk);
+          return result;
+        };
+
+        const targets = findInnermostSpans(container);
+
+        if (targets.length === 0) {
+          console.log(
+            "❗ [applyStyleSmart] No span found — wrapping entire block"
+          );
+          const newSpan = document.createElement("span");
+          Object.entries(style).forEach(([key, value]) => {
+            if (value) (newSpan.style as any)[key] = value;
+          });
+          if (dataAttr && dataValue) {
+            newSpan.setAttribute(dataAttr, dataValue);
+          }
+          newSpan.innerHTML = container.innerHTML;
+          return newSpan.outerHTML;
         }
 
-        container
-          .querySelectorAll(`span[${dataAttr}]`)
-          .forEach((s) => unwrapSpan(s as HTMLElement));
-
-        const newSpan = document.createElement("span");
-        Object.entries(style).forEach(([key, value]) => {
-          if (value) (newSpan.style as any)[key] = value;
+        targets.forEach((span) => {
+          // unwrap same style if already exists
+          if (dataAttr && span.getAttribute(dataAttr) === dataValue) {
+            console.log(
+              "↩️ [applyStyleSmart] Toggling off style in span:",
+              span.outerHTML
+            );
+            unwrapSpan(span);
+          } else {
+            Object.entries(style).forEach(([key, value]) => {
+              if (value) (span.style as any)[key] = value;
+            });
+            if (dataAttr && dataValue) {
+              span.setAttribute(dataAttr, dataValue);
+            }
+            console.log(
+              "🎯 [applyStyleSmart] Applied style to span:",
+              span.outerHTML
+            );
+          }
         });
-        if (dataAttr && dataValue) {
-          newSpan.setAttribute(dataAttr, dataValue);
-        }
-        newSpan.innerHTML = container.innerHTML;
-        return newSpan.outerHTML;
+
+        return container.innerHTML;
       });
     }
 
-    // ✅ 마지막: 빈 span 자동 제거
     setTimeout(() => {
       document.querySelectorAll("span").forEach((span) => {
         if (!span.textContent?.trim()) span.remove();
