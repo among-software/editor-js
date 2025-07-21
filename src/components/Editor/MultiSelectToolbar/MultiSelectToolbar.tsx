@@ -459,6 +459,68 @@ export default function MultiSelectToolbar() {
     console.log("✅ 링크 삽입 완료 (새 블록으로)");
   };
 
+  const toggleStyleForSpan = (
+    span: HTMLElement,
+    style: Partial<CSSStyleDeclaration>,
+    dataAttr?: string,
+    dataValue?: string
+  ) => {
+    console.log("🟡 대상 span:", span.outerHTML);
+
+    const hasTargetAttr = dataAttr && span.getAttribute(dataAttr) === dataValue;
+
+    if (hasTargetAttr) {
+      console.log(
+        "🔴 토글 OFF: dataAttr =",
+        dataAttr,
+        "dataValue =",
+        dataValue
+      );
+      Object.keys(style).forEach((key) => {
+        const cssProp = key.replace(/[A-Z]/g, (m) => "-" + m.toLowerCase());
+        span.style.removeProperty(cssProp); // camelCase → kebab-case 변환
+        console.log(`  ⛔ 스타일 제거: ${cssProp}`);
+      });
+
+      if (dataAttr) {
+        span.removeAttribute(dataAttr);
+        console.log(`  ⛔ 속성 제거: ${dataAttr}`);
+      }
+
+      const stillHasStyle =
+        span.getAttribute("style")?.trim() ||
+        Array.from(span.attributes).some((attr) =>
+          attr.name.startsWith("data-")
+        );
+
+      if (!stillHasStyle) {
+        console.log("🧹 span 제거: 스타일 속성 없음");
+        const parent = span.parentNode!;
+        const frag = document.createDocumentFragment();
+        while (span.firstChild) {
+          frag.appendChild(span.firstChild);
+        }
+        parent.replaceChild(frag, span);
+        parent.normalize();
+      } else {
+        console.log("✅ 일부 스타일 유지됨:", span.outerHTML);
+      }
+    } else {
+      console.log("🟢 토글 ON: 추가할 style =", style);
+      Object.entries(style).forEach(([k, v]) => {
+        if (v) {
+          (span.style as any)[k] = v;
+          console.log(`  ➕ 스타일 추가: ${k} = ${v}`);
+        }
+      });
+      if (dataAttr && dataValue) {
+        span.setAttribute(dataAttr, dataValue);
+        console.log(`  ➕ 속성 추가: ${dataAttr} = ${dataValue}`);
+      }
+      console.log("🧱 최종 적용 span:", span.outerHTML);
+    }
+  };
+
   const applyStyleSmart = (
     style: Partial<CSSStyleDeclaration>,
     dataAttr?: string,
@@ -501,7 +563,6 @@ export default function MultiSelectToolbar() {
     if (hasSelection) {
       const range = sel!.getRangeAt(0);
       const selectedText = sel!.toString();
-      console.log("✅ [applyStyleSmart] Selection detected:", selectedText);
 
       const matchedStyledSpan =
         dataAttr && dataValue
@@ -509,7 +570,6 @@ export default function MultiSelectToolbar() {
           : null;
 
       if (matchedStyledSpan && matchedStyledSpan.textContent === selectedText) {
-        console.log("↩️ [applyStyleSmart] Same style detected, toggling off");
         const textNode = document.createTextNode(selectedText);
         matchedStyledSpan.replaceWith(textNode);
 
@@ -523,10 +583,7 @@ export default function MultiSelectToolbar() {
       const extracted = range.extractContents();
       const container = document.createElement("div");
       container.appendChild(extracted);
-      console.log(
-        "📦 [applyStyleSmart] Extracted contents:",
-        container.innerHTML
-      );
+      console.log(container.innerHTML);
 
       if (dataAttr) {
         container
@@ -544,10 +601,7 @@ export default function MultiSelectToolbar() {
 
       newSpan.append(...Array.from(container.childNodes));
       range.insertNode(newSpan);
-      console.log(
-        "🧱 [applyStyleSmart] New styled span inserted:",
-        newSpan.outerHTML
-      );
+      console.log(newSpan.outerHTML);
 
       const parent = newSpan.parentElement;
       if (
@@ -585,7 +639,6 @@ export default function MultiSelectToolbar() {
     } else {
       // 기존 코드 중 생략 없이 "else" 분기 내만 교체
       applyToBlocks((html) => {
-        console.log("🌐 [applyStyleSmart] Applying to block HTML:", html);
         const container = document.createElement("div");
         container.innerHTML = html;
 
@@ -629,25 +682,7 @@ export default function MultiSelectToolbar() {
         }
 
         targets.forEach((span) => {
-          // unwrap same style if already exists
-          if (dataAttr && span.getAttribute(dataAttr) === dataValue) {
-            console.log(
-              "↩️ [applyStyleSmart] Toggling off style in span:",
-              span.outerHTML
-            );
-            unwrapSpan(span);
-          } else {
-            Object.entries(style).forEach(([key, value]) => {
-              if (value) (span.style as any)[key] = value;
-            });
-            if (dataAttr && dataValue) {
-              span.setAttribute(dataAttr, dataValue);
-            }
-            console.log(
-              "🎯 [applyStyleSmart] Applied style to span:",
-              span.outerHTML
-            );
-          }
+          toggleStyleForSpan(span, style, dataAttr, dataValue);
         });
 
         return container.innerHTML;
